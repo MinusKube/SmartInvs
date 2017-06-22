@@ -75,14 +75,20 @@ public interface InventoryContents {
 
         @Override
         public Optional<ClickableItem> get(int row, int column) {
-            // TODO: Handle IOOBE
+            if(row >= contents.length)
+                return Optional.empty();
+            if(column >= contents[row].length)
+                return Optional.empty();
 
             return Optional.ofNullable(contents[row][column]);
         }
 
         @Override
         public InventoryContents set(int row, int column, ClickableItem item) {
-            // TODO: Handle IOOBE
+            if(row >= contents.length)
+                return this;
+            if(column >= contents[row].length)
+                return this;
 
             contents[row][column] = item;
             update(row, column, item != null ? item.getItem() : null);
@@ -100,7 +106,8 @@ public interface InventoryContents {
 
         @Override
         public InventoryContents fillRow(int row, ClickableItem item) {
-            // TODO: Handle IOOBE
+            if(row >= contents.length)
+                return this;
 
             for(int column = 0; column < contents[row].length; column++)
                 set(row, column, item);
@@ -110,8 +117,6 @@ public interface InventoryContents {
 
         @Override
         public InventoryContents fillColumn(int column, ClickableItem item) {
-            // TODO: Handle IOOBE
-
             for(int row = 0; row < contents.length; row++)
                 set(row, column, item);
 
@@ -126,8 +131,6 @@ public interface InventoryContents {
 
         @Override
         public InventoryContents fillRect(int fromRow, int fromColumn, int toRow, int toColumn, ClickableItem item) {
-            // TODO: Handle IOOBE
-
             for(int row = fromRow; row <= toRow; row++) {
                 for(int column = fromColumn; column <= toColumn; column++) {
                     if(row != fromRow && row != toRow && column != fromColumn && column != toColumn)

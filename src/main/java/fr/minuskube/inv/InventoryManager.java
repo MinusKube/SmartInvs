@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -95,7 +96,7 @@ public class InventoryManager {
     @SuppressWarnings("unchecked")
     class InvListener implements Listener {
 
-        @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+        @EventHandler(priority = EventPriority.LOW)
         public void onInventoryClick(InventoryClickEvent e) {
             Player p = (Player) e.getWhoClicked();
 
@@ -108,6 +109,8 @@ public class InventoryManager {
             }
 
             if(e.getClickedInventory() == p.getOpenInventory().getTopInventory()) {
+                e.setCancelled(true);
+
                 int row = e.getSlot() / 9;
                 int column = e.getSlot() % 9;
 
@@ -124,8 +127,6 @@ public class InventoryManager {
                         .forEach(listener -> ((InventoryListener<InventoryClickEvent>) listener).accept(e));
 
                 contents.get(p).get(row, column).ifPresent(item -> {
-                    e.setCancelled(true);
-
                     if(item.getItem() != null && !item.getItem().isSimilar(e.getCurrentItem()))
                         return;
                     if(item.getItem() == null
@@ -137,7 +138,23 @@ public class InventoryManager {
             }
         }
 
-        @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+        @EventHandler(priority = EventPriority.LOW)
+        public void onInventoryDrag(InventoryDragEvent e) {
+            Player p = (Player) e.getWhoClicked();
+
+            if(!inventories.containsKey(p))
+                return;
+
+            for(int slot : e.getRawSlots()) {
+                if(slot >= p.getOpenInventory().getTopInventory().getSize())
+                    continue;
+
+                e.setCancelled(true);
+                break;
+            }
+        }
+
+        @EventHandler(priority = EventPriority.LOW)
         public void onInventoryOpen(InventoryOpenEvent e) {
             Player p = (Player) e.getPlayer();
 
@@ -151,7 +168,7 @@ public class InventoryManager {
                     .forEach(listener -> ((InventoryListener<InventoryOpenEvent>) listener).accept(e));
         }
 
-        @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+        @EventHandler(priority = EventPriority.LOW)
         public void onInventoryClose(InventoryCloseEvent e) {
             Player p = (Player) e.getPlayer();
 
@@ -172,7 +189,7 @@ public class InventoryManager {
                 Bukkit.getScheduler().runTask(plugin, () -> p.openInventory(e.getInventory()));
         }
 
-        @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+        @EventHandler(priority = EventPriority.LOW)
         public void onPlayerQuit(PlayerQuitEvent e) {
             Player p = e.getPlayer();
 
@@ -188,7 +205,7 @@ public class InventoryManager {
             inventories.remove(p);
         }
 
-        @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+        @EventHandler(priority = EventPriority.LOW)
         public void onPluginDisable(PluginDisableEvent e) {
             new HashSet<>(inventories.values()).forEach(inv ->
                     inv.getListeners().stream()

@@ -103,8 +103,6 @@ public class SmartInventory {
 
         public Builder type(InventoryType type) {
             this.type = type;
-
-            // TODO: Define default rows/columns for each different type
             return this;
         }
 
@@ -135,7 +133,8 @@ public class SmartInventory {
         }
 
         public SmartInventory build() {
-            // TODO: Check if mandatory things are set
+            if(this.provider == null)
+                throw new IllegalStateException("The provider of the SmartInventory.Builder must be set.");
 
             SmartInventory inv = new SmartInventory();
             inv.id = this.id;
