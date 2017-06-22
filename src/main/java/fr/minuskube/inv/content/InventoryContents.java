@@ -128,9 +128,6 @@ public interface InventoryContents {
         public InventoryContents fillRect(int fromRow, int fromColumn, int toRow, int toColumn, ClickableItem item) {
             // TODO: Handle IOOBE
 
-            System.out.println("From: " + fromRow + "/" + fromColumn);
-            System.out.println("To: " + toRow + "/" + toColumn);
-
             for(int row = fromRow; row <= toRow; row++) {
                 for(int column = fromColumn; column <= toColumn; column++) {
                     if(row != fromRow && row != toRow && column != fromColumn && column != toColumn)
