@@ -1,10 +1,10 @@
 package fr.minuskube.inv.content;
 
-public abstract class InventoryProvider {
+import org.bukkit.entity.Player;
 
-    protected Pagination pagination = new Pagination.Impl();
+public interface InventoryProvider {
 
-    public abstract void init(InventoryContents contents);
-    public abstract void update(InventoryContents contents);
+    void init(Player player, InventoryContents contents);
+    void update(Player player, InventoryContents contents);
 
 }

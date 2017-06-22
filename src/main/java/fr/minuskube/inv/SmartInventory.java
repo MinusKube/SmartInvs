@@ -22,24 +22,26 @@ public class SmartInventory {
     private boolean closeable;
 
     private InventoryProvider provider;
-    private InventoryContents contents;
     private SmartInventory parent;
 
     private List<InventoryListener<? extends Event>> listeners;
 
-    private SmartInventory() {
-        this.contents = new InventoryContents.Impl(this);
-    }
+    private SmartInventory() {}
 
-    public Inventory open(Player player) {
+    public Inventory open(Player player) { return open(player, 0); }
+    public Inventory open(Player player, int page) {
         InventoryManager manager = SmartInvsPlugin.manager();
 
-        provider.init(contents);
+        InventoryContents contents = new InventoryContents.Impl(this);
+        contents.pagination().page(page);
+
+        manager.setContents(player, contents);
+        provider.init(player, contents);
 
         InventoryOpener opener = manager.findOpener(type)
                 .orElseThrow(() -> new IllegalStateException("No opener found for the inventory type " + type.name()));
-
         Inventory handle = opener.open(this, player);
+
         manager.setInventory(player, this);
 
         return handle;
@@ -55,6 +57,8 @@ public class SmartInventory {
                         .accept(new InventoryCloseEvent(player.getOpenInventory())));
 
         manager.setInventory(player, null);
+        manager.setContents(player, null);
+
         player.closeInventory();
     }
 
@@ -66,7 +70,6 @@ public class SmartInventory {
     public boolean isCloseable() { return closeable; }
 
     public InventoryProvider getProvider() { return provider; }
-    public InventoryContents getContents() { return contents; }
     public Optional<SmartInventory> getParent() { return Optional.ofNullable(parent); }
 
     List<InventoryListener<? extends Event>> getListeners() { return listeners; }

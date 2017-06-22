@@ -20,38 +20,51 @@ public interface SlotIterator {
     int row();
     int column();
 
+    boolean ended();
+
 
     class Impl implements SlotIterator {
 
+        private InventoryContents contents;
         private SmartInventory inv;
+
         private Type type;
         private int row, column;
 
-        public Impl(SmartInventory inv, Type type, int startRow, int startColumn) {
+        public Impl(InventoryContents contents, SmartInventory inv,
+                    Type type, int startRow, int startColumn) {
+
+            this.contents = contents;
             this.inv = inv;
+
             this.type = type;
 
             this.row = startRow;
             this.column = startColumn;
         }
 
-        public Impl(SmartInventory inv, Type type) {
-            this(inv, type, 0, 0);
+        public Impl(InventoryContents contents, SmartInventory inv,
+                    Type type) {
+
+            this(contents, inv, type, 0, 0);
         }
 
         @Override
         public Optional<ClickableItem> get() {
-            return inv.getContents().get(row, column);
+            return contents.get(row, column);
         }
 
         @Override
         public SlotIterator set(ClickableItem item) {
-            inv.getContents().set(row, column, item);
+            contents.set(row, column, item);
             return this;
         }
 
         @Override
         public SlotIterator next() {
+            if(ended())
+                return this;
+
             switch(type) {
                 case HORIZONTAL:
                     column = ++column % inv.getColumns();
@@ -75,6 +88,12 @@ public interface SlotIterator {
 
         @Override
         public int column() { return column; }
+
+        @Override
+        public boolean ended() {
+            return row == inv.getRows() - 1
+                    && column == inv.getColumns() - 1;
+        }
 
     }
 

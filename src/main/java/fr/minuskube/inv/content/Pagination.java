@@ -19,6 +19,8 @@ public interface Pagination {
     Pagination next();
     Pagination last();
 
+    Pagination addToIterator(SlotIterator iterator);
+
     Pagination setItems(ClickableItem... items);
     Pagination setItemsPerPage(int itemsPerPage);
 
@@ -55,7 +57,7 @@ public interface Pagination {
 
         @Override
         public boolean isLast() {
-            return this.currentPage == (int) Math.ceil(this.items.length / (float) this.itemsPerPage);
+            return this.currentPage == this.items.length / this.itemsPerPage;
         }
 
         @Override
@@ -83,6 +85,14 @@ public interface Pagination {
         @Override
         public Pagination last() {
             this.currentPage = (int) Math.ceil(this.items.length / (float) this.itemsPerPage);
+            return this;
+        }
+
+        @Override
+        public Pagination addToIterator(SlotIterator iterator) {
+            for(ClickableItem item : getPageItems())
+                iterator.set(item).next();
+
             return this;
         }
 
