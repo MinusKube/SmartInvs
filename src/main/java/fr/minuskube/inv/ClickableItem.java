@@ -15,11 +15,11 @@ public class ClickableItem {
         this.consumer = consumer;
     }
 
-    public static ClickableItem fixedEmpty(ItemStack item) {
-        return fixed(item, e -> {});
+    public static ClickableItem empty(ItemStack item) {
+        return of(item, e -> {});
     }
 
-    public static ClickableItem fixed(ItemStack item, Consumer<InventoryClickEvent> consumer) {
+    public static ClickableItem of(ItemStack item, Consumer<InventoryClickEvent> consumer) {
         return new ClickableItem(false, item, consumer);
     }
 

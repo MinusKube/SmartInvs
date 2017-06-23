@@ -145,6 +145,8 @@ public class InventoryManager {
             if(!inventories.containsKey(p))
                 return;
 
+            SmartInventory inv = inventories.get(p);
+
             for(int slot : e.getRawSlots()) {
                 if(slot >= p.getOpenInventory().getTopInventory().getSize())
                     continue;
@@ -152,6 +154,10 @@ public class InventoryManager {
                 e.setCancelled(true);
                 break;
             }
+
+            inv.getListeners().stream()
+                    .filter(listener -> listener.getType() == InventoryDragEvent.class)
+                    .forEach(listener -> ((InventoryListener<InventoryDragEvent>) listener).accept(e));
         }
 
         @EventHandler(priority = EventPriority.LOW)
