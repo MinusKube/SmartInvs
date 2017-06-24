@@ -29,8 +29,8 @@ public interface Pagination {
 
         private int currentPage;
 
-        private ClickableItem[] items;
-        private int itemsPerPage;
+        private ClickableItem[] items = new ClickableItem[0];
+        private int itemsPerPage = 5;
 
         @Override
         public ClickableItem[] getPageItems() {

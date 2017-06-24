@@ -2,8 +2,11 @@ package fr.minuskube.inv.content;
 
 import fr.minuskube.inv.ClickableItem;
 import fr.minuskube.inv.SmartInventory;
+import javafx.util.Pair;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 public interface SlotIterator {
 
@@ -15,7 +18,10 @@ public interface SlotIterator {
     Optional<ClickableItem> get();
     SlotIterator set(ClickableItem item);
 
+    SlotIterator previous();
     SlotIterator next();
+
+    SlotIterator blacklist(int row, int column);
 
     int row();
     int column();
@@ -30,6 +36,8 @@ public interface SlotIterator {
 
         private Type type;
         private int row, column;
+
+        private Set<Pair<Integer, Integer>> blacklisted = new HashSet<>();
 
         public Impl(InventoryContents contents, SmartInventory inv,
                     Type type, int startRow, int startColumn) {
@@ -61,25 +69,64 @@ public interface SlotIterator {
         }
 
         @Override
+        public SlotIterator previous() {
+            if(row == 0 && column == 0)
+                return this;
+
+            do {
+                switch(type) {
+                    case HORIZONTAL:
+                        column--;
+
+                        if(column == 0) {
+                            column = inv.getColumns() - 1;
+                            row--;
+                        }
+                        break;
+                    case VERTICAL:
+                        row--;
+
+                        if(row == 0) {
+                            row = inv.getRows() - 1;
+                            column--;
+                        }
+                        break;
+                }
+            }
+            while((row != 0 || column != 0) && blacklisted.contains(new Pair<>(row, column)));
+
+            return this;
+        }
+
+        @Override
         public SlotIterator next() {
             if(ended())
                 return this;
 
-            switch(type) {
-                case HORIZONTAL:
-                    column = ++column % inv.getColumns();
+            do {
+                switch(type) {
+                    case HORIZONTAL:
+                        column = ++column % inv.getColumns();
 
-                    if(column == 0)
-                        row++;
-                    break;
-                case VERTICAL:
-                    row = ++row % inv.getRows();
+                        if(column == 0)
+                            row++;
+                        break;
+                    case VERTICAL:
+                        row = ++row % inv.getRows();
 
-                    if(row == 0)
-                        column++;
-                    break;
+                        if(row == 0)
+                            column++;
+                        break;
+                }
             }
+            while(!ended() && blacklisted.contains(new Pair<>(row, column)));
 
+            return this;
+        }
+
+        @Override
+        public SlotIterator blacklist(int row, int column) {
+            this.blacklisted.add(new Pair<>(row, column));
             return this;
         }
 
