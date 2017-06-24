@@ -50,3 +50,6 @@ dependencies {
 
 ## TODO
 * Add some Javadocs
+
+## Issues:
+If you have a problem with the API, or you want to request a feature, make an issue [here](https://github.com/MinusKube/SmartInvs/issues).
