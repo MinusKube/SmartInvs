@@ -5,7 +5,6 @@ import fr.minuskube.inv.opener.ChestInventoryOpener;
 import fr.minuskube.inv.opener.InventoryOpener;
 import fr.minuskube.inv.opener.SpecialInventoryOpener;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -139,15 +138,7 @@ public class InventoryManager {
                         .filter(listener -> listener.getType() == InventoryClickEvent.class)
                         .forEach(listener -> ((InventoryListener<InventoryClickEvent>) listener).accept(e));
 
-                contents.get(p).get(row, column).ifPresent(item -> {
-                    if(item.getItem() != null && !item.getItem().isSimilar(e.getCurrentItem()))
-                        return;
-                    if(item.getItem() == null
-                            && (e.getCurrentItem() != null && e.getCurrentItem().getType() != Material.AIR))
-                        return;
-
-                    item.run(e);
-                });
+                contents.get(p).get(row, column).ifPresent(item -> item.run(e));
             }
         }
 
