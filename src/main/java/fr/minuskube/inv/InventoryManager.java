@@ -3,6 +3,7 @@ package fr.minuskube.inv;
 import fr.minuskube.inv.content.InventoryContents;
 import fr.minuskube.inv.opener.ChestInventoryOpener;
 import fr.minuskube.inv.opener.InventoryOpener;
+import fr.minuskube.inv.opener.SpecialInventoryOpener;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -36,6 +37,7 @@ public class InventoryManager {
     private Map<Player, SmartInventory> inventories;
     private Map<Player, InventoryContents> contents;
 
+    private List<InventoryOpener> defaultOpeners;
     private List<InventoryOpener> openers;
 
     public InventoryManager(SmartInvsPlugin plugin) {
@@ -45,21 +47,32 @@ public class InventoryManager {
         this.inventories = new HashMap<>();
         this.contents = new HashMap<>();
 
+        this.defaultOpeners = Arrays.asList(
+                new ChestInventoryOpener(),
+                new SpecialInventoryOpener()
+        );
+
         this.openers = new ArrayList<>();
     }
 
     public void init() {
         pluginManager.registerEvents(new InvListener(), plugin);
 
-        registerOpeners(new ChestInventoryOpener());
-
         new InvTask().runTaskTimer(plugin, 1, 1);
     }
 
     public Optional<InventoryOpener> findOpener(InventoryType type) {
-        return this.openers.stream()
+        Optional<InventoryOpener> opInv = this.openers.stream()
                 .filter(opener -> opener.supports(type))
                 .findAny();
+
+        if(!opInv.isPresent()) {
+            opInv = this.defaultOpeners.stream()
+                    .filter(opener -> opener.supports(type))
+                    .findAny();
+        }
+
+        return opInv;
     }
 
     public void registerOpeners(InventoryOpener... openers) {

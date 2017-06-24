@@ -8,12 +8,27 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
-public class ChestInventoryOpener implements InventoryOpener {
+import java.util.Arrays;
+import java.util.List;
+
+public class SpecialInventoryOpener implements InventoryOpener {
+
+    private List<InventoryType> supported = Arrays.asList(
+            InventoryType.FURNACE,
+            InventoryType.WORKBENCH,
+            InventoryType.DISPENSER,
+            InventoryType.DROPPER,
+            InventoryType.ENCHANTING,
+            InventoryType.BREWING,
+            InventoryType.ANVIL,
+            InventoryType.BEACON,
+            InventoryType.HOPPER
+    );
 
     @Override
     public Inventory open(SmartInventory inv, Player player) {
         InventoryManager manager = SmartInvsPlugin.manager();
-        Inventory handle = Bukkit.createInventory(player, inv.getRows() * inv.getColumns(), inv.getTitle());
+        Inventory handle = Bukkit.createInventory(player, inv.getType(), inv.getTitle());
 
         fill(handle, manager.getContents(player).get());
 
@@ -23,7 +38,7 @@ public class ChestInventoryOpener implements InventoryOpener {
 
     @Override
     public boolean supports(InventoryType type) {
-        return type == InventoryType.CHEST || type == InventoryType.ENDER_CHEST;
+        return supported.contains(type);
     }
 
 }
