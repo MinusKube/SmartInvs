@@ -22,32 +22,6 @@ To use the SmartInvs API, put it in the `plugins` folder of your server, add it 
 
 You can download the latest version on the [Releases page](https://github.com/MinusKube/SmartInvs/releases) on Github.
 
-If you use **Maven**, add this to your pom.xml:
-```xml
-<repository>
-    <id>jcenter</id>
-    <name>jcenter-bintray</name>
-    <url>http://jcenter.bintray.com</url>
-</repository>
-
-<dependency>
-    <groupId>fr.minuskube.inv</groupId>
-    <artifactId>smart-invs</artifactId>
-    <version>VERSION</version>
-</dependency>
-```
-
-If you use **Gradle**, add this to your build.gradle:
-```gradle
-repositories {
-    jcenter()
-}
-
-dependencies {
-    compile 'fr.minuskube.inv:smart-invs:VERSION'
-}
-```
-
 ## TODO
 * Add some Javadocs
 
