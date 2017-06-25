@@ -1,5 +1,7 @@
 # SmartInvs
-Advanced Inventory API for your Minecraft Bukkit plugins.  
+Advanced Inventory API for your Minecraft Bukkit plugins.
+
+*Tested Minecraft versions: 1.7, 1.8, 1.9, 1.10, 1.11, 1.12*  
 **You must use this as a Plugin.**
 
 ## Features
