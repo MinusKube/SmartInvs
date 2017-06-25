@@ -1,3 +1,5 @@
+![SmartInvs Logo](http://minuskube.fr/img/smart-invs/smart_invs.png)
+
 # SmartInvs
 Advanced Inventory API for your Minecraft Bukkit plugins.
 
@@ -27,5 +29,5 @@ You can download the latest version on the [Releases page](https://github.com/Mi
 ## TODO
 * Add some Javadocs
 
-## Issues:
+## Issues
 If you have a problem with the API, or you want to request a feature, make an issue [here](https://github.com/MinusKube/SmartInvs/issues).
