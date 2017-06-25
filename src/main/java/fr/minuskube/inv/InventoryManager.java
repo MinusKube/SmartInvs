@@ -94,7 +94,10 @@ public class InventoryManager {
     }
 
     protected void setInventory(Player p, SmartInventory inv) {
-        this.inventories.put(p, inv);
+        if(inv == null)
+            this.inventories.remove(p);
+        else
+            this.inventories.put(p, inv);
     }
 
     public Optional<InventoryContents> getContents(Player p) {
