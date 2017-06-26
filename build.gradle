@@ -2,6 +2,8 @@ group 'fr.minuskube.inv'
 version '1.0.1'
 
 apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'signing'
 
 sourceCompatibility = 1.8
 
@@ -12,6 +14,18 @@ sourceSets {
     test.compileClasspath += configurations.provided
     test.runtimeClasspath += configurations.provided
 }
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts { archives javadocJar, sourcesJar }
 
 repositories {
     mavenCentral()
@@ -24,6 +38,53 @@ dependencies {
     provided 'org.spigotmc:spigot-api:1.11.2-R0.1-SNAPSHOT'
 }
 
-jar {
-    archiveName = 'SmartInvs-' + project.version + '.jar'
+jar { archiveName = 'SmartInvs-' + project.version + '.jar' }
+
+signing {
+    sign configurations.archives
+}
+
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name 'SmartInvs'
+                packaging 'jar'
+                description 'Advanced Inventory API for your Minecraft Bukkit plugins.'
+                url 'https://github.com/MinusKube/SmartInvs'
+
+                scm {
+                    connection 'scm:git:git://github.com/MinusKube/SmartInvs.git'
+                    developerConnection 'scm:git:ssh://github.com:MinusKube/SmartInvs.git'
+                    url 'http://github.com/MinusKube/SmartInvs/tree/master'
+                }
+
+                licenses {
+                    license {
+                        name 'GNU General Public License v3.0'
+                        url 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'minuskube'
+                        name 'MinusKube'
+                        email 'minuskube@gmail.com'
+                    }
+                }
+            }
+        }
+    }
 }
