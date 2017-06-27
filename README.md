@@ -30,9 +30,7 @@ You can also use a build system:
 ### Gradle
 ```gradle
 repositories {
-    maven {
-        url 'https://oss.sonatype.org/content/repositories/releases'
-    }
+    mavenCentral()
 }
 
 dependencies {
@@ -42,11 +40,6 @@ dependencies {
 
 ### Maven
 ```xml
-<repository>
-  <id>sonatype-releases</id>
-  <url>https://oss.sonatype.org/content/repositories/releases</url>
-</repository>
-
 <dependency>
   <groupId>fr.minuskube.inv</groupId>
   <artifactId>smart-invs</artifactId>
