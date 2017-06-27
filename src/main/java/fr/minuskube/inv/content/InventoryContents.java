@@ -32,6 +32,8 @@ public interface InventoryContents {
                                int toRow, int toColumn, ClickableItem item);
 
     <T> T property(String name);
+    <T> T property(String name, T def);
+
     InventoryContents setProperty(String name, Object value);
 
     class Impl implements InventoryContents {
@@ -150,6 +152,12 @@ public interface InventoryContents {
         @Override
         public <T> T property(String name) {
             return (T) properties.get(name);
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public <T> T property(String name, T def) {
+            return properties.containsKey(name) ? (T) properties.get(name) : def;
         }
 
         @Override
