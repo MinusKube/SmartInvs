@@ -31,6 +31,8 @@ public interface InventoryContents {
     InventoryContents fillRect(int fromRow, int fromColumn,
                                int toRow, int toColumn, ClickableItem item);
 
+    <T> T property(String name);
+    InventoryContents setProperty(String name, Object value);
 
     class Impl implements InventoryContents {
 
@@ -39,6 +41,7 @@ public interface InventoryContents {
 
         private Pagination pagination = new Pagination.Impl();
         private Map<String, SlotIterator> iterators = new HashMap<>();
+        private Map<String, Object> properties = new HashMap<>();
 
         public Impl(SmartInventory inv) {
             this.inv = inv;
@@ -140,6 +143,18 @@ public interface InventoryContents {
                 }
             }
 
+            return this;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public <T> T property(String name) {
+            return (T) properties.get(name);
+        }
+
+        @Override
+        public InventoryContents setProperty(String name, Object value) {
+            properties.put(name, value);
             return this;
         }
 

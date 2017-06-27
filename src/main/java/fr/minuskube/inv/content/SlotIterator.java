@@ -24,7 +24,10 @@ public interface SlotIterator {
     SlotIterator blacklist(int row, int column);
 
     int row();
+    SlotIterator row(int row);
+
     int column();
+    SlotIterator column(int column);
 
     boolean ended();
 
@@ -134,7 +137,19 @@ public interface SlotIterator {
         public int row() { return row; }
 
         @Override
+        public SlotIterator row(int row) {
+            this.row = row;
+            return this;
+        }
+
+        @Override
         public int column() { return column; }
+
+        @Override
+        public SlotIterator column(int column) {
+            this.column = column;
+            return this;
+        }
 
         @Override
         public boolean ended() {
