@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings("unchecked")
 public class SmartInventory {
 
     private String id;
@@ -31,6 +32,17 @@ public class SmartInventory {
     public Inventory open(Player player) { return open(player, 0); }
     public Inventory open(Player player, int page) {
         InventoryManager manager = SmartInvsPlugin.manager();
+
+        Optional<SmartInventory> oldInv = manager.getInventory(player);
+
+        oldInv.ifPresent(inv -> {
+            inv.getListeners().stream()
+                    .filter(listener -> listener.getType() == InventoryCloseEvent.class)
+                    .forEach(listener -> ((InventoryListener<InventoryCloseEvent>) listener)
+                            .accept(new InventoryCloseEvent(player.getOpenInventory())));
+
+            manager.setInventory(player, null);
+        });
 
         InventoryContents contents = new InventoryContents.Impl(this);
         contents.pagination().page(page);
@@ -56,9 +68,9 @@ public class SmartInventory {
                 .forEach(listener -> ((InventoryListener<InventoryCloseEvent>) listener)
                         .accept(new InventoryCloseEvent(player.getOpenInventory())));
 
+        manager.setInventory(player, null);
         player.closeInventory();
 
-        manager.setInventory(player, null);
         manager.setContents(player, null);
     }
 
