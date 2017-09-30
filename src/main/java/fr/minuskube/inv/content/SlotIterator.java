@@ -2,7 +2,7 @@ package fr.minuskube.inv.content;
 
 import fr.minuskube.inv.ClickableItem;
 import fr.minuskube.inv.SmartInventory;
-import javafx.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -96,7 +96,7 @@ public interface SlotIterator {
                         break;
                 }
             }
-            while((row != 0 || column != 0) && blacklisted.contains(new Pair<>(row, column)));
+            while((row != 0 || column != 0) && blacklisted.contains(Pair.of(row, column)));
 
             return this;
         }
@@ -122,14 +122,14 @@ public interface SlotIterator {
                         break;
                 }
             }
-            while(!ended() && blacklisted.contains(new Pair<>(row, column)));
+            while(!ended() && blacklisted.contains(Pair.of(row, column)));
 
             return this;
         }
 
         @Override
         public SlotIterator blacklist(int row, int column) {
-            this.blacklisted.add(new Pair<>(row, column));
+            this.blacklisted.add(Pair.of(row, column));
             return this;
         }
 
