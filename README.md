@@ -49,6 +49,7 @@ dependencies {
 
 ## TODO
 * Add some Javadocs
+* Allow to use the API without having to use it as a plugin
 
 ## Issues
 If you have a problem with the API, or you want to request a feature, make an issue [here](https://github.com/MinusKube/SmartInvs/issues).
