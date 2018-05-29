@@ -23,6 +23,7 @@ public interface InventoryContents {
 
     Optional<ClickableItem> get(int row, int column);
     InventoryContents set(int row, int column, ClickableItem item);
+    InventoryContents add(ClickableItem item);
 
     InventoryContents fill(ClickableItem item);
     InventoryContents fillRow(int row, ClickableItem item);
@@ -97,6 +98,20 @@ public interface InventoryContents {
 
             contents[row][column] = item;
             update(row, column, item != null ? item.getItem() : null);
+            return this;
+        }
+
+        @Override
+        public InventoryContents add(ClickableItem item) {
+            for(int column = 0; column < contents[0].length; column++) {
+                for(int row = 0; row < contents.length; row++) {
+                    if(contents[row][column] == null) {
+                        set(row, column, item);
+                        return this;
+                    }
+                }
+            }
+
             return this;
         }
 
