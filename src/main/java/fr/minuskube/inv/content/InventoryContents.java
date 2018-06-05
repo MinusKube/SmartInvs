@@ -3,7 +3,6 @@ package fr.minuskube.inv.content;
 import fr.minuskube.inv.ClickableItem;
 import fr.minuskube.inv.InventoryManager;
 import fr.minuskube.inv.SmartInventory;
-import fr.minuskube.inv.SmartInvsPlugin;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -182,7 +181,7 @@ public interface InventoryContents {
         }
 
         private void update(int row, int column, ItemStack item) {
-            InventoryManager manager = SmartInvsPlugin.manager();
+            InventoryManager manager = inv.getManager();
 
             manager.getOpenedPlayers(inv)
                     .forEach(p -> p.getOpenInventory().getTopInventory().setItem(9 * row + column, item));

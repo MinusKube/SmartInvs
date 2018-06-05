@@ -4,7 +4,7 @@
 Advanced Inventory API for your Minecraft Bukkit plugins.
 
 *Tested Minecraft versions: 1.7, 1.8, 1.9, 1.10, 1.11, 1.12*  
-**You must use this as a Plugin.**
+**You can use this as a Plugin, or use it as a library** (see [the docs](https://minuskube.gitbooks.io/smartinvs/))
 
 ## Features
 * Inventories of any type (workbench, chest, furnace, ...)
@@ -22,7 +22,9 @@ Advanced Inventory API for your Minecraft Bukkit plugins.
 [Click here to read the docs on Gitbooks](https://minuskube.gitbooks.io/smartinvs/)
 
 ## Usage
-To use the SmartInvs API, put it in the `plugins` folder of your server, add it to your dependencies in your plugin.yml (e.g. `depend: [SmartInvs]`) and add it to the dependencies in your IDE.
+To use the SmartInvs API, you have 2 choices:
+* **(RECOMMENDED)** Put it in the `plugins` folder of your server, add it to your dependencies in your plugin.yml (e.g. `depend: [SmartInvs]`) and add it to the dependencies in your IDE.
+* Put it in the jar of your plugin, and when you build a SmartInventory, do a `.manager(invManager)` with a `invManager` you've created somewhere (more info in [the docs](https://minuskube.gitbooks.io/smartinvs/)).
 
 You can download the latest version on the [Releases page](https://github.com/MinusKube/SmartInvs/releases) on Github.
 
@@ -49,7 +51,6 @@ dependencies {
 
 ## TODO
 * Add some Javadocs
-* Allow to use the API without having to use it as a plugin
 
 ## Issues
 If you have a problem with the API, or you want to request a feature, make an issue [here](https://github.com/MinusKube/SmartInvs/issues).

@@ -18,6 +18,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ import java.util.Optional;
 
 public class InventoryManager {
 
-    private SmartInvsPlugin plugin;
+    private JavaPlugin plugin;
     private PluginManager pluginManager;
 
     private Map<Player, SmartInventory> inventories;
@@ -39,7 +40,7 @@ public class InventoryManager {
     private List<InventoryOpener> defaultOpeners;
     private List<InventoryOpener> openers;
 
-    public InventoryManager(SmartInvsPlugin plugin) {
+    public InventoryManager(JavaPlugin plugin) {
         this.plugin = plugin;
         this.pluginManager = Bukkit.getPluginManager();
 
