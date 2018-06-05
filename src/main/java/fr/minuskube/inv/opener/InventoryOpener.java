@@ -9,11 +9,6 @@ import org.bukkit.inventory.Inventory;
 
 public interface InventoryOpener {
 
-    enum Priority {
-        LOWEST, LOW, NORMAL, HIGH, HIGHEST
-    }
-
-
     Inventory open(SmartInventory inv, Player player);
     boolean supports(InventoryType type);
 
