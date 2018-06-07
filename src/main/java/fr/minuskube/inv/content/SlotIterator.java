@@ -31,6 +31,9 @@ public interface SlotIterator {
 
     boolean ended();
 
+    boolean allowOverride();
+    SlotIterator allowOverride(boolean override);
+
 
     class Impl implements SlotIterator {
 
@@ -39,6 +42,7 @@ public interface SlotIterator {
 
         private Type type;
         private int row, column;
+        private boolean allowOverride;
 
         private Set<Pair<Integer, Integer>> blacklisted = new HashSet<>();
 
@@ -96,7 +100,8 @@ public interface SlotIterator {
                         break;
                 }
             }
-            while((row != 0 || column != 0) && blacklisted.contains(Pair.of(row, column)));
+            while((row != 0 || column != 0) && blacklisted.contains(Pair.of(row, column))
+                    && (allowOverride || !this.get().isPresent()));
 
             return this;
         }
@@ -122,7 +127,8 @@ public interface SlotIterator {
                         break;
                 }
             }
-            while(!ended() && blacklisted.contains(Pair.of(row, column)));
+            while(!ended() && blacklisted.contains(Pair.of(row, column))
+                    && (allowOverride || !this.get().isPresent()));
 
             return this;
         }
@@ -157,6 +163,14 @@ public interface SlotIterator {
                     && column == inv.getColumns() - 1;
         }
 
+        @Override
+        public boolean allowOverride() { return allowOverride; }
+
+        @Override
+        public SlotIterator allowOverride(boolean override) {
+            this.allowOverride = override;
+            return this;
+        }
     }
 
 }
