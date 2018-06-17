@@ -2,7 +2,6 @@ package fr.minuskube.inv.content;
 
 import fr.minuskube.inv.ClickableItem;
 import fr.minuskube.inv.SmartInventory;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -22,6 +21,7 @@ public interface SlotIterator {
     SlotIterator next();
 
     SlotIterator blacklist(int row, int column);
+    SlotIterator blacklist(SlotPos slotPos);
 
     int row();
     SlotIterator row(int row);
@@ -31,7 +31,7 @@ public interface SlotIterator {
 
     boolean ended();
 
-    boolean allowOverride();
+    boolean doesAllowOverride();
     SlotIterator allowOverride(boolean override);
 
 
@@ -44,7 +44,7 @@ public interface SlotIterator {
         private int row, column;
         private boolean allowOverride;
 
-        private Set<Pair<Integer, Integer>> blacklisted = new HashSet<>();
+        private Set<SlotPos> blacklisted = new HashSet<>();
 
         public Impl(InventoryContents contents, SmartInventory inv,
                     Type type, int startRow, int startColumn) {
@@ -100,8 +100,8 @@ public interface SlotIterator {
                         break;
                 }
             }
-            while((row != 0 || column != 0) && blacklisted.contains(Pair.of(row, column))
-                    && (allowOverride || !this.get().isPresent()));
+            while((row != 0 || column != 0) && (blacklisted.contains(SlotPos.of(row, column))
+                    || (!allowOverride && this.get().isPresent())));
 
             return this;
         }
@@ -127,16 +127,21 @@ public interface SlotIterator {
                         break;
                 }
             }
-            while(!ended() && blacklisted.contains(Pair.of(row, column))
-                    && (allowOverride || !this.get().isPresent()));
+            while(!ended() && (blacklisted.contains(SlotPos.of(row, column))
+                    || (!allowOverride && this.get().isPresent())));
 
             return this;
         }
 
         @Override
         public SlotIterator blacklist(int row, int column) {
-            this.blacklisted.add(Pair.of(row, column));
+            this.blacklisted.add(SlotPos.of(row, column));
             return this;
+        }
+
+        @Override
+        public SlotIterator blacklist(SlotPos slotPos) {
+            return blacklist(slotPos.getRow(), slotPos.getColumn());
         }
 
         @Override
@@ -164,7 +169,7 @@ public interface SlotIterator {
         }
 
         @Override
-        public boolean allowOverride() { return allowOverride; }
+        public boolean doesAllowOverride() { return allowOverride; }
 
         @Override
         public SlotIterator allowOverride(boolean override) {

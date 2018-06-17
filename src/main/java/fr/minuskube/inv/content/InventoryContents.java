@@ -3,6 +3,7 @@ package fr.minuskube.inv.content;
 import fr.minuskube.inv.ClickableItem;
 import fr.minuskube.inv.InventoryManager;
 import fr.minuskube.inv.SmartInventory;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -15,21 +16,33 @@ public interface InventoryContents {
     Pagination pagination();
 
     Optional<SlotIterator> iterator(String id);
+
     SlotIterator newIterator(String id, SlotIterator.Type type, int startRow, int startColumn);
     SlotIterator newIterator(SlotIterator.Type type, int startRow, int startColumn);
 
+    SlotIterator newIterator(String id, SlotIterator.Type type, SlotPos startPos);
+    SlotIterator newIterator(SlotIterator.Type type, SlotPos startPos);
+
     ClickableItem[][] all();
 
+    Optional<SlotPos> firstEmpty();
+
     Optional<ClickableItem> get(int row, int column);
+    Optional<ClickableItem> get(SlotPos slotPos);
+
     InventoryContents set(int row, int column, ClickableItem item);
+    InventoryContents set(SlotPos slotPos, ClickableItem item);
+
     InventoryContents add(ClickableItem item);
 
     InventoryContents fill(ClickableItem item);
     InventoryContents fillRow(int row, ClickableItem item);
     InventoryContents fillColumn(int column, ClickableItem item);
     InventoryContents fillBorders(ClickableItem item);
+
     InventoryContents fillRect(int fromRow, int fromColumn,
                                int toRow, int toColumn, ClickableItem item);
+    InventoryContents fillRect(SlotPos fromPos, SlotPos toPos, ClickableItem item);
 
     <T> T property(String name);
     <T> T property(String name, T def);
@@ -71,12 +84,34 @@ public interface InventoryContents {
         }
 
         @Override
+        public SlotIterator newIterator(String id, SlotIterator.Type type, SlotPos startPos) {
+            return newIterator(id, type, startPos.getRow(), startPos.getColumn());
+        }
+
+        @Override
         public SlotIterator newIterator(SlotIterator.Type type, int startRow, int startColumn) {
             return new SlotIterator.Impl(this, inv, type, startRow, startColumn);
         }
 
         @Override
+        public SlotIterator newIterator(SlotIterator.Type type, SlotPos startPos) {
+            return newIterator(type, startPos.getRow(), startPos.getColumn());
+        }
+
+        @Override
         public ClickableItem[][] all() { return contents; }
+
+        @Override
+        public Optional<SlotPos> firstEmpty() {
+            for(int column = 0; column < contents[0].length; column++) {
+                for (int row = 0; row < contents.length; row++) {
+                    if(!this.get(row, column).isPresent())
+                        return Optional.of(new SlotPos(row, column));
+                }
+            }
+
+            return Optional.empty();
+        }
 
         @Override
         public Optional<ClickableItem> get(int row, int column) {
@@ -89,6 +124,11 @@ public interface InventoryContents {
         }
 
         @Override
+        public Optional<ClickableItem> get(SlotPos slotPos) {
+            return get(slotPos.getRow(), slotPos.getColumn());
+        }
+
+        @Override
         public InventoryContents set(int row, int column, ClickableItem item) {
             if(row >= contents.length)
                 return this;
@@ -98,6 +138,11 @@ public interface InventoryContents {
             contents[row][column] = item;
             update(row, column, item != null ? item.getItem() : null);
             return this;
+        }
+
+        @Override
+        public InventoryContents set(SlotPos slotPos, ClickableItem item) {
+            return set(slotPos.getRow(), slotPos.getColumn(), item);
         }
 
         @Override
@@ -162,6 +207,11 @@ public interface InventoryContents {
             return this;
         }
 
+        @Override
+        public InventoryContents fillRect(SlotPos fromPos, SlotPos toPos, ClickableItem item) {
+            return fillRect(fromPos.getRow(), fromPos.getColumn(), toPos.getRow(), toPos.getColumn(), item);
+        }
+
         @SuppressWarnings("unchecked")
         @Override
         public <T> T property(String name) {
@@ -184,7 +234,10 @@ public interface InventoryContents {
             InventoryManager manager = inv.getManager();
 
             manager.getOpenedPlayers(inv)
-                    .forEach(p -> p.getOpenInventory().getTopInventory().setItem(9 * row + column, item));
+                    .forEach(player -> {
+                        Inventory topInventory = player.getOpenInventory().getTopInventory();
+                        topInventory.setItem(inv.getColumns() * row + column, item);
+                    });
         }
 
     }
