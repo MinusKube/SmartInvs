@@ -7,14 +7,6 @@ apply plugin: 'signing'
 
 sourceCompatibility = 1.8
 
-configurations { provided }
-
-sourceSets {
-    main.compileClasspath += configurations.provided
-    test.compileClasspath += configurations.provided
-    test.runtimeClasspath += configurations.provided
-}
-
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
     from javadoc
@@ -35,8 +27,8 @@ repositories {
 }
 
 dependencies {
-    provided 'org.spigotmc:spigot-api:1.11.2-R0.1-SNAPSHOT'
-    provided 'org.apache.commons:commons-lang3:3.5'
+    compileOnly 'org.spigotmc:spigot-api:1.11.2-R0.1-SNAPSHOT'
+    compileOnly 'org.apache.commons:commons-lang3:3.5'
 }
 
 jar { archiveName = 'SmartInvs-' + project.version + '.jar' }
