@@ -22,9 +22,9 @@ Advanced Inventory API for your Minecraft Bukkit plugins.
 [Click here to read the docs on Gitbooks](https://minuskube.gitbooks.io/smartinvs/)
 
 ## Usage
-To use the SmartInvs API, you have 2 choices:
-* **(RECOMMENDED)** Put it in the `plugins` folder of your server, add it to your dependencies in your plugin.yml (e.g. `depend: [SmartInvs]`) and add it to the dependencies in your IDE.
-* Put it in the jar of your plugin, and when you build a SmartInventory, do a `.manager(invManager)` with a `invManager` you've created somewhere (more info in [the docs](https://minuskube.gitbooks.io/smartinvs/)).
+To use the SmartInvs API, either:
+- Put it in the `plugins` folder of your server, add it to your dependencies in your plugin.yml (e.g. `depend: [SmartInvs]`) and add it to the dependencies in your IDE.
+- Put it inside your plugin jar, initialize an `InventoryManager` in your plugin (don't forget to call the `init()` method), and add a `.manager(invManager)` to your SmartInventory Builders.
 
 You can download the latest version on the [Releases page](https://github.com/MinusKube/SmartInvs/releases) on Github.
 
