@@ -10,7 +10,7 @@ public class ClickableItem {
     private ItemStack item;
     private Consumer<InventoryClickEvent> consumer;
 
-    private ClickableItem(boolean movable, ItemStack item, Consumer<InventoryClickEvent> consumer) {
+    private ClickableItem(ItemStack item, Consumer<InventoryClickEvent> consumer) {
         this.item = item;
         this.consumer = consumer;
     }
@@ -20,7 +20,7 @@ public class ClickableItem {
     }
 
     public static ClickableItem of(ItemStack item, Consumer<InventoryClickEvent> consumer) {
-        return new ClickableItem(false, item, consumer);
+        return new ClickableItem(item, consumer);
     }
 
     public void run(InventoryClickEvent e) { consumer.accept(e); }
