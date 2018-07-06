@@ -10,6 +10,7 @@ public class ClickableItem {
     private ItemStack item;
     private Consumer<InventoryClickEvent> consumer;
 
+    @Deprecated
     private ClickableItem(ItemStack item, Consumer<InventoryClickEvent> consumer) {
         this.item = item;
         this.consumer = consumer;
@@ -19,6 +20,7 @@ public class ClickableItem {
         return of(item, e -> {});
     }
 
+    @Deprecated
     public static ClickableItem of(ItemStack item, Consumer<InventoryClickEvent> consumer) {
         return new ClickableItem(item, consumer);
     }
