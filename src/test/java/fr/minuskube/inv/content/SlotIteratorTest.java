@@ -4,8 +4,7 @@ import fr.minuskube.inv.InventoryManager;
 import fr.minuskube.inv.SmartInventory;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -25,7 +24,37 @@ public class SlotIteratorTest {
 
     @Test
     public void testPreviousNext() {
-        SlotIterator iterator = this.createIterator(3, 9);
+        SlotIterator iterator = this.createIterator(5, 5);
+
+        assertEquals(0, iterator.row());
+        assertEquals(0, iterator.column());
+
+        iterator.previous();
+
+        assertEquals(0, iterator.row());
+        assertEquals(0, iterator.column());
+
+        iterator.next();
+
+        assertEquals(0, iterator.row());
+        assertEquals(1, iterator.column());
+
+        for(int i = 0; i < 4; i++)
+            iterator.next();
+
+        assertEquals(1, iterator.row());
+        assertEquals(0, iterator.column());
+
+        for(int i = 0; i < 4 * 5 - 1; i++)
+            iterator.next();
+
+        assertEquals(4, iterator.row());
+        assertEquals(4, iterator.column());
+
+        iterator.previous();
+
+        assertEquals(4, iterator.row());
+        assertEquals(3, iterator.column());
     }
 
     @Test
@@ -33,6 +62,11 @@ public class SlotIteratorTest {
         SlotIterator iterator = this.createIterator(3, 9);
 
         assertFalse("The started() method returns true before the start", iterator.started());
+        assertFalse("The ended() method returns true before the end", iterator.ended());
+
+        iterator.previous();
+
+        assertTrue("The started() method returns false after previous()", iterator.started());
         assertFalse("The ended() method returns true before the end", iterator.ended());
 
         iterator.next();
