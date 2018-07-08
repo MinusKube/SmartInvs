@@ -81,8 +81,10 @@ public interface SlotIterator {
 
         @Override
         public SlotIterator previous() {
-            if(row == 0 && column == 0)
+            if(row == 0 && column == 0) {
+                this.started = true;
                 return this;
+            }
 
             do {
                 if(!this.started) {
@@ -116,8 +118,10 @@ public interface SlotIterator {
 
         @Override
         public SlotIterator next() {
-            if(ended())
+            if(ended()) {
+                this.started = true;
                 return this;
+            }
 
             do {
                 if(!this.started) {
