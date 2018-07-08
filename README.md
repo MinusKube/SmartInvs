@@ -36,7 +36,7 @@ repositories {
 }
 
 dependencies {
-    compile 'fr.minuskube.inv:smart-invs:1.2.1'
+    compile 'fr.minuskube.inv:smart-invs:1.2.2'
 }
 ```
 
@@ -45,7 +45,7 @@ dependencies {
 <dependency>
   <groupId>fr.minuskube.inv</groupId>
   <artifactId>smart-invs</artifactId>
-  <version>1.2.1</version>
+  <version>1.2.2</version>
 </dependency>
 ```
 
