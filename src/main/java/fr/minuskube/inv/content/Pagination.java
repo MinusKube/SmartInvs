@@ -90,8 +90,12 @@ public interface Pagination {
 
         @Override
         public Pagination addToIterator(SlotIterator iterator) {
-            for(ClickableItem item : getPageItems())
-                iterator.set(item).next();
+            for(ClickableItem item : getPageItems()) {
+                iterator.next().set(item);
+
+                if(iterator.ended())
+                    break;
+            }
 
             return this;
         }
