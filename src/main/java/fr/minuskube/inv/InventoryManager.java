@@ -109,7 +109,8 @@ public class InventoryManager {
                 return;
 
             if(e.getAction() == InventoryAction.COLLECT_TO_CURSOR ||
-                    e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                    e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY ||
+                    e.getAction() == InventoryAction.NOTHING) {
 
                 e.setCancelled(true);
                 return;
