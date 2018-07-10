@@ -103,8 +103,8 @@ public interface InventoryContents {
 
         @Override
         public Optional<SlotPos> firstEmpty() {
-            for(int column = 0; column < contents[0].length; column++) {
-                for (int row = 0; row < contents.length; row++) {
+            for (int row = 0; row < contents.length; row++) {
+                for(int column = 0; column < contents[0].length; column++) {
                     if(!this.get(row, column).isPresent())
                         return Optional.of(new SlotPos(row, column));
                 }
@@ -147,8 +147,8 @@ public interface InventoryContents {
 
         @Override
         public InventoryContents add(ClickableItem item) {
-            for(int column = 0; column < contents[0].length; column++) {
-                for(int row = 0; row < contents.length; row++) {
+            for(int row = 0; row < contents.length; row++) {
+                for(int column = 0; column < contents[0].length; column++) {
                     if(contents[row][column] == null) {
                         set(row, column, item);
                         return this;

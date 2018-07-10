@@ -5,8 +5,7 @@ import fr.minuskube.inv.SmartInventory;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class SlotIteratorTest {
 

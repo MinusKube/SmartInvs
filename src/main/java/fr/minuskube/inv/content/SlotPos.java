@@ -36,6 +36,14 @@ public class SlotPos {
                 .toHashCode();
     }
 
+    @Override
+    public String toString() {
+        return "SlotPos{" +
+                "row=" + row +
+                ", column=" + column +
+                '}';
+    }
+
     public int getRow() { return row; }
     public int getColumn() { return column; }
 
