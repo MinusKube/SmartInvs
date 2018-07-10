@@ -84,7 +84,7 @@ public interface Pagination {
 
         @Override
         public Pagination last() {
-            this.currentPage = (int) Math.ceil(this.items.length / (float) this.itemsPerPage);
+            this.currentPage = this.items.length / this.itemsPerPage;
             return this;
         }
 
