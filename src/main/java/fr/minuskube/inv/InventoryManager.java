@@ -95,7 +95,10 @@ public class InventoryManager {
     }
 
     protected void setContents(Player p, InventoryContents contents) {
-        this.contents.put(p, contents);
+        if(contents == null)
+            this.contents.remove(p);
+        else
+            this.contents.put(p, contents);
     }
 
     @SuppressWarnings("unchecked")
@@ -191,7 +194,9 @@ public class InventoryManager {
 
             if(inv.isCloseable()) {
                 e.getInventory().clear();
+
                 inventories.remove(p);
+                contents.remove(p);
             }
             else
                 Bukkit.getScheduler().runTask(plugin, () -> p.openInventory(e.getInventory()));
@@ -211,6 +216,7 @@ public class InventoryManager {
                     .forEach(listener -> ((InventoryListener<PlayerQuitEvent>) listener).accept(e));
 
             inventories.remove(p);
+            contents.remove(p);
         }
 
         @EventHandler(priority = EventPriority.LOW)
@@ -224,6 +230,9 @@ public class InventoryManager {
 
                 inv.close(entry.getKey());
             });
+
+            inventories.clear();
+            contents.clear();
         }
 
     }
