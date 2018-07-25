@@ -8,6 +8,8 @@ import java.util.Map;
 
 public class Pattern<T> {
 
+    private T defaultValue;
+
     private String[] lines;
     private Map<Character, T> mapping = new HashMap<>();
 
@@ -32,13 +34,16 @@ public class Pattern<T> {
 
     public T getObject(SlotPos slot) { return this.getObject(slot.getRow(), slot.getColumn()); }
     public T getObject(int row, int column) {
-        Preconditions.checkArgument(row >= 0 && row < lines.length,
+        Preconditions.checkArgument(row >= 0 && row < this.lines.length,
                 "The row must be between 0 and the row count");
-        Preconditions.checkArgument(column >= 0 && column < lines[row].length(),
+        Preconditions.checkArgument(column >= 0 && column < this.lines[row].length(),
                 "The column must be between 0 and the column count");
 
-        return this.mapping.get(this.lines[row].charAt(column));
+        return this.mapping.getOrDefault(this.lines[row].charAt(column), this.defaultValue);
     }
+
+    public T getDefault() { return this.defaultValue; }
+    public void setDefault(T defaultValue) { this.defaultValue = defaultValue; }
 
     public int getRowCount() { return this.lines.length; }
     public int getColumnCount() { return this.lines[0].length(); }
