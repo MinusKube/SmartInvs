@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    compile 'org.spigotmc:spigot-api:1.11.2-R0.1-SNAPSHOT'
+    compile 'org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT'
     compile 'org.apache.commons:commons-lang3:3.5'
 }
 
