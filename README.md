@@ -3,7 +3,7 @@
 # SmartInvs
 Advanced Inventory API for your Minecraft Bukkit plugins.
 
-*Tested Minecraft versions: 1.7, 1.8, 1.9, 1.10, 1.11, 1.12*  
+*Tested Minecraft versions: 1.7, 1.8, 1.9, 1.10, 1.11, 1.12, 1.13*  
 **You can use this as a Plugin, or use it as a library** (see [the docs](https://minuskube.gitbooks.io/smartinvs/))
 
 ## Features
