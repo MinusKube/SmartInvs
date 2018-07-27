@@ -3,6 +3,7 @@ package fr.minuskube.inv.content;
 import fr.minuskube.inv.ClickableItem;
 import fr.minuskube.inv.InventoryManager;
 import fr.minuskube.inv.SmartInventory;
+import fr.minuskube.inv.util.Pattern;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -43,6 +44,10 @@ public interface InventoryContents {
     InventoryContents fillRect(int fromRow, int fromColumn,
                                int toRow, int toColumn, ClickableItem item);
     InventoryContents fillRect(SlotPos fromPos, SlotPos toPos, ClickableItem item);
+
+    InventoryContents fillPattern(Pattern<ClickableItem> pattern);
+    InventoryContents fillPattern(Pattern<ClickableItem> pattern, int startRow, int startColumn);
+    InventoryContents fillPattern(Pattern<ClickableItem> pattern, SlotPos startPos);
 
     <T> T property(String name);
     <T> T property(String name, T def);
@@ -210,6 +215,29 @@ public interface InventoryContents {
         @Override
         public InventoryContents fillRect(SlotPos fromPos, SlotPos toPos, ClickableItem item) {
             return fillRect(fromPos.getRow(), fromPos.getColumn(), toPos.getRow(), toPos.getColumn(), item);
+        }
+
+        @Override
+        public InventoryContents fillPattern(Pattern<ClickableItem> pattern) {
+            return fillPattern(pattern, 0, 0);
+        }
+
+        @Override
+        public InventoryContents fillPattern(Pattern<ClickableItem> pattern, SlotPos startPos) {
+            return fillPattern(pattern, startPos.getRow(), startPos.getColumn());
+        }
+
+        @Override
+        public InventoryContents fillPattern(Pattern<ClickableItem> pattern, int startRow, int startColumn) {
+            for(int row = 0; row < pattern.getRowCount(); row++) {
+                for(int column = 0; column < pattern.getColumnCount(); column++) {
+                    ClickableItem item = pattern.getObject(row, column);
+
+                    set(startRow + row, startColumn + column, item);
+                }
+            }
+
+            return this;
         }
 
         @SuppressWarnings("unchecked")
