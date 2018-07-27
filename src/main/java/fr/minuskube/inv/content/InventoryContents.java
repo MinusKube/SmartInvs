@@ -233,7 +233,8 @@ public interface InventoryContents {
                 for(int column = 0; column < pattern.getColumnCount(); column++) {
                     ClickableItem item = pattern.getObject(row, column);
 
-                    set(startRow + row, startColumn + column, item);
+                    if(item != null)
+                        set(startRow + row, startColumn + column, item);
                 }
             }
 
