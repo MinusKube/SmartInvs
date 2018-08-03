@@ -15,6 +15,12 @@ public class SmartInvsPlugin extends JavaPlugin {
         invManager.init();
     }
 
+    @Override
+    public void onDisable() {
+        instance = null;
+        invManager = null;
+    }
+
     public static InventoryManager manager() { return invManager; }
     public static SmartInvsPlugin instance() { return instance; }
 
