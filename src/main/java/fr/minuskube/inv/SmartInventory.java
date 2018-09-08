@@ -78,7 +78,9 @@ public class SmartInventory {
     public InventoryType getType() { return type; }
     public int getRows() { return rows; }
     public int getColumns() { return columns; }
+
     public boolean isCloseable() { return closeable; }
+    public void setCloseable(boolean closeable) { this.closeable = closeable; }
 
     public InventoryProvider getProvider() { return provider; }
     public Optional<SmartInventory> getParent() { return Optional.ofNullable(parent); }
