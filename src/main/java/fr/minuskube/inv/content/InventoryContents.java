@@ -1,8 +1,8 @@
 package fr.minuskube.inv.content;
 
 import fr.minuskube.inv.ClickableItem;
-import fr.minuskube.inv.InventoryManager;
 import fr.minuskube.inv.SmartInventory;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -52,14 +52,17 @@ public interface InventoryContents {
     class Impl implements InventoryContents {
 
         private SmartInventory inv;
+        private Player player;
+
         private ClickableItem[][] contents;
 
         private Pagination pagination = new Pagination.Impl();
         private Map<String, SlotIterator> iterators = new HashMap<>();
         private Map<String, Object> properties = new HashMap<>();
 
-        public Impl(SmartInventory inv) {
+        public Impl(SmartInventory inv, Player player) {
             this.inv = inv;
+            this.player = player;
             this.contents = new ClickableItem[inv.getRows()][inv.getColumns()];
         }
 
@@ -231,13 +234,10 @@ public interface InventoryContents {
         }
 
         private void update(int row, int column, ItemStack item) {
-            InventoryManager manager = inv.getManager();
+            Inventory topInventory = player.getOpenInventory().getTopInventory();
 
-            manager.getOpenedPlayers(inv)
-                    .forEach(player -> {
-                        Inventory topInventory = player.getOpenInventory().getTopInventory();
-                        topInventory.setItem(inv.getColumns() * row + column, item);
-                    });
+            if(topInventory != null)
+                topInventory.setItem(inv.getColumns() * row + column, item);
         }
 
     }
