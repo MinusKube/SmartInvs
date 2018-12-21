@@ -234,10 +234,11 @@ public interface InventoryContents {
         }
 
         private void update(int row, int column, ItemStack item) {
-            Inventory topInventory = player.getOpenInventory().getTopInventory();
+            if(!inv.getManager().getOpenedPlayers(inv).contains(player))
+                return;
 
-            if(topInventory != null)
-                topInventory.setItem(inv.getColumns() * row + column, item);
+            Inventory topInventory = player.getOpenInventory().getTopInventory();
+            topInventory.setItem(inv.getColumns() * row + column, item);
         }
 
     }
