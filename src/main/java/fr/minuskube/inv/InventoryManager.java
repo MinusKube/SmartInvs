@@ -137,7 +137,7 @@ public class InventoryManager {
                         .filter(listener -> listener.getType() == InventoryClickEvent.class)
                         .forEach(listener -> ((InventoryListener<InventoryClickEvent>) listener).accept(e));
 
-                contents.get(p).get(row, column).ifPresent(item -> item.run(e));
+                //contents.get(p).get(row, column).ifPresent(item -> item.run(e));
 
                 p.updateInventory();
             }
