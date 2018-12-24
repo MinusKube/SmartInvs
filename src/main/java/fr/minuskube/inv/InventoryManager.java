@@ -221,14 +221,12 @@ public class InventoryManager {
 
         @EventHandler(priority = EventPriority.LOW)
         public void onPluginDisable(PluginDisableEvent e) {
-            new HashSet<>(inventories.entrySet()).forEach(entry -> {
-                SmartInventory inv = entry.getValue();
-
+            new HashMap<>(inventories).forEach((player, inv) -> {
                 inv.getListeners().stream()
                         .filter(listener -> listener.getType() == PluginDisableEvent.class)
                         .forEach(listener -> ((InventoryListener<PluginDisableEvent>) listener).accept(e));
 
-                inv.close(entry.getKey());
+                inv.close(player);
             });
 
             inventories.clear();
@@ -241,7 +239,7 @@ public class InventoryManager {
 
         @Override
         public void run() {
-            inventories.forEach((player, inv) -> inv.getProvider().update(player, contents.get(player)));
+            new HashMap<>(inventories).forEach((player, inv) -> inv.getProvider().update(player, contents.get(player)));
         }
 
     }

@@ -45,11 +45,11 @@ public class SmartInventory {
             this.manager.setInventory(player, null);
         });
 
-        InventoryContents contents = new InventoryContents.Impl(this);
+        InventoryContents contents = new InventoryContents.Impl(this, player);
         contents.pagination().page(page);
 
         this.manager.setContents(player, contents);
-        provider.init(player, contents);
+        this.provider.init(player, contents);
 
         InventoryOpener opener = this.manager.findOpener(type)
                 .orElseThrow(() -> new IllegalStateException("No opener found for the inventory type " + type.name()));
@@ -78,7 +78,9 @@ public class SmartInventory {
     public InventoryType getType() { return type; }
     public int getRows() { return rows; }
     public int getColumns() { return columns; }
+
     public boolean isCloseable() { return closeable; }
+    public void setCloseable(boolean closeable) { this.closeable = closeable; }
 
     public InventoryProvider getProvider() { return provider; }
     public Optional<SmartInventory> getParent() { return Optional.ofNullable(parent); }
