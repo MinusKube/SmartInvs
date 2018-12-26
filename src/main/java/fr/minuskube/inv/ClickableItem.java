@@ -11,7 +11,7 @@ public class ClickableItem {
     /**
      * ClickableItem constant with no item and empty consumer.
      */
-    private static final ClickableItem NONE = empty(null);
+    public static final ClickableItem NONE = empty(null);
 
     private ItemStack item;
     private Consumer<?> consumer;
