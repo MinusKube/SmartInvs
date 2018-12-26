@@ -8,6 +8,11 @@ import java.util.function.Consumer;
 @SuppressWarnings({ "unchecked", "deprecation" })
 public class ClickableItem {
 
+    /**
+     * ClickableItem constant with no item and empty consumer.
+     */
+    private static final ClickableItem NONE = empty(null);
+
     private ItemStack item;
     private Consumer<?> consumer;
     private boolean legacy;
@@ -18,15 +23,21 @@ public class ClickableItem {
         this.legacy = legacy;
     }
 
+    /**
+     * Creates a ClickableItem made of a given item and an empty consumer, thus
+     * doing nothing when we click on the item.
+     *
+     * @param item the item
+     * @return the created ClickableItem
+     */
     public static ClickableItem empty(ItemStack item) {
         return from(item, data -> {});
     }
 
     /**
-     * @deprecated Replaced by {@link ClickableItem#from(ItemStack, Consumer)}
-     *
      * Creates a ClickableItem made of a given item and a given InventoryClickEvent's consumer.
      *
+     * @deprecated Replaced by {@link ClickableItem#from(ItemStack, Consumer)}
      * @param item the item
      * @param consumer the consumer which will be called when the item is clicked
      * @return the created ClickableItem
@@ -57,6 +68,21 @@ public class ClickableItem {
         legacyConsumer.accept(e);
     }
 
+    /**
+     * Clones this ClickableItem using a different item.
+     *
+     * @param newItem the new item
+     * @return the created ClickableItem
+     */
+    public ClickableItem clone(ItemStack newItem) {
+        return new ClickableItem(newItem, this.consumer, this.legacy);
+    }
+
+    /**
+     * Executes this ClickableItem's consumer using the given click data.
+     *
+     * @param data the data of the click
+     */
     public void run(ItemClickData data) {
         if(this.legacy) {
             if(data.getEvent() instanceof InventoryClickEvent) {
@@ -72,6 +98,13 @@ public class ClickableItem {
         newConsumer.accept(data);
     }
 
+    /**
+     * Returns the item contained in this ClickableItem.
+     * <br>
+     * <b>Warning:</b> The item can be <code>null</code>.
+     *
+     * @return the item, or <code>null</code> if there is no item
+     */
     public ItemStack getItem() { return this.item; }
 
 }
