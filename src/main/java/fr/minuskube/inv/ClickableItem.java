@@ -100,7 +100,7 @@ public class ClickableItem {
 
     /**
      * Returns the item contained in this ClickableItem.
-     * <br>
+     * <br />
      * <b>Warning:</b> The item can be <code>null</code>.
      *
      * @return the item, or <code>null</code> if there is no item
