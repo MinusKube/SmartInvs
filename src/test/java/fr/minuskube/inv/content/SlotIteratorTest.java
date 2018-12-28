@@ -5,7 +5,8 @@ import fr.minuskube.inv.SmartInventory;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class SlotIteratorTest {
 
@@ -17,7 +18,7 @@ public class SlotIteratorTest {
         when(inv.getColumns()).thenReturn(columns);
         when(inv.getManager()).thenReturn(manager);
 
-        InventoryContents contents = new InventoryContents.Impl(inv);
+        InventoryContents contents = new InventoryContents.Impl(inv, null);
         return contents.newIterator(SlotIterator.Type.HORIZONTAL, 0, 0);
     }
 

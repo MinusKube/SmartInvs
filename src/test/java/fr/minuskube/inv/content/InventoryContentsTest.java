@@ -7,23 +7,70 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.junit.Test;
 
+import java.util.Optional;
+
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class InventoryContentsTest {
 
     private static final ItemStack TEST_ITEM = new ItemStack(Material.DIRT);
+    private static final ClickableItem TEST_CLICKABLE = ClickableItem.empty(TEST_ITEM);
 
-    @Test
-    public void test() {
+    private SmartInventory mockInventory(int rows, int columns) {
         InventoryManager manager = mock(InventoryManager.class);
 
         SmartInventory inv = mock(SmartInventory.class);
-        when(inv.getRows()).thenReturn(6);
-        when(inv.getColumns()).thenReturn(9);
+        when(inv.getRows()).thenReturn(rows);
+        when(inv.getColumns()).thenReturn(columns);
         when(inv.getManager()).thenReturn(manager);
 
-        InventoryContents contents = new InventoryContents.Impl(inv);
+        return inv;
+    }
+
+    @Test
+    public void testAddItem() {
+        SmartInventory inv = mockInventory(6, 9);
+        InventoryContents contents = new InventoryContents.Impl(inv, null);
+
+        contents.add(TEST_CLICKABLE);
+
+        for(int row = 0; row < 6; row++) {
+            for(int column = 0; column < 9; column++) {
+                Optional<ClickableItem> result = contents.get(SlotPos.of(row, column));
+
+                if(row == 0 && column == 0) {
+                    assertTrue(result.isPresent());
+                    assertEquals(result.get(), TEST_CLICKABLE);
+                }
+                else {
+                    assertFalse(result.isPresent());
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testAddNull() {
+        SmartInventory inv = mockInventory(6, 9);
+        InventoryContents contents = new InventoryContents.Impl(inv, null);
+
+        contents.add(null);
+
+        for(int row = 0; row < 6; row++) {
+            for(int column = 0; column < 9; column++) {
+                Optional<ClickableItem> result = contents.get(SlotPos.of(row, column));
+
+                assertFalse(result.isPresent());
+            }
+        }
+    }
+
+    @Test
+    public void test() {
+        SmartInventory inv = mockInventory(6, 9);
+        InventoryContents contents = new InventoryContents.Impl(inv, null);
 
         for(int row = 0; row < inv.getRows(); row++) {
             for(int column = 0; column < inv.getColumns(); column++) {
