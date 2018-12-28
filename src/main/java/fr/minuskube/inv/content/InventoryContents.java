@@ -28,9 +28,11 @@ public interface InventoryContents {
 
     Optional<SlotPos> firstEmpty();
 
+    Optional<ClickableItem> get(int index);
     Optional<ClickableItem> get(int row, int column);
     Optional<ClickableItem> get(SlotPos slotPos);
 
+    InventoryContents set(int index, ClickableItem item);
     InventoryContents set(int row, int column, ClickableItem item);
     InventoryContents set(SlotPos slotPos, ClickableItem item);
 
@@ -41,11 +43,13 @@ public interface InventoryContents {
     InventoryContents fillColumn(int column, ClickableItem item);
     InventoryContents fillBorders(ClickableItem item);
 
+    InventoryContents fillRect(int fromIndex, int toIndex, ClickableItem item);
     InventoryContents fillRect(int fromRow, int fromColumn,
                                int toRow, int toColumn, ClickableItem item);
     InventoryContents fillRect(SlotPos fromPos, SlotPos toPos, ClickableItem item);
 
     InventoryContents fillPattern(Pattern<ClickableItem> pattern);
+    InventoryContents fillPattern(Pattern<ClickableItem> pattern, int startIndex);
     InventoryContents fillPattern(Pattern<ClickableItem> pattern, int startRow, int startColumn);
     InventoryContents fillPattern(Pattern<ClickableItem> pattern, SlotPos startPos);
 
@@ -122,6 +126,13 @@ public interface InventoryContents {
         }
 
         @Override
+        public Optional<ClickableItem> get(int index) {
+            int columnCount = this.inv.getColumns();
+
+            return get(index / columnCount, index % columnCount);
+        }
+
+        @Override
         public Optional<ClickableItem> get(int row, int column) {
             if(row >= contents.length)
                 return Optional.empty();
@@ -134,6 +145,13 @@ public interface InventoryContents {
         @Override
         public Optional<ClickableItem> get(SlotPos slotPos) {
             return get(slotPos.getRow(), slotPos.getColumn());
+        }
+
+        @Override
+        public InventoryContents set(int index, ClickableItem item) {
+            int columnCount = this.inv.getColumns();
+
+            return set(index / columnCount, index % columnCount, item);
         }
 
         @Override
@@ -202,6 +220,17 @@ public interface InventoryContents {
         }
 
         @Override
+        public InventoryContents fillRect(int fromIndex, int toIndex, ClickableItem item) {
+            int columnCount = this.inv.getColumns();
+
+            return fillRect(
+                    fromIndex / columnCount, fromIndex % columnCount,
+                    toIndex / columnCount, toIndex % columnCount,
+                    item
+            );
+        }
+
+        @Override
         public InventoryContents fillRect(int fromRow, int fromColumn, int toRow, int toColumn, ClickableItem item) {
             for(int row = fromRow; row <= toRow; row++) {
                 for(int column = fromColumn; column <= toColumn; column++) {
@@ -223,6 +252,13 @@ public interface InventoryContents {
         @Override
         public InventoryContents fillPattern(Pattern<ClickableItem> pattern) {
             return fillPattern(pattern, 0, 0);
+        }
+
+        @Override
+        public InventoryContents fillPattern(Pattern<ClickableItem> pattern, int startIndex) {
+            int columnCount = this.inv.getColumns();
+
+            return fillPattern(pattern, startIndex / columnCount, startIndex % columnCount);
         }
 
         @Override

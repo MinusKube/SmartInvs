@@ -32,7 +32,16 @@ public class Pattern<T> {
         this.mapping.put(character, object);
     }
 
-    public T getObject(SlotPos slot) { return this.getObject(slot.getRow(), slot.getColumn()); }
+    public T getObject(int index) {
+        int columnCount = this.getColumnCount();
+
+        return this.getObject(index / columnCount, index % columnCount);
+    }
+
+    public T getObject(SlotPos slot) {
+        return this.getObject(slot.getRow(), slot.getColumn());
+    }
+
     public T getObject(int row, int column) {
         Preconditions.checkArgument(row >= 0 && row < this.lines.length,
                 "The row must be between 0 and the row count");

@@ -20,6 +20,7 @@ public interface SlotIterator {
     SlotIterator previous();
     SlotIterator next();
 
+    SlotIterator blacklist(int index);
     SlotIterator blacklist(int row, int column);
     SlotIterator blacklist(SlotPos slotPos);
 
@@ -146,6 +147,14 @@ public interface SlotIterator {
             }
             while(!canPlace() && !ended());
 
+            return this;
+        }
+
+        @Override
+        public SlotIterator blacklist(int index) {
+            int columnCount = this.inv.getColumns();
+
+            this.blacklisted.add(SlotPos.of(index / columnCount, index % columnCount));
             return this;
         }
 
