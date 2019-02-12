@@ -88,8 +88,9 @@ public interface SlotIterator {
             }
 
             do {
-                if(!this.started)
+                if(!this.started) {
                     this.started = true;
+                }
                 else {
                     switch(type) {
                         case HORIZONTAL:
@@ -124,8 +125,9 @@ public interface SlotIterator {
             }
 
             do {
-                if(!this.started)
+                if(!this.started) {
                     this.started = true;
+                }
                 else {
                     switch(type) {
                         case HORIZONTAL:
