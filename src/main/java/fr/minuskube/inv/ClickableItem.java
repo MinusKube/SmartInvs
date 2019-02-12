@@ -13,9 +13,9 @@ public class ClickableItem {
      */
     public static final ClickableItem NONE = empty(null);
 
-    private ItemStack item;
-    private Consumer<?> consumer;
-    private boolean legacy;
+    private final ItemStack item;
+    private final Consumer<?> consumer;
+    private final boolean legacy;
 
     private ClickableItem(ItemStack item, Consumer<?> consumer, boolean legacy) {
         this.item = item;
@@ -90,12 +90,10 @@ public class ClickableItem {
 
                 this.run(event);
             }
-
-            return;
+        } else {
+            Consumer<ItemClickData> newConsumer = (Consumer<ItemClickData>) this.consumer;
+            newConsumer.accept(data);
         }
-
-        Consumer<ItemClickData> newConsumer = (Consumer<ItemClickData>) this.consumer;
-        newConsumer.accept(data);
     }
 
     /**

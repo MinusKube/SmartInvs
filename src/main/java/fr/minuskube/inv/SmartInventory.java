@@ -26,7 +26,7 @@ public class SmartInventory {
     private SmartInventory parent;
 
     private List<InventoryListener<? extends Event>> listeners;
-    private InventoryManager manager;
+    private final InventoryManager manager;
 
     private SmartInventory(InventoryManager manager) {
         this.manager = manager;

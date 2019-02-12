@@ -10,7 +10,7 @@ public class Pattern<T> {
 
     private T defaultValue;
 
-    private String[] lines;
+    private final String[] lines;
     private Map<Character, T> mapping = new HashMap<>();
 
     public Pattern(String... lines) {

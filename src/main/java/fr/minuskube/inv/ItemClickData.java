@@ -7,10 +7,10 @@ import org.bukkit.inventory.ItemStack;
 
 public class ItemClickData {
 
-    private Event event;
-    private Player player;
-    private ItemStack item;
-    private SlotPos slot;
+    private final Event event;
+    private final Player player;
+    private final ItemStack item;
+    private final SlotPos slot;
 
     public ItemClickData(Event event, Player player, ItemStack item, SlotPos slot) {
         this.event = event;
