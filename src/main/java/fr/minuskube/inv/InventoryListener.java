@@ -4,8 +4,8 @@ import java.util.function.Consumer;
 
 public class InventoryListener<T> {
 
-    private Class<T> type;
-    private Consumer<T> consumer;
+    private final Class<T> type;
+    private final Consumer<T> consumer;
 
     public InventoryListener(Class<T> type, Consumer<T> consumer) {
         this.type = type;

@@ -40,9 +40,9 @@ public interface SlotIterator {
     class Impl implements SlotIterator {
 
         private InventoryContents contents;
-        private SmartInventory inv;
+        private final SmartInventory inv;
 
-        private Type type;
+        private final Type type;
         private boolean started = false;
         private boolean allowOverride = true;
         private int row, column;
@@ -88,9 +88,8 @@ public interface SlotIterator {
             }
 
             do {
-                if(!this.started) {
+                if(!this.started)
                     this.started = true;
-                }
                 else {
                     switch(type) {
                         case HORIZONTAL:
@@ -125,9 +124,8 @@ public interface SlotIterator {
             }
 
             do {
-                if(!this.started) {
+                if(!this.started)
                     this.started = true;
-                }
                 else {
                     switch(type) {
                         case HORIZONTAL:

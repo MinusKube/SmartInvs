@@ -20,14 +20,14 @@ import java.util.*;
 
 public class InventoryManager {
 
-    private JavaPlugin plugin;
-    private PluginManager pluginManager;
+    private final JavaPlugin plugin;
+    private final PluginManager pluginManager;
 
-    private Map<Player, SmartInventory> inventories;
-    private Map<Player, InventoryContents> contents;
+    private final Map<Player, SmartInventory> inventories;
+    private final Map<Player, InventoryContents> contents;
 
-    private List<InventoryOpener> defaultOpeners;
-    private List<InventoryOpener> openers;
+    private final List<InventoryOpener> defaultOpeners;
+    private final List<InventoryOpener> openers;
 
     public InventoryManager(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -111,9 +111,9 @@ public class InventoryManager {
             if(!inventories.containsKey(p))
                 return;
 
-            if(e.getAction() == InventoryAction.COLLECT_TO_CURSOR ||
-                    e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY ||
-                    e.getAction() == InventoryAction.NOTHING) {
+            if( e.getAction() == InventoryAction.COLLECT_TO_CURSOR ||
+                e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY ||
+                e.getAction() == InventoryAction.NOTHING) {
 
                 e.setCancelled(true);
                 return;
