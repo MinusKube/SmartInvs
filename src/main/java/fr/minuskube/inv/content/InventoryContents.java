@@ -11,14 +11,64 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * <p>
+ *     Represents the content of an inventory.
+ * </p>
+ *
+ * <p>
+ *     This contains several methods which let you get and modify
+ *     the content of the inventory.
+ * </p>
+ *
+ * <p>
+ *     For example, you can get the item at a given slot by
+ *     using {@link InventoryContents#get(SlotPos)}. You can
+ *     also fill an entire column with the use of the method
+ *     {@link InventoryContents#fillColumn(int, ClickableItem)}.
+ * </p>
+ */
 public interface InventoryContents {
 
+    /**
+     * Gets the inventory linked to this {@link InventoryContents}.
+     * <br />
+     * Cannot be <code>null</code>.
+     *
+     * @return the inventory
+     */
     SmartInventory inventory();
+
+    /**
+     * Gets the pagination system linked to this {@link InventoryContents}.
+     * <br />
+     * Cannot be <code>null</code>.
+     *
+     * @return the pagination
+     */
     Pagination pagination();
 
+    /**
+     * Gets a previously registered iterator named with the given id.
+     * <br />
+     * If no iterator is found, this will return <code>Optional.empty()</code>.
+     *
+     * @param id the id of the iterator
+     * @return an optional of the potentially found iterator
+     */
     Optional<SlotIterator> iterator(String id);
 
+    /**
+     * Creates and registers an iterator using a given id.
+     *
+     * @param id the id of the iterator
+     * @param type the type of the iterator
+     * @param startRow the starting row of the iterator
+     * @param startColumn the starting column of the iterator
+     * @return the newly created iterator
+     */
     SlotIterator newIterator(String id, SlotIterator.Type type, int startRow, int startColumn);
+
     SlotIterator newIterator(SlotIterator.Type type, int startRow, int startColumn);
 
     SlotIterator newIterator(String id, SlotIterator.Type type, SlotPos startPos);
