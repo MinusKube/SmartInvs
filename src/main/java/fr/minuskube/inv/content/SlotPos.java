@@ -1,8 +1,5 @@
 package fr.minuskube.inv.content;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 public class SlotPos {
 
     private final int row;
@@ -14,26 +11,23 @@ public class SlotPos {
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object)
+    public boolean equals(Object obj) {
+        if(this == obj)
             return true;
-        if (object == null || getClass() != object.getClass())
+        if(obj == null || getClass() != obj.getClass())
             return false;
 
-        SlotPos slotPos = (SlotPos) object;
+        SlotPos slotPos = (SlotPos) obj;
 
-        return new EqualsBuilder()
-                .append(row, slotPos.row)
-                .append(column, slotPos.column)
-                .isEquals();
+        return row == slotPos.row && column == slotPos.column;
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(row)
-                .append(column)
-                .toHashCode();
+        int result = row;
+        result = 31 * result + column;
+
+        return result;
     }
 
     public int getRow() { return row; }

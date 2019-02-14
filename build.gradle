@@ -1,5 +1,5 @@
 group 'fr.minuskube.inv'
-version '1.2.6'
+version '1.2.7'
 
 apply plugin: 'java'
 apply plugin: 'maven'
@@ -28,7 +28,6 @@ repositories {
 
 dependencies {
     compile 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
-    compile 'org.apache.commons:commons-lang3:3.5'
 }
 
 jar { archiveName = 'SmartInvs-' + project.version + '.jar' }
