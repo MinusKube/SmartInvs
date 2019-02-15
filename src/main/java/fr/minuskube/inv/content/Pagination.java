@@ -166,7 +166,8 @@ public interface Pagination {
 
         @Override
         public boolean isLast() {
-            return this.currentPage == this.items.length / this.itemsPerPage;
+            int pageCount = (int) Math.ceil((double) this.items.length / this.itemsPerPage);
+            return this.currentPage == pageCount - 1;
         }
 
         @Override
