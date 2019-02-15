@@ -6,10 +6,11 @@ import java.util.Arrays;
 
 /**
  * <p>
- *     Pagination system which lets you switch pages and
- *     easily get items in the given page and easily
- *     manipulate the pages and
- *     check if a page is first or last ({@link Pagination#isFirst()} / {@link Pagination#isLast()}).
+ *     Pagination system which lets you switch pages;
+ *     easily get items in the given page,
+ *     easily manipulate the pages and
+ *     check if a page is the first or the last one
+ *     ({@link Pagination#isFirst()} / {@link Pagination#isLast()}).
  * </p>
  *
  * <p>
