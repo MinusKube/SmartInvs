@@ -1,5 +1,8 @@
 ![SmartInvs Logo](http://minuskube.fr/img/smart-invs/smart_invs.png)
 
+[![License](https://img.shields.io/github/license/minuskube/smartinvs.svg?style=flat-square)](https://github.com/MinusKube/SmartInvs/blob/master/LICENSE.md)
+[![Javadocs](https://img.shields.io/maven-central/v/fr.minuskube.inv/smart-invs.svg?label=javadoc&style=flat-square)](https://javadoc.io/doc/fr.minuskube.inv/smart-invs)
+
 # SmartInvs
 Advanced Inventory API for your Minecraft Bukkit plugins.
 
