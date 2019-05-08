@@ -11,31 +11,182 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * <p>
+ *     Represents the content of an inventory.
+ * </p>
+ *
+ * <p>
+ *     This contains several methods which let you get and modify
+ *     the content of the inventory.
+ * </p>
+ *
+ * <p>
+ *     For example, you can get the item at a given slot by
+ *     using {@link InventoryContents#get(SlotPos)}. You can
+ *     also fill an entire column with the use of the method
+ *     {@link InventoryContents#fillColumn(int, ClickableItem)}.
+ * </p>
+ */
 public interface InventoryContents {
 
+    /**
+     * Gets the inventory linked to this {@link InventoryContents}.
+     * <br />
+     * Cannot be <code>null</code>.
+     *
+     * @return the inventory
+     */
     SmartInventory inventory();
+
+    /**
+     * Gets the pagination system linked to this {@link InventoryContents}.
+     * <br />
+     * Cannot be <code>null</code>.
+     *
+     * @return the pagination
+     */
     Pagination pagination();
 
+    /**
+     * Gets a previously registered iterator named with the given id.
+     * <br />
+     * If no iterator is found, this will return <code>Optional.empty()</code>.
+     *
+     * @param id the id of the iterator
+     * @return the found iterator, if there is one
+     */
     Optional<SlotIterator> iterator(String id);
 
+    /**
+     * Creates and registers an iterator using a given id.
+     *
+     * <p>
+     *     You can retrieve the iterator at any time using
+     *     the {@link InventoryContents#iterator(String)} method.
+     * </p>
+     *
+     * @param id the id of the iterator
+     * @param type the type of the iterator
+     * @param startRow the starting row of the iterator
+     * @param startColumn the starting column of the iterator
+     * @return the newly created iterator
+     */
     SlotIterator newIterator(String id, SlotIterator.Type type, int startRow, int startColumn);
+
+    /**
+     * Creates and returns an iterator.
+     *
+     * <p>
+     *     This does <b>NOT</b> registers the iterator,
+     *     thus {@link InventoryContents#iterator(String)} will not be
+     *     able to return the iterators created with this method.
+     * </p>
+     *
+     * @param type the type of the iterator
+     * @param startRow the starting row of the iterator
+     * @param startColumn the starting column of the iterator
+     * @return the newly created iterator
+     */
     SlotIterator newIterator(SlotIterator.Type type, int startRow, int startColumn);
 
+    /**
+     * Same as {@link InventoryContents#newIterator(String, SlotIterator.Type, int, int)},
+     * but using a {@link SlotPos} instead.
+     *
+     * @see InventoryContents#newIterator(String, SlotIterator.Type, int, int)
+     */
     SlotIterator newIterator(String id, SlotIterator.Type type, SlotPos startPos);
+
+    /**
+     * Same as {@link InventoryContents#newIterator(SlotIterator.Type, int, int)},
+     * but using a {@link SlotPos} instead.
+     *
+     * @see InventoryContents#newIterator(SlotIterator.Type, int, int)
+     */
     SlotIterator newIterator(SlotIterator.Type type, SlotPos startPos);
 
+    /**
+     * Returns a 2D array of ClickableItems containing
+     * all the items of the inventory.
+     * The ClickableItems can be null when there is no
+     * item in the corresponding slot.
+     *
+     * @return the items of the inventory
+     */
     ClickableItem[][] all();
 
+    /**
+     * Returns the position of the first empty slot
+     * in the inventory, or <code>Optional.empty()</code> if
+     * there is no free slot.
+     *
+     * @return the first empty slot, if there is one
+     */
     Optional<SlotPos> firstEmpty();
 
+    /**
+     * Returns the item in the inventory at the given
+     * slot index, or <code>Optional.empty()</code> if
+     * the slot is empty or if the index is out of bounds.
+     *
+     * @param index the slot index
+     * @return the found item, if there is one
+     */
     Optional<ClickableItem> get(int index);
+
+    /**
+     * Same as {@link InventoryContents#get(int)},
+     * but with a row and a column instead of the index.
+     *
+     * @see InventoryContents#get(int)
+     */
     Optional<ClickableItem> get(int row, int column);
+
+    /**
+     * Same as {@link InventoryContents#get(int)},
+     * but with a {@link SlotPos} instead of the index.
+     *
+     * @see InventoryContents#get(int)
+     */
     Optional<ClickableItem> get(SlotPos slotPos);
 
+    /**
+     * Sets the item in the inventory at the given
+     * slot index.
+     *
+     * @param index the slot index
+     * @param item the item to set, or <code>null</code> to clear the slot
+     * @return <code>this</code>, for chained calls
+     */
     InventoryContents set(int index, ClickableItem item);
+
+    /**
+     * Same as {@link InventoryContents#set(int, ClickableItem)},
+     * but with a row and a column instead of the index.
+     *
+     * @see InventoryContents#set(int, ClickableItem)
+     */
     InventoryContents set(int row, int column, ClickableItem item);
+
+    /**
+     * Same as {@link InventoryContents#set(int, ClickableItem)},
+     * but with a {@link SlotPos} instead of the index.
+     *
+     * @see InventoryContents#set(int, ClickableItem)
+     */
     InventoryContents set(SlotPos slotPos, ClickableItem item);
 
+    /**
+     * Adds an item to the <b>first empty slot</b> of the inventory.
+     * <br />
+     * <b>Warning:</b> If there is already a stack of the same item,
+     * this will not add the item to the stack, this will always
+     * add the item into an empty slot.
+     *
+     * @param item the item to add
+     * @return <code>this</code>, for chained calls
+     */
     InventoryContents add(ClickableItem item);
 
     InventoryContents fill(ClickableItem item);
@@ -134,9 +285,9 @@ public interface InventoryContents {
 
         @Override
         public Optional<ClickableItem> get(int row, int column) {
-            if(row >= contents.length)
+            if(row < 0 || row >= contents.length)
                 return Optional.empty();
-            if(column >= contents[row].length)
+            if(column < 0 || column >= contents[row].length)
                 return Optional.empty();
 
             return Optional.ofNullable(contents[row][column]);
@@ -156,9 +307,9 @@ public interface InventoryContents {
 
         @Override
         public InventoryContents set(int row, int column, ClickableItem item) {
-            if(row >= contents.length)
+            if(row < 0 || row >= contents.length)
                 return this;
-            if(column >= contents[row].length)
+            if(column < 0 || column >= contents[row].length)
                 return this;
 
             contents[row][column] = item;
@@ -196,7 +347,7 @@ public interface InventoryContents {
 
         @Override
         public InventoryContents fillRow(int row, ClickableItem item) {
-            if(row >= contents.length)
+            if(row < 0 || row >= contents.length)
                 return this;
 
             for(int column = 0; column < contents[row].length; column++)
@@ -207,6 +358,9 @@ public interface InventoryContents {
 
         @Override
         public InventoryContents fillColumn(int column, ClickableItem item) {
+            if(column < 0 || column >= contents[0].length)
+                return this;
+
             for(int row = 0; row < contents.length; row++)
                 set(row, column, item);
 
