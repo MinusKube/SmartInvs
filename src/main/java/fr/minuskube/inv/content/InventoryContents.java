@@ -189,24 +189,139 @@ public interface InventoryContents {
      */
     InventoryContents add(ClickableItem item);
 
+    /**
+     * Fills the inventory with the given item.
+     *
+     * @param item the item
+     * @return <code>this</code>, for chained calls
+     */
     InventoryContents fill(ClickableItem item);
+
+    /**
+     * Fills the given inventory row with the given item.
+     *
+     * @param row the row to fill
+     * @param item the item
+     * @return <code>this</code>, for chained calls
+     */
     InventoryContents fillRow(int row, ClickableItem item);
+
+    /**
+     * Fills the given inventory column with the given item.
+     *
+     * @param column the column to fill
+     * @param item the item
+     * @return <code>this</code>, for chained calls
+     */
     InventoryContents fillColumn(int column, ClickableItem item);
+
+    /**
+     * Fills the inventory borders with the given item.
+     *
+     * @param item the item
+     * @return <code>this</code>, for chained calls
+     */
     InventoryContents fillBorders(ClickableItem item);
 
+    /**
+     * Fills a rectangle inside the inventory using the given
+     * positions.
+     * <br />
+     * The created rectangle will have its top-left position at
+     * the given <b>from slot index</b> and its bottom-right position at
+     * the given <b>to slot index</b>.
+     *
+     * @param fromIndex the slot index at the top-left position
+     * @param toIndex the slot index at the bottom-right position
+     * @param item the item
+     * @return <code>this</code>, for chained calls
+     */
     InventoryContents fillRect(int fromIndex, int toIndex, ClickableItem item);
+
+    /**
+     * Same as {@link InventoryContents#fillRect(int, int, ClickableItem)},
+     * but with {@link SlotPos} instead of the indexes.
+     *
+     * @see InventoryContents#fillRect(int, int, ClickableItem)
+     */
     InventoryContents fillRect(int fromRow, int fromColumn,
                                int toRow, int toColumn, ClickableItem item);
+
+    /**
+     * Same as {@link InventoryContents#fillRect(int, int, ClickableItem)},
+     * but with rows and columns instead of the indexes.
+     *
+     * @see InventoryContents#fillRect(int, int, ClickableItem)
+     */
     InventoryContents fillRect(SlotPos fromPos, SlotPos toPos, ClickableItem item);
 
+    /**
+     * Fills the inventory with the given {@link Pattern}.
+     * <br />
+     * The pattern will start at the first slot.
+     *
+     * @param pattern the filling pattern
+     * @return <code>this</code>, for chained calls
+     */
     InventoryContents fillPattern(Pattern<ClickableItem> pattern);
+
+    /**
+     * Fills the inventory with the given {@link Pattern}.
+     * <br />
+     * The pattern will start at the given slot index.
+     *
+     * @param pattern the filling pattern
+     * @param startIndex the start slot index for the filling
+     * @return <code>this</code>, for chained calls
+     */
     InventoryContents fillPattern(Pattern<ClickableItem> pattern, int startIndex);
+
+    /**
+     * Same as {@link InventoryContents#fillPattern(Pattern, int)},
+     * but with a row and a column instead of the index.
+     *
+     * @see InventoryContents#fillPattern(Pattern, int)
+     */
     InventoryContents fillPattern(Pattern<ClickableItem> pattern, int startRow, int startColumn);
+
+    /**
+     * Same as {@link InventoryContents#fillPattern(Pattern, int)},
+     * but with a {@link SlotPos} instead of the index.
+     *
+     * @see InventoryContents#fillPattern(Pattern, int)
+     */
     InventoryContents fillPattern(Pattern<ClickableItem> pattern, SlotPos startPos);
 
+    /**
+     * Gets the value of the property with the given name.
+     *
+     * @param name the property's name
+     * @param <T> the type of the value
+     * @return the property's value
+     */
     <T> T property(String name);
+
+    /**
+     * Gets the value of the property with the given name,
+     * or a default value if the property isn't set.
+     *
+     * @param name the property's name
+     * @param def the default value
+     * @param <T> the type of the value
+     * @return the property's value, or the given default value
+     */
     <T> T property(String name, T def);
 
+    /**
+     * Sets the value of the property with the given name.
+     * <br />
+     * This will replace the existing value for the property,
+     * if there is one.
+     *
+     * @param name the property's name
+     * @param value the new property's value
+     * @return <code>this</code>, for chained calls
+     */
     InventoryContents setProperty(String name, Object value);
 
     class Impl implements InventoryContents {
