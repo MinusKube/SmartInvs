@@ -58,6 +58,12 @@ public class ClickableItem {
         return new ClickableItem(item, consumer, false);
     }
 
+    /**
+     * Executes this ClickableItem's consumer using the given click event.
+     *
+     * @deprecated This has been replaced by {@link ClickableItem#run(ItemClickData)}.
+     * @param e the click event
+     */
     @SuppressWarnings("DeprecatedIsStillUsed")
     @Deprecated
     public void run(InventoryClickEvent e) {
