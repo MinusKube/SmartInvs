@@ -32,7 +32,7 @@ public interface InventoryContents {
 
     /**
      * Gets the inventory linked to this {@link InventoryContents}.
-     * <br />
+     * <br>
      * Cannot be <code>null</code>.
      *
      * @return the inventory
@@ -41,7 +41,7 @@ public interface InventoryContents {
 
     /**
      * Gets the pagination system linked to this {@link InventoryContents}.
-     * <br />
+     * <br>
      * Cannot be <code>null</code>.
      *
      * @return the pagination
@@ -50,7 +50,7 @@ public interface InventoryContents {
 
     /**
      * Gets a previously registered iterator named with the given id.
-     * <br />
+     * <br>
      * If no iterator is found, this will return <code>Optional.empty()</code>.
      *
      * @param id the id of the iterator
@@ -179,7 +179,7 @@ public interface InventoryContents {
 
     /**
      * Adds an item to the <b>first empty slot</b> of the inventory.
-     * <br />
+     * <br>
      * <b>Warning:</b> If there is already a stack of the same item,
      * this will not add the item to the stack, this will always
      * add the item into an empty slot.
@@ -226,7 +226,7 @@ public interface InventoryContents {
     /**
      * Fills a rectangle inside the inventory using the given
      * positions.
-     * <br />
+     * <br>
      * The created rectangle will have its top-left position at
      * the given <b>from slot index</b> and its bottom-right position at
      * the given <b>to slot index</b>.
@@ -257,7 +257,7 @@ public interface InventoryContents {
 
     /**
      * Fills the inventory with the given {@link Pattern}.
-     * <br />
+     * <br>
      * The pattern will start at the first slot.
      *
      * @param pattern the filling pattern
@@ -267,7 +267,7 @@ public interface InventoryContents {
 
     /**
      * Fills the inventory with the given {@link Pattern}.
-     * <br />
+     * <br>
      * The pattern will start at the given slot index.
      *
      * @param pattern the filling pattern
@@ -314,7 +314,7 @@ public interface InventoryContents {
 
     /**
      * Sets the value of the property with the given name.
-     * <br />
+     * <br>
      * This will replace the existing value for the property,
      * if there is one.
      *

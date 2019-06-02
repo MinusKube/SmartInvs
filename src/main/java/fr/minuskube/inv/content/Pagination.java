@@ -35,7 +35,7 @@ public interface Pagination {
 
     /**
      * Gets the items of the current page.
-     * <br />
+     * <br>
      * This returns an array of the size of the items per page.
      *
      * @return the current page items
@@ -59,7 +59,7 @@ public interface Pagination {
 
     /**
      * Checks if the current page is the first page.
-     * <br />
+     * <br>
      * This is equivalent to: <code>page == 0</code>
      *
      * @return <code>true</code> if this page is the first page
@@ -68,7 +68,7 @@ public interface Pagination {
 
     /**
      * Checks if the current page is the last page.
-     * <br />
+     * <br>
      * This is equivalent to: <code>page == itemsCount / itemsPerPage</code>
      *
      * @return <code>true</code> if this page is the last page
@@ -77,7 +77,7 @@ public interface Pagination {
 
     /**
      * Sets the current page to the first page.
-     * <br />
+     * <br>
      * This is equivalent to: <code>page(0)</code>
      *
      * @return <code>this</code>, for chained calls
@@ -102,7 +102,7 @@ public interface Pagination {
 
     /**
      * Sets the current page to the last page.
-     * <br />
+     * <br>
      * This is equivalent to: <code>page(itemsCount / itemsPerPage)</code>
      *
      * @return <code>this</code>, for chained calls

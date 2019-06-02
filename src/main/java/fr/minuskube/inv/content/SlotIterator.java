@@ -56,7 +56,7 @@ public interface SlotIterator {
     /**
      * Moves the cursor to the previous position inside
      * the inventory.
-     * <br />
+     * <br>
      * This has no effect if the cursor is already
      * at the first position of the inventory.
      *
@@ -67,7 +67,7 @@ public interface SlotIterator {
     /**
      * Moves the cursor to the next position inside
      * the inventory.
-     * <br />
+     * <br>
      * This has no effect if the cursor is already
      * at the last position of the inventory.
      *
@@ -77,7 +77,7 @@ public interface SlotIterator {
 
     /**
      * Blacklists the given slot index.
-     * <br />
+     * <br>
      * Blacklisting a slot will make the iterator
      * skip the given slot and directly go to the next
      * unblacklisted slot.
@@ -89,7 +89,7 @@ public interface SlotIterator {
 
     /**
      * Blacklists the given slot position.
-     * <br />
+     * <br>
      * Blacklisting a slot will make the iterator
      * skip the given slot and directly go to the next
      * unblacklisted slot.
@@ -102,7 +102,7 @@ public interface SlotIterator {
 
     /**
      * Blacklists the given slot position.
-     * <br />
+     * <br>
      * Blacklisting a slot will make the iterator
      * skip the given slot and directly go to the next
      * unblacklisted slot.
@@ -144,7 +144,7 @@ public interface SlotIterator {
 
     /**
      * Checks if this iterator has been started.
-     * <br />
+     * <br>
      * An iterator is not started until any
      * of the {@link SlotIterator#previous()}
      * or the {@link SlotIterator#next()} methods have been called.
@@ -155,7 +155,7 @@ public interface SlotIterator {
 
     /**
      * Checks if this iterator has been ended.
-     * <br />
+     * <br>
      * An iterator is not ended until it has reached the last
      * slot of the inventory.
      *
@@ -165,10 +165,10 @@ public interface SlotIterator {
 
     /**
      * Gets the value of the allow override option.
-     * <br />
+     * <br>
      * - If this is <code>true</code>, the iterator will override any
      * existing item it founds on its way.
-     * <br />
+     * <br>
      * - If this is <code>false</code>, the iterator will skip
      * the slots which are not empty.
      *
@@ -178,10 +178,10 @@ public interface SlotIterator {
 
     /**
      * Sets the value of the allow override option.
-     * <br />
+     * <br>
      * - If this is <code>true</code>, the iterator will override any
      * existing item it founds on its way.
-     * <br />
+     * <br>
      * - If this is <code>false</code>, the iterator will skip
      * the slots which are not empty.
      *
