@@ -8,53 +8,81 @@ import java.util.Map;
 
 public class Pattern<T> {
 
-    private T defaultValue;
+	private T defaultValue;
 
-    private final String[] lines;
-    private Map<Character, T> mapping = new HashMap<>();
+	private final String[] lines;
+	private Map<Character, T> mapping = new HashMap<>();
 
-    public Pattern(String... lines) {
-        Preconditions.checkArgument(lines.length > 0, "The given pattern lines must not be empty.");
+	private final boolean wrapAround;
 
-        int columnCount = lines[0].length();
+	public Pattern(String... lines) {
+		this(false, lines);
+	}
 
-        for(int i = 0; i < lines.length; i++) {
-            String line = lines[i];
+	public Pattern(boolean wrapAround, String... lines) {
+		Preconditions.checkArgument(lines.length > 0, "The given pattern lines must not be empty.");
 
-            Preconditions.checkArgument(line.length() == columnCount,
-                    "The given pattern line %s does not match the first line character count.", i);
-        }
+		int columnCount = lines[0].length();
 
-        this.lines = lines;
-    }
+		this.lines = new String[lines.length];
 
-    public void attach(char character, T object) {
-        this.mapping.put(character, object);
-    }
+		for (int i = 0; i < lines.length; i++) {
+			String line = lines[i];
+			Preconditions.checkNotNull(line, "The given pattern line %s cannot be null.", i);
+			Preconditions.checkArgument(line.length() == columnCount,
+					"The given pattern line %s does not match the first line character count.", i);
+			this.lines[i] = lines[i];
+		}
 
-    public T getObject(int index) {
-        int columnCount = this.getColumnCount();
+		this.wrapAround = wrapAround;
+	}
 
-        return this.getObject(index / columnCount, index % columnCount);
-    }
+	public void attach(char character, T object) {
+		this.mapping.put(character, object);
+	}
 
-    public T getObject(SlotPos slot) {
-        return this.getObject(slot.getRow(), slot.getColumn());
-    }
+	public T getObject(int index) {
+		int columnCount = this.getColumnCount();
 
-    public T getObject(int row, int column) {
-        Preconditions.checkArgument(row >= 0 && row < this.lines.length,
-                "The row must be between 0 and the row count");
-        Preconditions.checkArgument(column >= 0 && column < this.lines[row].length(),
-                "The column must be between 0 and the column count");
+		return this.getObject(index / columnCount, index % columnCount);
+	}
 
-        return this.mapping.getOrDefault(this.lines[row].charAt(column), this.defaultValue);
-    }
+	public T getObject(SlotPos slot) {
+		return this.getObject(slot.getRow(), slot.getColumn());
+	}
 
-    public T getDefault() { return this.defaultValue; }
-    public void setDefault(T defaultValue) { this.defaultValue = defaultValue; }
+	public T getObject(int row, int column) {
+		if (wrapAround) { // Prevent overflow of numbers. Allows for infinite repeating patterns. If the numbers get bigger inefficient though
+			while (row < 0)
+				row += getRowCount();
+			if (row >= getRowCount())
+				row %= getRowCount();
+			while (column < 0)
+				column += getColumnCount();
+			if (column >= getColumnCount())
+				column %= getColumnCount();
+		} else {
+			Preconditions.checkArgument(row >= 0 && row < this.lines.length,
+					"The row must be between 0 and the row count");
+			Preconditions.checkArgument(column >= 0 && column < this.lines[row].length(),
+					"The column must be between 0 and the column count");
+		}
+		return this.mapping.getOrDefault(this.lines[row].charAt(column), this.defaultValue);
+	}
 
-    public int getRowCount() { return this.lines.length; }
-    public int getColumnCount() { return this.lines[0].length(); }
+	public T getDefault() {
+		return this.defaultValue;
+	}
 
+	public void setDefault(T defaultValue) {
+		this.defaultValue = defaultValue;
+	}
+
+	public int getRowCount() {
+		return this.lines.length;
+	}
+
+	public int getColumnCount() {
+		return this.lines[0].length();
+	}
 }
