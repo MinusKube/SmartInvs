@@ -85,4 +85,8 @@ public class Pattern<T> {
 	public int getColumnCount() {
 		return this.lines[0].length();
 	}
+
+	public boolean isWrapAround() {
+		return wrapAround;
+	}
 }
