@@ -338,6 +338,8 @@ public interface InventoryContents {
      * <br>
      * The top-left corner of the specified inventory area is also the top-left corner of the specified pattern
      * <br>
+     * If <code>endIndex</code> is a negative value it is set to the bottom-right corner
+     * <br>
      * <b>For this to work the pattern needs to be created with <code>wrapAround</code> enabled</b>
      *
      * @param pattern    the filling pattern
@@ -357,6 +359,9 @@ public interface InventoryContents {
      * If the pattern is not big enough, it will wrap around to the other side and repeat the pattern
      * <br>
      * The top-left corner of the specified inventory area is also the top-left corner of the specified pattern
+     * <br>
+     * If <code>endRow</code> is a negative value, endRow is automatically set to the max row size,
+     * if <code>endColumn</code> is a negative value, endColumn is automatically set to the max column size.
      * <br>
      * <b>For this to work the pattern needs to be created with <code>wrapAround</code> enabled</b>
      *
@@ -379,6 +384,9 @@ public interface InventoryContents {
      * If the pattern is not big enough, it will wrap around to the other side and repeat the pattern
      * <br>
      * The top-left corner of the specified inventory area is also the top-left corner of the specified pattern
+     * <br>
+     * If the row of <code>endPos</code> is a negative value, endRow is automatically set to the max row size,
+     * if the column of <code>endPos</code> is a negative value, endColumn is automatically set to the max column size.
      * <br>
      * <b>For this to work the pattern needs to be created with <code>wrapAround</code> enabled</b>
      *

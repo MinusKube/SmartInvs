@@ -1,5 +1,5 @@
 group 'fr.minuskube.inv'
-version '1.3.0'
+version '1.3.0-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'maven'
@@ -46,7 +46,7 @@ jar {
     archiveFileName = 'SmartInvs-' + project.version + '.jar'
 }
 
-signing {
+/*signing {
     sign configurations.archives
 }
 
@@ -94,4 +94,4 @@ uploadArchives {
             }
         }
     }
-}
+}*/
