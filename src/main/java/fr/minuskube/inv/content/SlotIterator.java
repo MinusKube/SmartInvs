@@ -16,8 +16,6 @@ import java.util.Set;
  * an inventory either {@link SlotIterator.Type#HORIZONTAL horizontally}
  * or {@link SlotIterator.Type#VERTICAL vertically}.
  * </p>
- * <p>
- *
  *///TODO: Add SlotIterator usage example
 public interface SlotIterator {
 
@@ -176,6 +174,29 @@ public interface SlotIterator {
     boolean ended();
 
     /**
+     * Sets the slot where the iterator should end.
+     * <br><br>
+     * If <code>row</code> is a negative value, it is set to the maximum row count.<br>
+     * If <code>column</code> is a negative value, it is set to maximum column count.
+     *
+     * @param row    The row where the iterator should end
+     * @param column The column where the iterator should end
+     * @return <code>this</code>, for chained calls
+     */
+    SlotIterator endPosition(int row, int column);
+
+    /**
+     * Sets the slot where the iterator should end.
+     * <br><br>
+     * If the row of the SlotPos is a negative value, it is set to the maximum row count.<br>
+     * If the column of the SlotPos is a negative value, it is set to maximum column count.
+     *
+     * @param endPosition The slot where the iterator should end
+     * @return <code>this</code>, for chained calls
+     */
+    SlotIterator endPosition(SlotPos endPosition);
+
+    /**
      * Gets the value of the allow override option.
      * <br>
      * - If this is <code>true</code>, the iterator will override any
@@ -267,6 +288,7 @@ public interface SlotIterator {
         private final Type type;
         private boolean started = false;
         private boolean allowOverride = true;
+        private int endRow, endColumn;
         private int startRow, startColumn;
         private int row, column;
 
@@ -285,6 +307,9 @@ public interface SlotIterator {
             this.inv = inv;
 
             this.type = type;
+
+            this.endRow = this.inv.getRows() - 1;
+            this.endColumn = this.inv.getColumns() - 1;
 
             this.startRow = this.row = startRow;
             this.startColumn = this.column = startColumn;
@@ -433,8 +458,27 @@ public interface SlotIterator {
 
         @Override
         public boolean ended() {
-            return row == inv.getRows() - 1
-                    && column == inv.getColumns() - 1;
+            return row == endRow
+                    && column == endColumn;
+        }
+
+        @Override
+        public SlotIterator endPosition(int row, int column) {
+            if (row < 0)
+                row = this.inv.getRows() - 1;
+            if (column < 0)
+                column = this.inv.getColumns() - 1;
+            Preconditions.checkArgument(row * column >= this.startRow * this.startColumn, "The end position needs to be after the start of the slot iterator");
+
+            this.endRow = row;
+            this.endColumn = column;
+
+            return this;
+        }
+
+        @Override
+        public SlotIterator endPosition(SlotPos endPosition) {
+            return endPosition(endPosition.getRow(), endPosition.getColumn());
         }
 
         @Override
@@ -475,7 +519,7 @@ public interface SlotIterator {
             if (pattern.getDefault() == null)
                 pattern.setDefault(false);
             this.blacklistPattern = pattern;
-            return null;
+            return this;
         }
 
         private boolean canPlace() {
