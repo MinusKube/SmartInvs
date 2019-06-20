@@ -257,6 +257,38 @@ public interface InventoryContents {
     InventoryContents fillRect(SlotPos fromPos, SlotPos toPos, ClickableItem item);
 
     /**
+     * Completely fills the provided square with the {@link ClickableItem}
+     *
+     * @param fromIndex The slot index of the upper left corner
+     * @param toIndex   The slot index of the lower right corner
+     * @param item      the item
+     * @return <code>this</code>, for chained calls
+     */
+    InventoryContents fillSquare(int fromIndex, int toIndex, ClickableItem item);
+
+    /**
+     * Completely fills the provided square with the {@link ClickableItem}
+     *
+     * @param fromRow    The row of the upper left corner
+     * @param fromColumn The column of the upper-left corner
+     * @param toRow      The row of the lower right corner
+     * @param toColumn   The column of the lower right corner
+     * @param item       the item
+     * @return <code>this</code>, for chained calls
+     */
+    InventoryContents fillSquare(int fromRow, int fromColumn, int toRow, int toColumn, ClickableItem item);
+
+    /**
+     * Completely fills the provided square with the {@link ClickableItem}
+     *
+     * @param fromPos The slot position of the upper left corner
+     * @param toPos   The slot position of the lower right corner
+     * @param item    the item
+     * @return <code>this</code>, for chained calls
+     */
+    InventoryContents fillSquare(SlotPos fromPos, SlotPos toPos, ClickableItem item);
+
+    /**
      * Fills the inventory with the given {@link Pattern}.
      * <br>
      * The pattern will start at the first slot.
@@ -630,6 +662,37 @@ public interface InventoryContents {
         @Override
         public InventoryContents fillRect(SlotPos fromPos, SlotPos toPos, ClickableItem item) {
             return fillRect(fromPos.getRow(), fromPos.getColumn(), toPos.getRow(), toPos.getColumn(), item);
+        }
+
+        @Override
+        public InventoryContents fillSquare(int fromIndex, int toIndex, ClickableItem item) {
+            int columnCount = this.inv.getColumns();
+
+            return fillSquare(
+                    fromIndex / columnCount, fromIndex % columnCount,
+                    toIndex / columnCount, toIndex % columnCount,
+                    item
+            );
+        }
+
+        @Override
+        public InventoryContents fillSquare(int fromRow, int fromColumn, int toRow, int toColumn, ClickableItem item) {
+            Preconditions.checkArgument(fromRow < toRow, "The start row needs to be lower than the end row");
+            Preconditions.checkArgument(fromColumn < toColumn, "The start column needs to be lower than the end column");
+
+
+            int rowDelta = toRow - fromRow, columnDelta = toColumn - fromColumn;
+            for (int row = 0; row <= rowDelta; row++) {
+                for (int column = 0; column <= columnDelta; column++) {
+                    set(fromRow + row, fromColumn + column, item);
+                }
+            }
+            return this;
+        }
+
+        @Override
+        public InventoryContents fillSquare(SlotPos fromPos, SlotPos toPos, ClickableItem item) {
+            return fillSquare(fromPos.getRow(), fromPos.getColumn(), toPos.getRow(), toPos.getColumn(), item);
         }
 
         @Override
