@@ -191,6 +191,26 @@ public interface InventoryContents {
     InventoryContents add(ClickableItem item);
 
     /**
+     * Looks for the given item stack and compares them with {@link ItemStack#isSimilar(ItemStack)}, ignoring the amount.
+     * <br>
+     * This method searches row for row from left to right
+     *
+     * @param itemStack The item stack to look for
+     * @return An optional containing the position where the item stack first occurred, or an empty optional
+     */
+    Optional<SlotPos> findItemStack(ItemStack itemStack);
+
+    /**
+     * Looks for the given item stack and compares them with {@link ItemStack#isSimilar(ItemStack)}, ignoring the amount.
+     * <br>
+     * This method searches row for row from left to right
+     *
+     * @param clickableItem The clickable item with it's item stack to look for
+     * @return An optional containing the position where the item stack first occurred, or an empty optional
+     */
+    Optional<SlotPos> findItemStack(ClickableItem clickableItem);
+
+    /**
      * Fills the inventory with the given item.
      *
      * @param item the item
@@ -595,6 +615,26 @@ public interface InventoryContents {
             }
 
             return this;
+        }
+
+        @Override
+        public Optional<SlotPos> findItemStack(ItemStack itemStack) {
+            Preconditions.checkNotNull(itemStack, "The itemstack to look for cannot be null!");
+            for (int row = 0; row < contents.length; row++) {
+                for (int column = 0; column < contents[0].length; column++) {
+                    if (contents[row][column] != null &&
+                            itemStack.isSimilar(contents[row][column].getItem())) {
+                        return Optional.of(SlotPos.of(row, column));
+                    }
+                }
+            }
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<SlotPos> findItemStack(ClickableItem clickableItem) {
+            Preconditions.checkNotNull(clickableItem, "The clickable item to look for cannot be null!");
+            return findItemStack(clickableItem.getItem());
         }
 
         @Override
