@@ -1,22 +1,24 @@
 package fr.minuskube.inv.content;
 
+import com.google.common.base.Preconditions;
 import fr.minuskube.inv.ClickableItem;
 import fr.minuskube.inv.SmartInventory;
+import fr.minuskube.inv.util.Pattern;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 
 /**
  * <p>
- *     The SlotIterator system allows you to iterate through the slots of
- *     an inventory either {@link SlotIterator.Type#HORIZONTAL horizontally}
- *     or {@link SlotIterator.Type#VERTICAL vertically}.
+ * The SlotIterator system allows you to iterate through the slots of
+ * an inventory either {@link SlotIterator.Type#HORIZONTAL horizontally}
+ * or {@link SlotIterator.Type#VERTICAL vertically}.
  * </p>
+ * <p>
  *
- * TODO: Add SlotIterator usage example
- *
- */
+ *///TODO: Add SlotIterator usage example
 public interface SlotIterator {
 
     /**
@@ -40,6 +42,7 @@ public interface SlotIterator {
 
     /**
      * Gets the item at the current position in the inventory.
+     *
      * @return the item at the current position
      */
     Optional<ClickableItem> get();
@@ -94,7 +97,7 @@ public interface SlotIterator {
      * skip the given slot and directly go to the next
      * unblacklisted slot.
      *
-     * @param row the row of the slot to blacklist
+     * @param row    the row of the slot to blacklist
      * @param column the column of the slot to blacklist
      * @return <code>this</code>, for chained calls
      */
@@ -141,6 +144,15 @@ public interface SlotIterator {
      * @return <code>this</code>, for chained calls
      */
     SlotIterator column(int column);
+
+    /**
+     * Resets iterator to its original position specified while creation.
+     * <br>
+     * When the iterator gets reset to its original position, <code>started</code> gets set back to <code>false</code>
+     *
+     * @return <code>this</code>, for chained calls
+     */
+    SlotIterator reset();
 
     /**
      * Checks if this iterator has been started.
@@ -190,6 +202,62 @@ public interface SlotIterator {
      */
     SlotIterator allowOverride(boolean override);
 
+    /**
+     * Setting a pattern using this method will use it as a guideline where the slot iterator can set items or not.
+     * If the pattern doesn't fill the whole inventory, the slot iterator is limited to the space the pattern provides.
+     * If the pattern has the <code>wrapAround</code> flag set, then the iterator can iterate over the entire inventory,
+     * even if the pattern would not fill it by itself
+     * <br><br>
+     * If the provided pattern has no default value set, this method will set it to <code>false</code>
+     * <br><br>
+     * If you pass <code>null</code> into the <code>pattern</code> parameter, this functionality will be disabled and
+     * the iterator will continue to work as normal.
+     *
+     * @param pattern The pattern to use as a guideline
+     * @return <code>this</code>, for chained calls
+     */
+    SlotIterator withPattern(Pattern<Boolean> pattern);
+
+    /**
+     * Setting a pattern using this method will use it as a guideline where the slot iterator can set items or not.
+     * If the pattern doesn't fill the whole inventory, the slot iterator is limited to the space the pattern provides.
+     * If the pattern has the <code>wrapAround</code> flag set, then the iterator can iterate over the entire inventory,
+     * even if the pattern would not fill it by itself
+     * <br><br>
+     * The offset defines the top-left corner of the pattern. If the <code>wrapAround</code> flag is set, then the entire
+     * pattern will be just shifted by the given amount.
+     * <br><br>
+     * If the provided pattern has no default value set, this method will set it to <code>false</code>
+     * <br><br>
+     * If you pass <code>null</code> into the <code>pattern</code> parameter, this functionality will be disabled and
+     * the iterator will continue to work as normal.
+     *
+     * @param pattern      The pattern to use as a guideline
+     * @param rowOffset    The row offset from the top left corner
+     * @param columnOffset The column offset from the top left corner
+     * @return <code>this</code>, for chained calls
+     */
+    SlotIterator withPattern(Pattern<Boolean> pattern, int rowOffset, int columnOffset);
+
+    /**
+     * This method has the inverse effect of {@link #withPattern(Pattern)}, where the other method would only allow the
+     * iterator to go, this method prohibits this slots to iterate over
+     *
+     * @param pattern The pattern where the slot iterator cannot iterate
+     * @return <code>this</code>, for chained calls
+     */
+    SlotIterator blacklistPattern(Pattern<Boolean> pattern);
+
+    /**
+     * This method has the inverse effect of {@link #withPattern(Pattern, int, int)}, where the other method would only allow the
+     * iterator to go, this method prohibits this slots to iterate over
+     *
+     * @param pattern      The pattern where the slot iterator cannot iterate
+     * @param rowOffset    The row offset from the top left corner
+     * @param columnOffset The column offset from the top left corner
+     * @return <code>this</code>, for chained calls
+     */
+    SlotIterator blacklistPattern(Pattern<Boolean> pattern, int rowOffset, int columnOffset);
 
     class Impl implements SlotIterator {
 
@@ -199,9 +267,16 @@ public interface SlotIterator {
         private final Type type;
         private boolean started = false;
         private boolean allowOverride = true;
+        private int startRow, startColumn;
         private int row, column;
 
         private Set<SlotPos> blacklisted = new HashSet<>();
+
+        private int patternRowOffset, patternColumnOffset;
+        private Pattern<Boolean> pattern;
+
+        private int blacklistPatternRowOffset, blacklistPatternColumnOffset;
+        private Pattern<Boolean> blacklistPattern;
 
         public Impl(InventoryContents contents, SmartInventory inv,
                     Type type, int startRow, int startColumn) {
@@ -211,8 +286,8 @@ public interface SlotIterator {
 
             this.type = type;
 
-            this.row = startRow;
-            this.column = startColumn;
+            this.startRow = this.row = startRow;
+            this.startColumn = this.column = startColumn;
         }
 
         public Impl(InventoryContents contents, SmartInventory inv,
@@ -228,7 +303,7 @@ public interface SlotIterator {
 
         @Override
         public SlotIterator set(ClickableItem item) {
-            if(canPlace())
+            if (canPlace())
                 contents.set(row, column, item);
 
             return this;
@@ -236,21 +311,20 @@ public interface SlotIterator {
 
         @Override
         public SlotIterator previous() {
-            if(row == 0 && column == 0) {
+            if (row == 0 && column == 0) {
                 this.started = true;
                 return this;
             }
 
             do {
-                if(!this.started) {
+                if (!this.started) {
                     this.started = true;
-                }
-                else {
-                    switch(type) {
+                } else {
+                    switch (type) {
                         case HORIZONTAL:
                             column--;
 
-                            if(column == 0) {
+                            if (column == 0) {
                                 column = inv.getColumns() - 1;
                                 row--;
                             }
@@ -258,7 +332,7 @@ public interface SlotIterator {
                         case VERTICAL:
                             row--;
 
-                            if(row == 0) {
+                            if (row == 0) {
                                 row = inv.getRows() - 1;
                                 column--;
                             }
@@ -266,40 +340,39 @@ public interface SlotIterator {
                     }
                 }
             }
-            while(!canPlace() && (row != 0 || column != 0));
+            while (!canPlace() && (row != 0 || column != 0));
 
             return this;
         }
 
         @Override
         public SlotIterator next() {
-            if(ended()) {
+            if (ended()) {
                 this.started = true;
                 return this;
             }
 
             do {
-                if(!this.started) {
+                if (!this.started) {
                     this.started = true;
-                }
-                else {
-                    switch(type) {
+                } else {
+                    switch (type) {
                         case HORIZONTAL:
                             column = ++column % inv.getColumns();
 
-                            if(column == 0)
+                            if (column == 0)
                                 row++;
                             break;
                         case VERTICAL:
                             row = ++row % inv.getRows();
 
-                            if(row == 0)
+                            if (row == 0)
                                 column++;
                             break;
                     }
                 }
             }
-            while(!canPlace() && !ended());
+            while (!canPlace() && !ended());
 
             return this;
         }
@@ -324,7 +397,9 @@ public interface SlotIterator {
         }
 
         @Override
-        public int row() { return row; }
+        public int row() {
+            return row;
+        }
 
         @Override
         public SlotIterator row(int row) {
@@ -333,11 +408,21 @@ public interface SlotIterator {
         }
 
         @Override
-        public int column() { return column; }
+        public int column() {
+            return column;
+        }
 
         @Override
         public SlotIterator column(int column) {
             this.column = column;
+            return this;
+        }
+
+        @Override
+        public SlotIterator reset() {
+            this.started = false;
+            this.row = this.startRow;
+            this.column = this.startColumn;
             return this;
         }
 
@@ -353,7 +438,9 @@ public interface SlotIterator {
         }
 
         @Override
-        public boolean doesAllowOverride() { return allowOverride; }
+        public boolean doesAllowOverride() {
+            return allowOverride;
+        }
 
         @Override
         public SlotIterator allowOverride(boolean override) {
@@ -361,10 +448,55 @@ public interface SlotIterator {
             return this;
         }
 
-        private boolean canPlace() {
-            return !blacklisted.contains(SlotPos.of(row, column)) && (allowOverride || !this.get().isPresent());
+        @Override
+        public SlotIterator withPattern(Pattern<Boolean> pattern) {
+            return withPattern(pattern, 0, 0);
         }
 
-    }
+        @Override
+        public SlotIterator withPattern(Pattern<Boolean> pattern, int rowOffset, int columnOffset) {
+            this.patternRowOffset = rowOffset;
+            this.patternColumnOffset = columnOffset;
+            if (pattern.getDefault() == null)
+                pattern.setDefault(false);
+            this.pattern = pattern;
+            return this;
+        }
 
+        @Override
+        public SlotIterator blacklistPattern(Pattern<Boolean> pattern) {
+            return blacklistPattern(pattern, 0, 0);
+        }
+
+        @Override
+        public SlotIterator blacklistPattern(Pattern<Boolean> pattern, int rowOffset, int columnOffset) {
+            this.blacklistPatternRowOffset = rowOffset;
+            this.blacklistPatternColumnOffset = columnOffset;
+            if (pattern.getDefault() == null)
+                pattern.setDefault(false);
+            this.blacklistPattern = pattern;
+            return null;
+        }
+
+        private boolean canPlace() {
+            boolean patternAllows = true, blacklistPatternAllows = true;
+            if (pattern != null) {
+                patternAllows = checkPattern(pattern, patternRowOffset, patternColumnOffset);
+            }
+            if (blacklistPattern != null) {
+                blacklistPatternAllows = !checkPattern(blacklistPattern, blacklistPatternRowOffset, blacklistPatternColumnOffset);
+            }
+            return !blacklisted.contains(SlotPos.of(row, column)) && (allowOverride || !this.get().isPresent()) && patternAllows && blacklistPatternAllows;
+        }
+
+        private boolean checkPattern(Pattern<Boolean> pattern, int rowOffset, int columnOffset) {
+            if (pattern.isWrapAround()) {
+                return pattern.getObject(row - rowOffset, column - columnOffset);
+            } else {
+                return row >= rowOffset && column >= columnOffset &&
+                        row < (pattern.getRowCount() + rowOffset) && column < (pattern.getColumnCount() + columnOffset) &&
+                        pattern.getObject(row - rowOffset, column - columnOffset);
+            }
+        }
+    }
 }
