@@ -720,11 +720,9 @@ public interface InventoryContents {
             Preconditions.checkArgument(fromRow < toRow, "The start row needs to be lower than the end row");
             Preconditions.checkArgument(fromColumn < toColumn, "The start column needs to be lower than the end column");
 
-
-            int rowDelta = toRow - fromRow, columnDelta = toColumn - fromColumn;
-            for (int row = 0; row <= rowDelta; row++) {
-                for (int column = 0; column <= columnDelta; column++) {
-                    set(fromRow + row, fromColumn + column, item);
+            for (int row = fromRow; row <= toRow; row++) {
+                for (int column = fromColumn; column <= toColumn; column++) {
+                    set(row, column, item);
                 }
             }
             return this;
