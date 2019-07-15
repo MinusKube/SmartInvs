@@ -191,24 +191,26 @@ public interface InventoryContents {
     InventoryContents add(ClickableItem item);
 
     /**
-     * Looks for the given item stack and compares them with {@link ItemStack#isSimilar(ItemStack)}, ignoring the amount.
+     * Looks for the given item and compares them using {@link ItemStack#isSimilar(ItemStack)},
+     * ignoring the amount.
      * <br>
-     * This method searches row for row from left to right
+     * This method searches row for row from left to right.
      *
-     * @param itemStack The item stack to look for
-     * @return An optional containing the position where the item stack first occurred, or an empty optional
+     * @param item the item to look for
+     * @return an optional containing the position where the item first occurred, or an empty optional
      */
-    Optional<SlotPos> findItemStack(ItemStack itemStack);
+    Optional<SlotPos> findItem(ItemStack item);
 
     /**
-     * Looks for the given item stack and compares them with {@link ItemStack#isSimilar(ItemStack)}, ignoring the amount.
+     * Looks for the given item and compares them using {@link ItemStack#isSimilar(ItemStack)},
+     * ignoring the amount.
      * <br>
-     * This method searches row for row from left to right
+     * This method searches row for row from left to right.
      *
-     * @param clickableItem The clickable item with it's item stack to look for
-     * @return An optional containing the position where the item stack first occurred, or an empty optional
+     * @param item the clickable item with the item stack to look for
+     * @return an optional containing the position where the item first occurred, or an empty optional
      */
-    Optional<SlotPos> findItemStack(ClickableItem clickableItem);
+    Optional<SlotPos> findItem(ClickableItem item);
 
     /**
      * Fills the inventory with the given item.
@@ -277,32 +279,32 @@ public interface InventoryContents {
     InventoryContents fillRect(SlotPos fromPos, SlotPos toPos, ClickableItem item);
 
     /**
-     * Completely fills the provided square with the {@link ClickableItem}
+     * Completely fills the provided square with the given {@link ClickableItem}.
      *
-     * @param fromIndex The slot index of the upper left corner
-     * @param toIndex   The slot index of the lower right corner
+     * @param fromIndex the slot index of the upper left corner
+     * @param toIndex   the slot index of the lower right corner
      * @param item      the item
      * @return <code>this</code>, for chained calls
      */
     InventoryContents fillSquare(int fromIndex, int toIndex, ClickableItem item);
 
     /**
-     * Completely fills the provided square with the {@link ClickableItem}
+     * Completely fills the provided square with the given {@link ClickableItem}.
      *
-     * @param fromRow    The row of the upper left corner
-     * @param fromColumn The column of the upper-left corner
-     * @param toRow      The row of the lower right corner
-     * @param toColumn   The column of the lower right corner
+     * @param fromRow    the row of the upper left corner
+     * @param fromColumn the column of the upper-left corner
+     * @param toRow      the row of the lower right corner
+     * @param toColumn   the column of the lower right corner
      * @param item       the item
      * @return <code>this</code>, for chained calls
      */
     InventoryContents fillSquare(int fromRow, int fromColumn, int toRow, int toColumn, ClickableItem item);
 
     /**
-     * Completely fills the provided square with the {@link ClickableItem}
+     * Completely fills the provided square with the given {@link ClickableItem}.
      *
-     * @param fromPos The slot position of the upper left corner
-     * @param toPos   The slot position of the lower right corner
+     * @param fromPos the slot position of the upper left corner
+     * @param toPos   the slot position of the lower right corner
      * @param item    the item
      * @return <code>this</code>, for chained calls
      */
@@ -315,9 +317,9 @@ public interface InventoryContents {
      *
      * @param pattern the filling pattern
      * @return <code>this</code>, for chained calls
-     * @see #fillPattern(Pattern, int) To fill the pattern from the provided slot index
-     * @see #fillPattern(Pattern, int, int) To fill the pattern from the provided row and column
-     * @see #fillPattern(Pattern, SlotPos) To fill the pattern from the provided slot pos
+     * @see #fillPattern(Pattern, int) to fill the pattern from the provided slot index
+     * @see #fillPattern(Pattern, int, int) to fill the pattern from the provided row and column
+     * @see #fillPattern(Pattern, SlotPos) to fill the pattern from the provided slot pos
      */
     InventoryContents fillPattern(Pattern<ClickableItem> pattern);
 
@@ -329,38 +331,38 @@ public interface InventoryContents {
      * @param pattern    the filling pattern
      * @param startIndex the start slot index for the filling
      * @return <code>this</code>, for chained calls
-     * @see #fillPattern(Pattern) To fill the pattern from the first slot
-     * @see #fillPattern(Pattern, int, int) To fill the pattern from the provided row and column
-     * @see #fillPattern(Pattern, SlotPos) To fill the pattern from the provided slot pos
+     * @see #fillPattern(Pattern) to fill the pattern from the first slot
+     * @see #fillPattern(Pattern, int, int) to fill the pattern from the provided row and column
+     * @see #fillPattern(Pattern, SlotPos) to fill the pattern from the provided slot pos
      */
     InventoryContents fillPattern(Pattern<ClickableItem> pattern, int startIndex);
 
     /**
      * Fills the inventory with the given {@link Pattern}.
      * <br>
-     * The pattern will start at the given slot position based on the provided row and column
+     * The pattern will start at the given slot position based on the provided row and column.
      *
      * @param pattern     the filling pattern
      * @param startRow    the start row of the slot for filling
      * @param startColumn the start column of the slot for filling
      * @return <code>this</code>, for chained calls
-     * @see #fillPattern(Pattern) To fill the pattern from the first slot
-     * @see #fillPattern(Pattern, int) To fill the pattern from the provided slot index
-     * @see #fillPattern(Pattern, SlotPos) To fill the pattern from the provided slot pos
+     * @see #fillPattern(Pattern) to fill the pattern from the first slot
+     * @see #fillPattern(Pattern, int) to fill the pattern from the provided slot index
+     * @see #fillPattern(Pattern, SlotPos) to fill the pattern from the provided slot pos
      */
     InventoryContents fillPattern(Pattern<ClickableItem> pattern, int startRow, int startColumn);
 
     /**
      * Fills the inventory with the given {@link Pattern}.
      * <br>
-     * The pattern will start at the given slot position
+     * The pattern will start at the given slot position.
      *
      * @param pattern  the filling pattern
      * @param startPos the start position of the slot for filling
      * @return <code>this</code>, for chained calls
-     * @see #fillPattern(Pattern) To fill the pattern from the first slot
-     * @see #fillPattern(Pattern, int) To fill the pattern from the provided slot index
-     * @see #fillPattern(Pattern, int, int) To fill the pattern from the provided row and column
+     * @see #fillPattern(Pattern) to fill the pattern from the first slot
+     * @see #fillPattern(Pattern, int) to fill the pattern from the provided slot index
+     * @see #fillPattern(Pattern, int, int) to fill the pattern from the provided row and column
      */
     InventoryContents fillPattern(Pattern<ClickableItem> pattern, SlotPos startPos);
 
@@ -368,17 +370,17 @@ public interface InventoryContents {
      * Fills the inventory with the given {@link Pattern}.
      * <br>
      * The pattern will start at the first slot and end at the last slot.
-     * If the pattern is not big enough, it will wrap around to the other side and repeat the pattern
+     * If the pattern is not big enough, it will wrap around to the other side and repeat the pattern.
      * <br>
-     * The top-left corner of the specified inventory area is also the top-left corner of the specified pattern
+     * The top-left corner of the specified inventory area is also the top-left corner of the specified pattern.
      * <br>
-     * <b>For this to work the pattern needs to be created with <code>wrapAround</code> enabled</b>
+     * <b>For this to work the pattern needs to be created with <code>wrapAround</code> enabled.</b>
      *
      * @param pattern the filling pattern
      * @return <code>this</code>, for chained calls
-     * @see #fillPatternRepeating(Pattern, int, int) To fill a repeating pattern using slot indexes
-     * @see #fillPatternRepeating(Pattern, int, int, int, int) To fill a repeating pattern using slot positions contructed from their rows and columns
-     * @see #fillPatternRepeating(Pattern, SlotPos, SlotPos) To filla a repeating pattern using slot positions
+     * @see #fillPatternRepeating(Pattern, int, int) to fill a repeating pattern using slot indexes
+     * @see #fillPatternRepeating(Pattern, int, int, int, int) to fill a repeating pattern using slot positions contructed from their rows and columns
+     * @see #fillPatternRepeating(Pattern, SlotPos, SlotPos) to fill a repeating pattern using slot positions
      */
     InventoryContents fillPatternRepeating(Pattern<ClickableItem> pattern);
 
@@ -386,21 +388,21 @@ public interface InventoryContents {
      * Fills the inventory with the given {@link Pattern}.
      * <br>
      * The pattern will start at the first slot index and end at the second slot index.
-     * If the pattern is not big enough, it will wrap around to the other side and repeat the pattern
+     * If the pattern is not big enough, it will wrap around to the other side and repeat the pattern.
      * <br>
-     * The top-left corner of the specified inventory area is also the top-left corner of the specified pattern
+     * The top-left corner of the specified inventory area is also the top-left corner of the specified pattern.
      * <br>
-     * If <code>endIndex</code> is a negative value it is set to the bottom-right corner
+     * If <code>endIndex</code> is a negative value it is set to the bottom-right corner.
      * <br>
-     * <b>For this to work the pattern needs to be created with <code>wrapAround</code> enabled</b>
+     * <b>For this to work the pattern needs to be created with <code>wrapAround</code> enabled.</b>
      *
      * @param pattern    the filling pattern
      * @param startIndex the start slot index where the pattern should begin
      * @param endIndex   the end slot index where the pattern should end
      * @return <code>this</code>, for chained calls
-     * @see #fillPatternRepeating(Pattern) To fill a repeating pattern into the whole inventory
-     * @see #fillPatternRepeating(Pattern, int, int, int, int) To fill a repeating pattern using slot positions contructed from their rows and columns
-     * @see #fillPatternRepeating(Pattern, SlotPos, SlotPos) To filla a repeating pattern using slot positions
+     * @see #fillPatternRepeating(Pattern) to fill a repeating pattern into the whole inventory
+     * @see #fillPatternRepeating(Pattern, int, int, int, int) to fill a repeating pattern using slot positions contructed from their rows and columns
+     * @see #fillPatternRepeating(Pattern, SlotPos, SlotPos) to fill a repeating pattern using slot positions
      */
     InventoryContents fillPatternRepeating(Pattern<ClickableItem> pattern, int startIndex, int endIndex);
 
@@ -408,14 +410,14 @@ public interface InventoryContents {
      * Fills the inventory with the given {@link Pattern}.
      * <br>
      * The pattern will start at the given slot position and end at the second slot position.
-     * If the pattern is not big enough, it will wrap around to the other side and repeat the pattern
+     * If the pattern is not big enough, it will wrap around to the other side and repeat the pattern.
      * <br>
-     * The top-left corner of the specified inventory area is also the top-left corner of the specified pattern
+     * The top-left corner of the specified inventory area is also the top-left corner of the specified pattern.
      * <br>
      * If <code>endRow</code> is a negative value, endRow is automatically set to the max row size,
      * if <code>endColumn</code> is a negative value, endColumn is automatically set to the max column size.
      * <br>
-     * <b>For this to work the pattern needs to be created with <code>wrapAround</code> enabled</b>
+     * <b>For this to work the pattern needs to be created with <code>wrapAround</code> enabled.</b>
      *
      * @param pattern     the filling pattern
      * @param startRow    the start row of the slot for filling
@@ -423,9 +425,9 @@ public interface InventoryContents {
      * @param endRow      the end row of the slot for filling
      * @param endColumn   the end column of the slot for filling
      * @return <code>this</code>, for chained calls
-     * @see #fillPatternRepeating(Pattern) To fill a repeating pattern into the whole inventory
-     * @see #fillPatternRepeating(Pattern, int, int) To fill a repeating pattern using slot indexes
-     * @see #fillPatternRepeating(Pattern, SlotPos, SlotPos) To filla a repeating pattern using slot positions
+     * @see #fillPatternRepeating(Pattern) to fill a repeating pattern into the whole inventory
+     * @see #fillPatternRepeating(Pattern, int, int) to fill a repeating pattern using slot indexes
+     * @see #fillPatternRepeating(Pattern, SlotPos, SlotPos) to fill a repeating pattern using slot positions
      */
     InventoryContents fillPatternRepeating(Pattern<ClickableItem> pattern, int startRow, int startColumn, int endRow, int endColumn);
 
@@ -433,22 +435,22 @@ public interface InventoryContents {
      * Fills the inventory with the given {@link Pattern}.
      * <br>
      * The pattern will start at the given slot position and end at the second slot position.
-     * If the pattern is not big enough, it will wrap around to the other side and repeat the pattern
+     * If the pattern is not big enough, it will wrap around to the other side and repeat the pattern.
      * <br>
-     * The top-left corner of the specified inventory area is also the top-left corner of the specified pattern
+     * The top-left corner of the specified inventory area is also the top-left corner of the specified pattern.
      * <br>
      * If the row of <code>endPos</code> is a negative value, endRow is automatically set to the max row size,
      * if the column of <code>endPos</code> is a negative value, endColumn is automatically set to the max column size.
      * <br>
-     * <b>For this to work the pattern needs to be created with <code>wrapAround</code> enabled</b>
+     * <b>For this to work the pattern needs to be created with <code>wrapAround</code> enabled.</b>
      *
      * @param pattern  the filling pattern
      * @param startPos the position where the pattern should start
      * @param endPos   the position where the pattern should end
      * @return <code>this</code>, for chained calls
-     * @see #fillPatternRepeating(Pattern) To fill a repeating pattern into the whole inventory
-     * @see #fillPatternRepeating(Pattern, int, int) To fill a repeating pattern using slot indexes
-     * @see #fillPatternRepeating(Pattern, int, int, int, int) To fill a repeating pattern using slot positions contructed from their rows and columns
+     * @see #fillPatternRepeating(Pattern) to fill a repeating pattern into the whole inventory
+     * @see #fillPatternRepeating(Pattern, int, int) to fill a repeating pattern using slot indexes
+     * @see #fillPatternRepeating(Pattern, int, int, int, int) to fill a repeating pattern using slot positions contructed from their rows and columns
      */
     InventoryContents fillPatternRepeating(Pattern<ClickableItem> pattern, SlotPos startPos, SlotPos endPos);
 
@@ -547,9 +549,9 @@ public interface InventoryContents {
 
         @Override
         public Optional<SlotPos> firstEmpty() {
-            for (int row = 0; row < contents.length; row++) {
-                for (int column = 0; column < contents[0].length; column++) {
-                    if (!this.get(row, column).isPresent())
+            for(int row = 0; row < contents.length; row++) {
+                for(int column = 0; column < contents[0].length; column++) {
+                    if(!this.get(row, column).isPresent())
                         return Optional.of(new SlotPos(row, column));
                 }
             }
@@ -566,9 +568,9 @@ public interface InventoryContents {
 
         @Override
         public Optional<ClickableItem> get(int row, int column) {
-            if (row < 0 || row >= contents.length)
+            if(row < 0 || row >= contents.length)
                 return Optional.empty();
-            if (column < 0 || column >= contents[row].length)
+            if(column < 0 || column >= contents[row].length)
                 return Optional.empty();
 
             return Optional.ofNullable(contents[row][column]);
@@ -588,9 +590,9 @@ public interface InventoryContents {
 
         @Override
         public InventoryContents set(int row, int column, ClickableItem item) {
-            if (row < 0 || row >= contents.length)
+            if(row < 0 || row >= contents.length)
                 return this;
-            if (column < 0 || column >= contents[row].length)
+            if(column < 0 || column >= contents[row].length)
                 return this;
 
             contents[row][column] = item;
@@ -605,9 +607,9 @@ public interface InventoryContents {
 
         @Override
         public InventoryContents add(ClickableItem item) {
-            for (int row = 0; row < contents.length; row++) {
-                for (int column = 0; column < contents[0].length; column++) {
-                    if (contents[row][column] == null) {
+            for(int row = 0; row < contents.length; row++) {
+                for(int column = 0; column < contents[0].length; column++) {
+                    if(contents[row][column] == null) {
                         set(row, column, item);
                         return this;
                     }
@@ -618,11 +620,11 @@ public interface InventoryContents {
         }
 
         @Override
-        public Optional<SlotPos> findItemStack(ItemStack itemStack) {
+        public Optional<SlotPos> findItem(ItemStack itemStack) {
             Preconditions.checkNotNull(itemStack, "The itemstack to look for cannot be null!");
-            for (int row = 0; row < contents.length; row++) {
-                for (int column = 0; column < contents[0].length; column++) {
-                    if (contents[row][column] != null &&
+            for(int row = 0; row < contents.length; row++) {
+                for(int column = 0; column < contents[0].length; column++) {
+                    if(contents[row][column] != null &&
                             itemStack.isSimilar(contents[row][column].getItem())) {
                         return Optional.of(SlotPos.of(row, column));
                     }
@@ -632,15 +634,15 @@ public interface InventoryContents {
         }
 
         @Override
-        public Optional<SlotPos> findItemStack(ClickableItem clickableItem) {
+        public Optional<SlotPos> findItem(ClickableItem clickableItem) {
             Preconditions.checkNotNull(clickableItem, "The clickable item to look for cannot be null!");
-            return findItemStack(clickableItem.getItem());
+            return findItem(clickableItem.getItem());
         }
 
         @Override
         public InventoryContents fill(ClickableItem item) {
-            for (int row = 0; row < contents.length; row++)
-                for (int column = 0; column < contents[row].length; column++)
+            for(int row = 0; row < contents.length; row++)
+                for(int column = 0; column < contents[row].length; column++)
                     set(row, column, item);
 
             return this;
@@ -648,10 +650,10 @@ public interface InventoryContents {
 
         @Override
         public InventoryContents fillRow(int row, ClickableItem item) {
-            if (row < 0 || row >= contents.length)
+            if(row < 0 || row >= contents.length)
                 return this;
 
-            for (int column = 0; column < contents[row].length; column++)
+            for(int column = 0; column < contents[row].length; column++)
                 set(row, column, item);
 
             return this;
@@ -659,10 +661,10 @@ public interface InventoryContents {
 
         @Override
         public InventoryContents fillColumn(int column, ClickableItem item) {
-            if (column < 0 || column >= contents[0].length)
+            if(column < 0 || column >= contents[0].length)
                 return this;
 
-            for (int row = 0; row < contents.length; row++)
+            for(int row = 0; row < contents.length; row++)
                 set(row, column, item);
 
             return this;
@@ -687,9 +689,9 @@ public interface InventoryContents {
 
         @Override
         public InventoryContents fillRect(int fromRow, int fromColumn, int toRow, int toColumn, ClickableItem item) {
-            for (int row = fromRow; row <= toRow; row++) {
-                for (int column = fromColumn; column <= toColumn; column++) {
-                    if (row != fromRow && row != toRow && column != fromColumn && column != toColumn)
+            for(int row = fromRow; row <= toRow; row++) {
+                for(int column = fromColumn; column <= toColumn; column++) {
+                    if(row != fromRow && row != toRow && column != fromColumn && column != toColumn)
                         continue;
 
                     set(row, column, item);
@@ -720,8 +722,8 @@ public interface InventoryContents {
             Preconditions.checkArgument(fromRow < toRow, "The start row needs to be lower than the end row");
             Preconditions.checkArgument(fromColumn < toColumn, "The start column needs to be lower than the end column");
 
-            for (int row = fromRow; row <= toRow; row++) {
-                for (int column = fromColumn; column <= toColumn; column++) {
+            for(int row = fromRow; row <= toRow; row++) {
+                for(int column = fromColumn; column <= toColumn; column++) {
                     set(row, column, item);
                 }
             }
@@ -767,20 +769,20 @@ public interface InventoryContents {
         public InventoryContents fillPatternRepeating(Pattern<ClickableItem> pattern, int startRow, int startColumn, int endRow, int endColumn) {
             Preconditions.checkArgument(pattern.isWrapAround(), "To fill in a repeating pattern wrapAround needs to be enabled for the pattern to work!");
 
-            if (endRow < 0)
+            if(endRow < 0)
                 endRow = this.inv.getRows();
-            if (endColumn < 0)
+            if(endColumn < 0)
                 endColumn = this.inv.getColumns();
 
             Preconditions.checkArgument(startRow < endRow, "The start row needs to be lower than the end row");
             Preconditions.checkArgument(startColumn < endColumn, "The start column needs to be lower than the end column");
 
             int rowDelta = endRow - startRow, columnDelta = endColumn - startColumn;
-            for (int row = 0; row <= rowDelta; row++) {
-                for (int column = 0; column <= columnDelta; column++) {
+            for(int row = 0; row <= rowDelta; row++) {
+                for(int column = 0; column <= columnDelta; column++) {
                     ClickableItem item = pattern.getObject(row, column);
 
-                    if (item != null)
+                    if(item != null)
                         set(startRow + row, startColumn + column, item);
                 }
             }
@@ -794,11 +796,11 @@ public interface InventoryContents {
 
         @Override
         public InventoryContents fillPattern(Pattern<ClickableItem> pattern, int startRow, int startColumn) {
-            for (int row = 0; row < pattern.getRowCount(); row++) {
-                for (int column = 0; column < pattern.getColumnCount(); column++) {
+            for(int row = 0; row < pattern.getRowCount(); row++) {
+                for(int column = 0; column < pattern.getColumnCount(); column++) {
                     ClickableItem item = pattern.getObject(row, column);
 
-                    if (item != null)
+                    if(item != null)
                         set(startRow + row, startColumn + column, item);
                 }
             }
@@ -825,7 +827,7 @@ public interface InventoryContents {
         }
 
         private void update(int row, int column, ItemStack item) {
-            if (!inv.getManager().getOpenedPlayers(inv).contains(player))
+            if(!inv.getManager().getOpenedPlayers(inv).contains(player))
                 return;
 
             Inventory topInventory = player.getOpenInventory().getTopInventory();
