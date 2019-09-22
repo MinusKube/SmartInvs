@@ -1,11 +1,10 @@
 package fr.minuskube.inv.util;
 
+import com.google.common.base.Preconditions;
 import fr.minuskube.inv.content.SlotPos;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.google.common.base.Preconditions.*;
 
 public class Pattern<T> {
 
@@ -21,8 +20,8 @@ public class Pattern<T> {
     }
 
     public Pattern(boolean wrapAround, String... lines) {
-        checkNotNull(lines, "The given pattern lines must not be null.");
-        checkArgument(lines.length > 0, "The given pattern lines must not be empty.");
+	    Preconditions.checkNotNull(lines, "The given pattern lines must not be null.");
+	    Preconditions.checkArgument(lines.length > 0, "The given pattern lines must not be empty.");
 
         int columnCount = lines[0].length();
 
@@ -30,8 +29,8 @@ public class Pattern<T> {
 
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
-            checkNotNull(line, "The given pattern line %s cannot be null.", i);
-            checkArgument(line.length() == columnCount,
+	        Preconditions.checkNotNull(line, "The given pattern line %s cannot be null.", i);
+	        Preconditions.checkArgument(line.length() == columnCount,
                     "The given pattern line %s does not match the first line character count.", i);
             this.lines[i] = lines[i];
         }
@@ -62,8 +61,8 @@ public class Pattern<T> {
             if (column < 0)
                 column += getColumnCount();
         } else {
-            checkElementIndex(row, this.lines.length, "The row must be between 0 and the row count");
-            checkElementIndex(column, this.lines[0].length(), "The column must be between 0 and the column size");
+	        Preconditions.checkElementIndex(row, this.lines.length, "The row must be between 0 and the row count");
+	        Preconditions.checkElementIndex(column, this.lines[0].length(), "The column must be between 0 and the column size");
         }
         return this.mapping.getOrDefault(this.lines[row].charAt(column), this.defaultValue);
     }
