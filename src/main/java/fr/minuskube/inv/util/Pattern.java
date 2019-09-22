@@ -1,10 +1,11 @@
 package fr.minuskube.inv.util;
 
-import com.google.common.base.Preconditions;
 import fr.minuskube.inv.content.SlotPos;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.google.common.base.Preconditions.*;
 
 public class Pattern<T> {
 
@@ -20,7 +21,8 @@ public class Pattern<T> {
     }
 
     public Pattern(boolean wrapAround, String... lines) {
-        Preconditions.checkArgument(lines.length > 0, "The given pattern lines must not be empty.");
+        checkNotNull(lines, "The given pattern lines must not be null.");
+        checkArgument(lines.length > 0, "The given pattern lines must not be empty.");
 
         int columnCount = lines[0].length();
 
@@ -28,8 +30,8 @@ public class Pattern<T> {
 
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
-            Preconditions.checkNotNull(line, "The given pattern line %s cannot be null.", i);
-            Preconditions.checkArgument(line.length() == columnCount,
+            checkNotNull(line, "The given pattern line %s cannot be null.", i);
+            checkArgument(line.length() == columnCount,
                     "The given pattern line %s does not match the first line character count.", i);
             this.lines[i] = lines[i];
         }
@@ -52,20 +54,16 @@ public class Pattern<T> {
     }
 
     public T getObject(int row, int column) {
-        if (wrapAround) { // Prevent overflow of numbers. Allows for infinite repeating patterns. If the numbers get bigger inefficient though
-            while (row < 0)
+        if (wrapAround) { // Prevent overflow of numbers. Allows for infinite repeating patterns.
+            row %= getRowCount();
+            if (row < 0)
                 row += getRowCount();
-            if (row >= getRowCount())
-                row %= getRowCount();
-            while (column < 0)
+            column %= getColumnCount();
+            if (column < 0)
                 column += getColumnCount();
-            if (column >= getColumnCount())
-                column %= getColumnCount();
         } else {
-            Preconditions.checkArgument(row >= 0 && row < this.lines.length,
-                    "The row must be between 0 and the row count");
-            Preconditions.checkArgument(column >= 0 && column < this.lines[row].length(),
-                    "The column must be between 0 and the column count");
+            checkElementIndex(row, this.lines.length, "The row must be between 0 and the row count");
+            checkElementIndex(column, this.lines[0].length(), "The column must be between 0 and the column size");
         }
         return this.mapping.getOrDefault(this.lines[row].charAt(column), this.defaultValue);
     }
