@@ -1,6 +1,7 @@
 package fr.minuskube.inv;
 
 import fr.minuskube.inv.content.InventoryContents;
+import fr.minuskube.inv.content.SlotPos;
 import fr.minuskube.inv.opener.ChestInventoryOpener;
 import fr.minuskube.inv.opener.InventoryOpener;
 import fr.minuskube.inv.opener.SpecialInventoryOpener;
@@ -137,7 +138,7 @@ public class InventoryManager {
                         .filter(listener -> listener.getType() == InventoryClickEvent.class)
                         .forEach(listener -> ((InventoryListener<InventoryClickEvent>) listener).accept(e));
 
-                //contents.get(p).get(row, column).ifPresent(item -> item.run(e));
+                contents.get(p).get(row, column).ifPresent(item -> item.run(new ItemClickData(e, p, e.getCurrentItem(), SlotPos.of(row, column))));
 
                 p.updateInventory();
             }
