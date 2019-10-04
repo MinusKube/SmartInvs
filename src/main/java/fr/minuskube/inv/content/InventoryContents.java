@@ -596,7 +596,7 @@ public interface InventoryContents {
                 return this;
 
             contents[row][column] = item;
-            update(row, column, item != null ? item.getItem() : null);
+            update(row, column, item == null ? null : item.getItem(player));
             return this;
         }
 
