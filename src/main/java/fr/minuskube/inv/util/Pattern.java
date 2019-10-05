@@ -3,8 +3,7 @@ package fr.minuskube.inv.util;
 import com.google.common.base.Preconditions;
 import fr.minuskube.inv.content.SlotPos;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Pattern<T> {
 
@@ -65,6 +64,29 @@ public class Pattern<T> {
             Preconditions.checkElementIndex(column, this.lines[0].length(), "The column must be between 0 and the column size");
         }
         return this.mapping.getOrDefault(this.lines[row].charAt(column), this.defaultValue);
+    }
+
+    public Optional<SlotPos> findKey(char character) {
+        for (int row = 0; row < getRowCount(); row++) {
+            for (int column = 0; column < getColumnCount(); column++) {
+                if (this.lines[row].charAt(column) == character) {
+                    return Optional.of(SlotPos.of(row, column));
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    public List<SlotPos> findAllKeys(char character) {
+        List<SlotPos> positions = new ArrayList<>();
+        for (int row = 0; row < getRowCount(); row++) {
+            for (int column = 0; column < getColumnCount(); column++) {
+                if (this.lines[row].charAt(column) == character) {
+                    positions.add(SlotPos.of(row, column));
+                }
+            }
+        }
+        return positions;
     }
 
     public T getDefault() {
