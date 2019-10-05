@@ -37,8 +37,9 @@ public class Pattern<T> {
         this.wrapAround = wrapAround;
     }
 
-    public void attach(char character, T object) {
+    public Pattern<T> attach(char character, T object) {
         this.mapping.put(character, object);
+        return this;
     }
 
     public T getObject(int index) {
@@ -93,8 +94,9 @@ public class Pattern<T> {
         return this.defaultValue;
     }
 
-    public void setDefault(T defaultValue) {
+    public Pattern<T> setDefault(T defaultValue) {
         this.defaultValue = defaultValue;
+        return this;
     }
 
     public int getRowCount() {
