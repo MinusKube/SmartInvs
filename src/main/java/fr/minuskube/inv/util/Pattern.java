@@ -145,7 +145,7 @@ public class Pattern<T> {
 
     /**
      * Searches through this patterns lines to find the first top-left occurrence of this key.
-     * If it could not be found, the retured {@link Optional} is empty.
+     * If it could not be found, the returned {@link Optional} is empty.
      *
      * @param character The character key to look for
      *
