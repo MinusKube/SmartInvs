@@ -35,20 +35,27 @@ You can also use a build system:
 ### Gradle
 ```gradle
 repositories {
-    mavenCentral()
+    maven {
+        url = 'https://repo.sytm.de/repository/maven-hosted/'
+    }
 }
 
 dependencies {
-    compile 'fr.minuskube.inv:smart-invs:1.3.0'
+    compile 'fr.minuskube.inv:smart-invs:1.3.0-SNAPSHOT'
 }
 ```
 
 ### Maven
 ```xml
+<repositories>
+    <id>sytm-nexus</id>
+    <url>https://repo.sytm.de/repository/maven-hosted/</url>
+</repositories>
+
 <dependency>
   <groupId>fr.minuskube.inv</groupId>
   <artifactId>smart-invs</artifactId>
-  <version>1.3.0</version>
+  <version>1.3.0-SNAPSHOT</version>
 </dependency>
 ```
 
