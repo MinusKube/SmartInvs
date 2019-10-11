@@ -20,7 +20,7 @@ public class ClickableItem {
     private final ItemStack item;
     private final Consumer<?> consumer;
     private final boolean legacy;
-    private Predicate<Player> canSee, canClick;
+	private Predicate<Player> canSee = ALWAYS_TRUE, canClick = ALWAYS_TRUE;
     private ItemStack notVisibleFallBackItem;
 
     private ClickableItem(ItemStack item, Consumer<?> consumer, boolean legacy) {
