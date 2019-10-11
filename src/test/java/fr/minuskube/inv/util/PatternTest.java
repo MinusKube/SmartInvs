@@ -33,7 +33,7 @@ public class PatternTest {
         assertEquals(5, pattern.getColumnCount());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IndexOutOfBoundsException.class)
     public void testNegativeGetPattern() {
         Pattern<String> pattern = new Pattern<>(
                 "XOOX",
@@ -43,7 +43,7 @@ public class PatternTest {
         pattern.getObject(-1, 0);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IndexOutOfBoundsException.class)
     public void testOversizeGetPattern() {
         Pattern<String> pattern = new Pattern<>(
                 "XOOX",
