@@ -4,7 +4,6 @@ import fr.minuskube.inv.content.InventoryContents;
 import fr.minuskube.inv.content.InventoryProvider;
 import fr.minuskube.inv.opener.InventoryOpener;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -150,7 +149,7 @@ public class SmartInventory {
          * @throws IllegalArgumentException If frequency is smaller than 1.
          */
         public Builder updateFrequency(int frequency) {
-        	Preconditions.checkArgument(frequency > 1, "frequency must be > 0");
+        	Preconditions.checkArgument(frequency > 0, "frequency must be > 0");
         	this.updateFrequency = frequency;
         	return this;
         }
