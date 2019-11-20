@@ -21,6 +21,7 @@ public class SmartInventory {
     private InventoryType type;
     private int rows, columns;
     private boolean closeable;
+    private int updateFrequency;
 
     private InventoryProvider provider;
     private SmartInventory parent;
