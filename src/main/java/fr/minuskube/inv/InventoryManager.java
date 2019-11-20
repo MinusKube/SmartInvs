@@ -1,6 +1,7 @@
 package fr.minuskube.inv;
 
 import fr.minuskube.inv.content.InventoryContents;
+import fr.minuskube.inv.content.InventoryProvider;
 import fr.minuskube.inv.opener.ChestInventoryOpener;
 import fr.minuskube.inv.opener.InventoryOpener;
 import fr.minuskube.inv.opener.SpecialInventoryOpener;
@@ -25,6 +26,7 @@ public class InventoryManager {
 
     private Map<Player, SmartInventory> inventories;
     private Map<Player, InventoryContents> contents;
+    private Map<Player, BukkitRunnable> updateTasks;
 
     private List<InventoryOpener> defaultOpeners;
     private List<InventoryOpener> openers;
@@ -35,6 +37,7 @@ public class InventoryManager {
 
         this.inventories = new HashMap<>();
         this.contents = new HashMap<>();
+        this.updateTasks = new HashMap<>();
 
         this.defaultOpeners = Arrays.asList(
                 new ChestInventoryOpener(),
@@ -99,6 +102,19 @@ public class InventoryManager {
             this.contents.remove(p);
         else
             this.contents.put(p, contents);
+    }
+    
+    protected void scheduleUpdateTask(Player p, SmartInventory inv) {
+    	PlayerInvTask task = new PlayerInvTask(p, inv.getProvider(), contents.get(p));
+    	task.runTaskTimer(plugin, 1, inv.getUpdateFrequency());
+    	this.updateTasks.put(p, task);
+    }
+    
+    protected void cancelUpdateTask(Player p) {
+    	if(updateTasks.containsKey(p)) {
+    		int bukkitTaskId = updateTasks.get(p).getTaskId();
+    		Bukkit.getScheduler().cancelTask(bukkitTaskId);
+    	}
     }
 
     @SuppressWarnings("unchecked")
@@ -242,6 +258,25 @@ public class InventoryManager {
             new HashMap<>(inventories).forEach((player, inv) -> inv.getProvider().update(player, contents.get(player)));
         }
 
+    }
+    
+    class PlayerInvTask extends BukkitRunnable {
+
+    	private Player player;
+    	private InventoryProvider provider;
+    	private InventoryContents contents;
+    	
+    	public PlayerInvTask(Player player, InventoryProvider provider, InventoryContents contents) {
+    		this.player = Objects.requireNonNull(player);
+    		this.provider = Objects.requireNonNull(provider);
+    		this.contents = Objects.requireNonNull(contents);
+    	}
+    	
+		@Override
+		public void run() {
+			provider.update(this.player, this.contents);
+		}
+    	
     }
 
 }
