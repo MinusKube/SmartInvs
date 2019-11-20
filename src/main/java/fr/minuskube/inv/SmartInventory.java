@@ -82,6 +82,8 @@ public class SmartInventory {
 
     public boolean isCloseable() { return closeable; }
     public void setCloseable(boolean closeable) { this.closeable = closeable; }
+    
+    public int getUpdateFrequency() { return updateFrequency; }
 
     public InventoryProvider getProvider() { return provider; }
     public Optional<SmartInventory> getParent() { return Optional.ofNullable(parent); }
@@ -99,6 +101,7 @@ public class SmartInventory {
         private InventoryType type = InventoryType.CHEST;
         private int rows = 6, columns = 9;
         private boolean closeable = true;
+        private int updateFrequency = 1;
 
         private InventoryManager manager;
         private InventoryProvider provider;
@@ -132,6 +135,16 @@ public class SmartInventory {
         public Builder closeable(boolean closeable) {
             this.closeable = closeable;
             return this;
+        }
+        
+        /**
+         * This method is used to configure the frequency at which the {@link InventoryProvider#update(Player, InventoryContents)}
+         * method is called. Defaults to 1
+         * @param frequency The inventory update frequency, in ticks
+         */
+        public Builder updateFrequency(int frequency) {
+        	this.updateFrequency = frequency;
+        	return this;
         }
 
         public Builder provider(InventoryProvider provider) {
@@ -171,6 +184,7 @@ public class SmartInventory {
             inv.rows = this.rows;
             inv.columns = this.columns;
             inv.closeable = this.closeable;
+            inv.updateFrequency = this.updateFrequency;
             inv.provider = this.provider;
             inv.parent = this.parent;
             inv.listeners = this.listeners;
