@@ -11,6 +11,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
+import com.google.common.base.Preconditions;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -145,8 +147,10 @@ public class SmartInventory {
          * This method is used to configure the frequency at which the {@link InventoryProvider#update(Player, InventoryContents)}
          * method is called. Defaults to 1
          * @param frequency The inventory update frequency, in ticks
+         * @throws IllegalArgumentException If frequency is smaller than 1.
          */
         public Builder updateFrequency(int frequency) {
+        	Preconditions.checkArgument(frequency > 1, "frequency must be > 0");
         	this.updateFrequency = frequency;
         	return this;
         }
