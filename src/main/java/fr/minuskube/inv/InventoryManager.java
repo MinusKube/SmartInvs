@@ -210,6 +210,7 @@ public class InventoryManager {
 
             if(inv.isCloseable()) {
                 e.getInventory().clear();
+                InventoryManager.this.cancelUpdateTask(p);
 
                 inventories.remove(p);
                 contents.remove(p);

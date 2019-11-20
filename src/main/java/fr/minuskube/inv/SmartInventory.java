@@ -3,6 +3,8 @@ package fr.minuskube.inv;
 import fr.minuskube.inv.content.InventoryContents;
 import fr.minuskube.inv.content.InventoryProvider;
 import fr.minuskube.inv.opener.InventoryOpener;
+
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -58,7 +60,7 @@ public class SmartInventory {
 
         this.manager.setInventory(player, this);
         this.manager.scheduleUpdateTask(player, this);
-
+        
         return handle;
     }
 
