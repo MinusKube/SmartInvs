@@ -57,6 +57,7 @@ public class SmartInventory {
         Inventory handle = opener.open(this, player);
 
         this.manager.setInventory(player, this);
+        this.manager.scheduleUpdateTask(player, this);
 
         return handle;
     }
@@ -72,6 +73,7 @@ public class SmartInventory {
         player.closeInventory();
 
         this.manager.setContents(player, null);
+        this.manager.cancelUpdateTask(player);
     }
 
     public String getId() { return id; }
