@@ -50,7 +50,7 @@ public class InventoryManager {
     public void init() {
         pluginManager.registerEvents(new InvListener(), plugin);
 
-        new InvTask().runTaskTimer(plugin, 1, 1);
+//        new InvTask().runTaskTimer(plugin, 1, 1);
     }
 
     public Optional<InventoryOpener> findOpener(InventoryType type) {
