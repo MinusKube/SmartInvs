@@ -112,8 +112,9 @@ public class InventoryManager {
     
     protected void cancelUpdateTask(Player p) {
     	if(updateTasks.containsKey(p)) {
-    		int bukkitTaskId = updateTasks.get(p).getTaskId();
+    		int bukkitTaskId = this.updateTasks.get(p).getTaskId();
     		Bukkit.getScheduler().cancelTask(bukkitTaskId);
+    		this.updateTasks.remove(p);
     	}
     }
 
