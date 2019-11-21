@@ -181,6 +181,7 @@ public class SmartInventory {
         private SlotPos getDefaultDimensions(InventoryType type) {
         	switch(type) {
         		case CHEST:
+        		case ENDER_CHEST:
         			return SlotPos.of(3, 9);
         		case HOPPER:
         			return SlotPos.of(1, 5);
@@ -189,7 +190,7 @@ public class SmartInventory {
         		case ANVIL:
         			return SlotPos.of(1, 3);
         		case BREWING:
-        			return SlotPos.of(2, 4); // ??? What should the defaults be?
+        			return SlotPos.of(1, 5);
         		case ENCHANTING:
         			return SlotPos.of(1, 2);
         		case DROPPER:
@@ -197,7 +198,7 @@ public class SmartInventory {
         		case WORKBENCH:				// WORKBENCH ... 3x3? It has the output item also though
         			return SlotPos.of(3, 3);
         		case FURNACE:
-        			return SlotPos.of(3, 2); // ?
+        			return SlotPos.of(1, 3);
         		default:
         			throw new IllegalArgumentException("Failed to get default size of unknown inventory type: " + type);
         	}
