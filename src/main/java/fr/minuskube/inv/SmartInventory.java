@@ -30,14 +30,25 @@ public class SmartInventory {
     private SmartInventory parent;
 
     private List<InventoryListener<? extends Event>> listeners;
-    private InventoryManager manager;
+    private final InventoryManager manager;
 
     private SmartInventory(InventoryManager manager) {
         this.manager = manager;
     }
 
-    public Inventory open(Player player) { return open(player, 0); }
-    public Inventory open(Player player, int page) {
+    public Inventory open(Player player) {	
+        return open(player, 0, Collections.EMPTY_MAP);	
+    }	
+    
+    public Inventory open(Player player, int page) {	
+        return open(player, page, Collections.EMPTY_MAP);	
+    }	
+    
+    public Inventory open(Player player, Map<String, Object> properties) {	
+        return open(player, 0, properties);	
+    }	
+
+    public Inventory open(Player player, int page, Map<String, Object> properties) {	
         Optional<SmartInventory> oldInv = this.manager.getInventory(player);
 
         oldInv.ifPresent(inv -> {
@@ -51,6 +62,10 @@ public class SmartInventory {
 
         InventoryContents contents = new InventoryContents.Impl(this, player);
         contents.pagination().page(page);
+        
+        for (Map.Entry<String, Object> property : properties.entrySet()) {	
+            contents.setProperty(property.getKey(), property.getValue());	
+        }
 
         this.manager.setContents(player, contents);
         this.provider.init(player, contents);

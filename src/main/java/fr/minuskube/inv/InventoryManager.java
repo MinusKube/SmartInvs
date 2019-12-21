@@ -2,6 +2,7 @@ package fr.minuskube.inv;
 
 import fr.minuskube.inv.content.InventoryContents;
 import fr.minuskube.inv.content.InventoryProvider;
+import fr.minuskube.inv.content.SlotPos;
 import fr.minuskube.inv.opener.ChestInventoryOpener;
 import fr.minuskube.inv.opener.InventoryOpener;
 import fr.minuskube.inv.opener.SpecialInventoryOpener;
@@ -21,15 +22,15 @@ import java.util.*;
 
 public class InventoryManager {
 
-    private JavaPlugin plugin;
-    private PluginManager pluginManager;
+    private final JavaPlugin plugin;
+    private final PluginManager pluginManager;
 
-    private Map<Player, SmartInventory> inventories;
-    private Map<Player, InventoryContents> contents;
-    private Map<Player, BukkitRunnable> updateTasks;
+    private final Map<Player, SmartInventory> inventories;
+    private final Map<Player, InventoryContents> contents;
+    private final Map<Player, BukkitRunnable> updateTasks;
 
-    private List<InventoryOpener> defaultOpeners;
-    private List<InventoryOpener> openers;
+    private final List<InventoryOpener> defaultOpeners;
+    private final List<InventoryOpener> openers;
 
     public InventoryManager(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -112,9 +113,9 @@ public class InventoryManager {
     
     protected void cancelUpdateTask(Player p) {
     	if(updateTasks.containsKey(p)) {
-    		int bukkitTaskId = this.updateTasks.get(p).getTaskId();
-    		Bukkit.getScheduler().cancelTask(bukkitTaskId);
-    		this.updateTasks.remove(p);
+          int bukkitTaskId = this.updateTasks.get(p).getTaskId();
+          Bukkit.getScheduler().cancelTask(bukkitTaskId);
+          this.updateTasks.remove(p);
     	}
     }
 
@@ -128,9 +129,9 @@ public class InventoryManager {
             if(!inventories.containsKey(p))
                 return;
 
-            if(e.getAction() == InventoryAction.COLLECT_TO_CURSOR ||
-                    e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY ||
-                    e.getAction() == InventoryAction.NOTHING) {
+            if( e.getAction() == InventoryAction.COLLECT_TO_CURSOR ||
+                e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY ||
+                e.getAction() == InventoryAction.NOTHING) {
 
                 e.setCancelled(true);
                 return;
@@ -154,7 +155,7 @@ public class InventoryManager {
                         .filter(listener -> listener.getType() == InventoryClickEvent.class)
                         .forEach(listener -> ((InventoryListener<InventoryClickEvent>) listener).accept(e));
 
-                contents.get(p).get(row, column).ifPresent(item -> item.run(e));
+                contents.get(p).get(row, column).ifPresent(item -> item.run(new ItemClickData(e, p, e.getCurrentItem(), SlotPos.of(row, column))));
 
                 p.updateInventory();
             }
@@ -264,20 +265,20 @@ public class InventoryManager {
     
     class PlayerInvTask extends BukkitRunnable {
 
-    	private Player player;
-    	private InventoryProvider provider;
-    	private InventoryContents contents;
-    	
-    	public PlayerInvTask(Player player, InventoryProvider provider, InventoryContents contents) {
-    		this.player = Objects.requireNonNull(player);
-    		this.provider = Objects.requireNonNull(provider);
-    		this.contents = Objects.requireNonNull(contents);
-    	}
-    	
-		@Override
-		public void run() {
-			provider.update(this.player, this.contents);
-		}
+        private Player player;
+        private InventoryProvider provider;
+        private InventoryContents contents;
+
+        public PlayerInvTask(Player player, InventoryProvider provider, InventoryContents contents) {
+          this.player = Objects.requireNonNull(player);
+          this.provider = Objects.requireNonNull(provider);
+          this.contents = Objects.requireNonNull(contents);
+        }
+
+        @Override
+        public void run() {
+            provider.update(this.player, this.contents);
+        }
     	
     }
 
