@@ -3,13 +3,18 @@ package fr.minuskube.inv;
 import fr.minuskube.inv.content.InventoryContents;
 import fr.minuskube.inv.content.InventoryProvider;
 import fr.minuskube.inv.opener.InventoryOpener;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
-import java.util.*;
+import com.google.common.base.Preconditions;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @SuppressWarnings("unchecked")
 public class SmartInventory {
@@ -19,6 +24,7 @@ public class SmartInventory {
     private InventoryType type;
     private int rows, columns;
     private boolean closeable;
+    private int updateFrequency;
 
     private InventoryProvider provider;
     private SmartInventory parent;
@@ -30,19 +36,19 @@ public class SmartInventory {
         this.manager = manager;
     }
 
-    public Inventory open(Player player) {
-        return open(player, 0, Collections.EMPTY_MAP);
-    }
+    public Inventory open(Player player) {	
+        return open(player, 0, Collections.EMPTY_MAP);	
+    }	
+    
+    public Inventory open(Player player, int page) {	
+        return open(player, page, Collections.EMPTY_MAP);	
+    }	
+    
+    public Inventory open(Player player, Map<String, Object> properties) {	
+        return open(player, 0, properties);	
+    }	
 
-    public Inventory open(Player player, int page) {
-        return open(player, page, Collections.EMPTY_MAP);
-    }
-
-    public Inventory open(Player player, Map<String, Object> properties) {
-        return open(player, 0, properties);
-    }
-
-    public Inventory open(Player player, int page, Map<String, Object> properties) {
+    public Inventory open(Player player, int page, Map<String, Object> properties) {	
         Optional<SmartInventory> oldInv = this.manager.getInventory(player);
 
         oldInv.ifPresent(inv -> {
@@ -56,9 +62,9 @@ public class SmartInventory {
 
         InventoryContents contents = new InventoryContents.Impl(this, player);
         contents.pagination().page(page);
-
-        for (Map.Entry<String, Object> property : properties.entrySet()) {
-            contents.setProperty(property.getKey(), property.getValue());
+        
+        for (Map.Entry<String, Object> property : properties.entrySet()) {	
+            contents.setProperty(property.getKey(), property.getValue());	
         }
 
         this.manager.setContents(player, contents);
@@ -69,7 +75,8 @@ public class SmartInventory {
         Inventory handle = opener.open(this, player);
 
         this.manager.setInventory(player, this);
-
+        this.manager.scheduleUpdateTask(player, this);
+        
         return handle;
     }
 
@@ -84,6 +91,7 @@ public class SmartInventory {
         player.closeInventory();
 
         this.manager.setContents(player, null);
+        this.manager.cancelUpdateTask(player);
     }
 
     public String getId() { return id; }
@@ -94,6 +102,8 @@ public class SmartInventory {
 
     public boolean isCloseable() { return closeable; }
     public void setCloseable(boolean closeable) { this.closeable = closeable; }
+    
+    public int getUpdateFrequency() { return updateFrequency; }
 
     public InventoryProvider getProvider() { return provider; }
     public Optional<SmartInventory> getParent() { return Optional.ofNullable(parent); }
@@ -111,6 +121,7 @@ public class SmartInventory {
         private InventoryType type = InventoryType.CHEST;
         private int rows = 6, columns = 9;
         private boolean closeable = true;
+        private int updateFrequency = 1;
 
         private InventoryManager manager;
         private InventoryProvider provider;
@@ -144,6 +155,18 @@ public class SmartInventory {
         public Builder closeable(boolean closeable) {
             this.closeable = closeable;
             return this;
+        }
+        
+        /**
+         * This method is used to configure the frequency at which the {@link InventoryProvider#update(Player, InventoryContents)}
+         * method is called. Defaults to 1
+         * @param frequency The inventory update frequency, in ticks
+         * @throws IllegalArgumentException If frequency is smaller than 1.
+         */
+        public Builder updateFrequency(int frequency) {
+        	Preconditions.checkArgument(frequency > 0, "frequency must be > 0");
+        	this.updateFrequency = frequency;
+        	return this;
         }
 
         public Builder provider(InventoryProvider provider) {
@@ -183,6 +206,7 @@ public class SmartInventory {
             inv.rows = this.rows;
             inv.columns = this.columns;
             inv.closeable = this.closeable;
+            inv.updateFrequency = this.updateFrequency;
             inv.provider = this.provider;
             inv.parent = this.parent;
             inv.listeners = this.listeners;
