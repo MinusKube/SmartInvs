@@ -2,6 +2,7 @@ package fr.minuskube.inv;
 
 import fr.minuskube.inv.content.InventoryContents;
 import fr.minuskube.inv.content.InventoryProvider;
+import fr.minuskube.inv.content.SlotPos;
 import fr.minuskube.inv.opener.InventoryOpener;
 
 import org.bukkit.entity.Player;
@@ -119,7 +120,8 @@ public class SmartInventory {
         private String id = "unknown";
         private String title = "";
         private InventoryType type = InventoryType.CHEST;
-        private int rows = 6, columns = 9;
+        private Optional<Integer> rows = Optional.empty();
+        private Optional<Integer> columns = Optional.empty();
         private boolean closeable = true;
         private int updateFrequency = 1;
 
@@ -147,8 +149,8 @@ public class SmartInventory {
         }
 
         public Builder size(int rows, int columns) {
-            this.rows = rows;
-            this.columns = columns;
+            this.rows = Optional.of(rows);
+            this.columns = Optional.of(columns);
             return this;
         }
 
@@ -203,15 +205,40 @@ public class SmartInventory {
             inv.id = this.id;
             inv.title = this.title;
             inv.type = this.type;
-            inv.rows = this.rows;
-            inv.columns = this.columns;
+            inv.rows = this.rows.orElseGet(() -> getDefaultDimensions(type).getRow());
+            inv.columns = this.columns.orElseGet(() -> getDefaultDimensions(type).getColumn());
             inv.closeable = this.closeable;
             inv.updateFrequency = this.updateFrequency;
             inv.provider = this.provider;
             inv.parent = this.parent;
             inv.listeners = this.listeners;
-
             return inv;
+        }
+
+        private SlotPos getDefaultDimensions(InventoryType type) {
+        	switch(type) {
+        		case CHEST:
+        		case ENDER_CHEST:
+        			return SlotPos.of(3, 9);
+        		case HOPPER:
+        			return SlotPos.of(1, 5);
+        		case BEACON:
+        			return SlotPos.of(1, 1);
+        		case ANVIL:
+        			return SlotPos.of(1, 3);
+        		case BREWING:
+        			return SlotPos.of(1, 5);
+        		case ENCHANTING:
+        			return SlotPos.of(1, 2);
+        		case DROPPER:
+        		case DISPENSER:
+        		case WORKBENCH:				// WORKBENCH ... 3x3? It has the output item also though
+        			return SlotPos.of(3, 3);
+        		case FURNACE:
+        			return SlotPos.of(1, 3);
+        		default:
+        			throw new IllegalArgumentException("Failed to get default size of unknown inventory type: " + type);
+        	}
         }
     }
 
