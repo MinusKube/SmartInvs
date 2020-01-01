@@ -192,6 +192,9 @@ public class InventoryManager {
 
             SmartInventory inv = inventories.get(p);
 
+            if(inv.getType() != e.getInventory().getType() || !inv.getTitle().equals(e.getView().getTitle()))
+            	return;
+
             inv.getListeners().stream()
                     .filter(listener -> listener.getType() == InventoryOpenEvent.class)
                     .forEach(listener -> ((InventoryListener<InventoryOpenEvent>) listener).accept(e));
@@ -205,6 +208,9 @@ public class InventoryManager {
                 return;
 
             SmartInventory inv = inventories.get(p);
+
+            if(inv.getType() != e.getInventory().getType() || !inv.getTitle().equals(e.getView().getTitle()))
+            	return;
 
             inv.getListeners().stream()
                     .filter(listener -> listener.getType() == InventoryCloseEvent.class)
