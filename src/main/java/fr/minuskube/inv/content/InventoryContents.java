@@ -109,8 +109,7 @@ public interface InventoryContents {
             List<SlotPos> slotPos = new ArrayList<>();
             for (int row = 0; row < contents.length; row++) {
                 for(int column = 0; column < contents[0].length; column++) {
-                    if(!this.get(row, column).isPresent())
-                       slotPos.add(SlotPos.of(row, column));
+                    slotPos.add(SlotPos.of(row, column));
                 }
             }
             return slotPos;
