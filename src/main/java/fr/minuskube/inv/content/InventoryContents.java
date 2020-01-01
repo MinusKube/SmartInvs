@@ -6,7 +6,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public interface InventoryContents {
 
@@ -22,8 +24,6 @@ public interface InventoryContents {
     SlotIterator newIterator(SlotIterator.Type type, SlotPos startPos);
 
     ClickableItem[][] all();
-
-    List<SlotPos> slots();
 
     Optional<SlotPos> firstEmpty();
 
@@ -103,17 +103,6 @@ public interface InventoryContents {
 
         @Override
         public ClickableItem[][] all() { return contents; }
-
-        @Override
-        public List<SlotPos> slots() {
-            List<SlotPos> slotPos = new ArrayList<>();
-            for (int row = 0; row < contents.length; row++) {
-                for(int column = 0; column < contents[0].length; column++) {
-                    slotPos.add(SlotPos.of(row, column));
-                }
-            }
-            return slotPos;
-        }
 
         @Override
         public Optional<SlotPos> firstEmpty() {
