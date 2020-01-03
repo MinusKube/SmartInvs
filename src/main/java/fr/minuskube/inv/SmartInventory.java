@@ -1,20 +1,23 @@
 package fr.minuskube.inv;
 
+import fr.minuskube.inv.content.InventoryContents;
+import fr.minuskube.inv.content.InventoryProvider;
+import fr.minuskube.inv.content.SlotPos;
+import fr.minuskube.inv.opener.InventoryOpener;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import com.google.common.base.Preconditions;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-import com.google.common.base.Preconditions;
-import fr.minuskube.inv.content.InventoryContents;
-import fr.minuskube.inv.content.InventoryProvider;
-import fr.minuskube.inv.content.SlotPos;
-import fr.minuskube.inv.opener.InventoryOpener;
 
 @SuppressWarnings("unchecked")
 public class SmartInventory {
@@ -80,7 +83,6 @@ public class SmartInventory {
         return handle;
     }
 
-    @SuppressWarnings("unchecked")
     public void close(Player player) {
         listeners.stream()
                 .filter(listener -> listener.getType() == InventoryCloseEvent.class)
