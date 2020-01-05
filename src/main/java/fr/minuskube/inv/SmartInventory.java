@@ -1,20 +1,23 @@
 package fr.minuskube.inv;
 
+import fr.minuskube.inv.content.InventoryContents;
+import fr.minuskube.inv.content.InventoryProvider;
+import fr.minuskube.inv.content.SlotPos;
+import fr.minuskube.inv.opener.InventoryOpener;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import com.google.common.base.Preconditions;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-import com.google.common.base.Preconditions;
-import fr.minuskube.inv.content.InventoryContents;
-import fr.minuskube.inv.content.InventoryProvider;
-import fr.minuskube.inv.content.SlotPos;
-import fr.minuskube.inv.opener.InventoryOpener;
 
 @SuppressWarnings("unchecked")
 public class SmartInventory {
@@ -66,7 +69,7 @@ public class SmartInventory {
         for (Map.Entry<String, Object> property : properties.entrySet()) {	
             contents.setProperty(property.getKey(), property.getValue());	
         }
-
+        
         this.manager.setContents(player, contents);
         this.provider.init(player, contents);
 
@@ -80,7 +83,6 @@ public class SmartInventory {
         return handle;
     }
 
-    @SuppressWarnings("unchecked")
     public void close(Player player) {
         listeners.stream()
                 .filter(listener -> listener.getType() == InventoryCloseEvent.class)
@@ -194,11 +196,12 @@ public class SmartInventory {
             if(this.provider == null)
                 throw new IllegalStateException("The provider of the SmartInventory.Builder must be set.");
 
-            InventoryManager manager = this.manager != null ? this.manager : SmartInvsPlugin.manager();
-
-            if(manager == null)
-                throw new IllegalStateException("The manager of the SmartInventory.Builder must be set, "
-                        + "or the SmartInvs should be loaded as a plugin.");
+            if(this.manager == null) {          // if it's null, use the default instance
+                this.manager = SmartInvsPlugin.manager();   
+                if(this.manager == null) {      // if it's still null, throw an exception
+                    throw new IllegalStateException("Manager of the SmartInventory.Builder must be set, or SmartInvs should be loaded as a plugin.");
+                }
+            }
 
             SmartInventory inv = new SmartInventory(manager);
             inv.id = this.id;
@@ -215,29 +218,15 @@ public class SmartInventory {
         }
 
         private SlotPos getDefaultDimensions(InventoryType type) {
-        	switch(type) {
-        		case CHEST:
-        		case ENDER_CHEST:
-        			return SlotPos.of(3, 9);
-        		case HOPPER:
-        			return SlotPos.of(1, 5);
-        		case BEACON:
-        			return SlotPos.of(1, 1);
-        		case ANVIL:
-        			return SlotPos.of(1, 3);
-        		case BREWING:
-        			return SlotPos.of(1, 5);
-        		case ENCHANTING:
-        			return SlotPos.of(1, 2);
-        		case DROPPER:
-        		case DISPENSER:
-        		case WORKBENCH:				// WORKBENCH ... 3x3? It has the output item also though
-        			return SlotPos.of(3, 3);
-        		case FURNACE:
-        			return SlotPos.of(1, 3);
-        		default:
-        			throw new IllegalArgumentException("Failed to get default size of unknown inventory type: " + type);
-        	}
+            InventoryOpener opener = this.manager.findOpener(type).orElse(null);
+            if(opener == null)
+                throw new IllegalStateException("Cannot find InventoryOpener for type " + type);
+            
+            SlotPos size = opener.defaultSize(type);
+            if(size == null)
+                throw new IllegalStateException(String.format("%s returned null for input InventoryType %s", opener.getClass().getSimpleName(), type));
+            
+            return size;
         }
     }
 
