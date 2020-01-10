@@ -879,8 +879,8 @@ public interface InventoryContents {
         }
 
         @Override
-        public boolean isEditable(SlotPos pos) {
-            return editableSlots.contains(pos);
+        public boolean isEditable(SlotPos slot) {
+            return editableSlots.contains(slot);
         }
 
     }

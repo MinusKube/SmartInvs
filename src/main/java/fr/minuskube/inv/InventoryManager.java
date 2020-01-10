@@ -138,8 +138,6 @@ public class InventoryManager {
             }
 
             if(e.getClickedInventory() == p.getOpenInventory().getTopInventory()) {
-                e.setCancelled(true);
-
                 int row = e.getSlot() / 9;
                 int column = e.getSlot() % 9;
 
@@ -147,6 +145,12 @@ public class InventoryManager {
                     return;
 
                 SmartInventory inv = inventories.get(p);
+                InventoryContents conts = contents.get(p);
+                SlotPos pos = SlotPos.of(row, column);
+                
+                if(!conts.isEditable(pos)) {
+                    e.setCancelled(true);
+                }
 
                 if(row >= inv.getRows() || column >= inv.getColumns())
                     return;
@@ -157,7 +161,10 @@ public class InventoryManager {
 
                 contents.get(p).get(row, column).ifPresent(item -> item.run(new ItemClickData(e, p, e.getCurrentItem(), SlotPos.of(row, column))));
 
-                p.updateInventory();
+                // Don't update if the clicked slot is editable - prevent item glitching
+                if(!conts.isEditable(pos)) {
+                    p.updateInventory();
+                }
             }
         }
 
