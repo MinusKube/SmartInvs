@@ -95,6 +95,16 @@ public class SmartInventory {
         this.manager.setContents(player, null);
         this.manager.cancelUpdateTask(player);
     }
+    /**
+     * Checks if this inventory has a slot at the specified position
+     * @param row Slot row (starts at 0)
+     * @param col Slot column (starts at 0)
+     */
+    public boolean checkBounds(int row, int col) {
+        if(row < 0 || col < 0)
+            return false;
+        return row < this.rows && col < this.columns;
+    }
 
     public String getId() { return id; }
     public String getTitle() { return title; }

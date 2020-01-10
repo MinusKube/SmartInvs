@@ -125,8 +125,9 @@ public class InventoryManager {
         @EventHandler(priority = EventPriority.LOW)
         public void onInventoryClick(InventoryClickEvent e) {
             Player p = (Player) e.getWhoClicked();
-
-            if(!inventories.containsKey(p))
+            SmartInventory inv = inventories.get(p);
+            
+            if(inv == null)
                 return;
 
             if( e.getAction() == InventoryAction.COLLECT_TO_CURSOR ||
@@ -140,29 +141,24 @@ public class InventoryManager {
             if(e.getClickedInventory() == p.getOpenInventory().getTopInventory()) {
                 int row = e.getSlot() / 9;
                 int column = e.getSlot() % 9;
-
-                if(row < 0 || column < 0)
-                    return;
-
-                SmartInventory inv = inventories.get(p);
-                InventoryContents conts = contents.get(p);
-                SlotPos pos = SlotPos.of(row, column);
                 
-                if(!conts.isEditable(pos)) {
-                    e.setCancelled(true);
-                }
-
-                if(row >= inv.getRows() || column >= inv.getColumns())
+                if(!inv.checkBounds(row, column))
                     return;
+
+                InventoryContents invContents = contents.get(p);
+                SlotPos slot = SlotPos.of(row, column);
+                
+                if(!invContents.isEditable(slot))
+                    e.setCancelled(true);
 
                 inv.getListeners().stream()
                         .filter(listener -> listener.getType() == InventoryClickEvent.class)
                         .forEach(listener -> ((InventoryListener<InventoryClickEvent>) listener).accept(e));
 
-                contents.get(p).get(row, column).ifPresent(item -> item.run(new ItemClickData(e, p, e.getCurrentItem(), SlotPos.of(row, column))));
+                invContents.get(slot).ifPresent(item -> item.run(new ItemClickData(e, p, e.getCurrentItem(), slot)));
 
                 // Don't update if the clicked slot is editable - prevent item glitching
-                if(!conts.isEditable(pos)) {
+                if(!invContents.isEditable(slot)) {
                     p.updateInventory();
                 }
             }
