@@ -65,10 +65,7 @@ public class SmartInventory {
 
         InventoryContents contents = new InventoryContents.Impl(this, player);
         contents.pagination().page(page);
-        
-        for (Map.Entry<String, Object> property : properties.entrySet()) {	
-            contents.setProperty(property.getKey(), property.getValue());	
-        }
+        properties.forEach(contents::setProperty);
         
         this.manager.setContents(player, contents);
         this.provider.init(player, contents);
