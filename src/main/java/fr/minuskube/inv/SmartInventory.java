@@ -9,9 +9,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class SmartInventory {
@@ -33,26 +31,32 @@ public class SmartInventory {
     }
 
     public Inventory open(Player player) { return open(player, 0); }
+
     public Inventory open(Player player, int page) {
+        return open(player, page, new HashMap<>());
+    }
+
+    public Inventory open(Player player, int page, Map<String, Object> properties) {
         Optional<SmartInventory> oldInv = this.manager.getInventory(player);
 
         oldInv.ifPresent(inv -> {
             inv.getListeners().stream()
-                    .filter(listener -> listener.getType() == InventoryCloseEvent.class)
-                    .forEach(listener -> ((InventoryListener<InventoryCloseEvent>) listener)
-                            .accept(new InventoryCloseEvent(player.getOpenInventory())));
+                .filter(listener -> listener.getType() == InventoryCloseEvent.class)
+                .forEach(listener -> ((InventoryListener<InventoryCloseEvent>) listener)
+                    .accept(new InventoryCloseEvent(player.getOpenInventory())));
 
             this.manager.setInventory(player, null);
         });
 
         InventoryContents contents = new InventoryContents.Impl(this, player);
+        properties.forEach(contents::setProperty);
         contents.pagination().page(page);
 
         this.manager.setContents(player, contents);
         this.provider.init(player, contents);
 
         InventoryOpener opener = this.manager.findOpener(type)
-                .orElseThrow(() -> new IllegalStateException("No opener found for the inventory type " + type.name()));
+            .orElseThrow(() -> new IllegalStateException("No opener found for the inventory type " + type.name()));
         Inventory handle = opener.open(this, player);
 
         this.manager.setInventory(player, this);
