@@ -188,6 +188,50 @@ public class SmartInventory {
             this.manager = manager;
             return this;
         }
+        
+        public String getId() {
+            return id;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public InventoryType getType() {
+            return type;
+        }
+
+        public Optional<Integer> getRows() {
+            return rows;
+        }
+
+        public Optional<Integer> getColumns() {
+            return columns;
+        }
+
+        public boolean isCloseable() {
+            return closeable;
+        }
+
+        public int getUpdateFrequency() {
+            return updateFrequency;
+        }
+
+        public InventoryManager getManager() {
+            return manager;
+        }
+
+        public InventoryProvider getProvider() {
+            return provider;
+        }
+
+        public SmartInventory getParent() {
+            return parent;
+        }
+
+        public List<InventoryListener<? extends Event>> getListeners() {
+            return listeners;
+        }
 
         public SmartInventory build() {
             if(this.provider == null)
@@ -225,6 +269,7 @@ public class SmartInventory {
             
             return size;
         }
+
     }
 
 }
