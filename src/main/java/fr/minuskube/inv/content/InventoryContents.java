@@ -8,9 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * <p>
@@ -116,6 +114,13 @@ public interface InventoryContents {
      * @return the items of the inventory
      */
     ClickableItem[][] all();
+
+	/**
+	 * Returns a list of all the slots in the inventory.
+	 *
+	 * @return the inventory slots
+	 */
+    List<SlotPos> slots();
 
     /**
      * Returns the position of the first empty slot
@@ -545,6 +550,17 @@ public interface InventoryContents {
         @Override
         public ClickableItem[][] all() {
             return contents;
+        }
+
+        @Override
+        public List<SlotPos> slots() {
+            List<SlotPos> slotPos = new ArrayList<>();
+            for (int row = 0; row < contents.length; row++) {
+                for(int column = 0; column < contents[0].length; column++) {
+                    slotPos.add(SlotPos.of(row, column));
+                }
+            }
+            return slotPos;
         }
 
         @Override
