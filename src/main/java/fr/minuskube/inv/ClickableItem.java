@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-@SuppressWarnings({ "unchecked", "deprecation" })
+@SuppressWarnings({ "unchecked" })
 public class ClickableItem {
 
     /**
@@ -15,13 +15,12 @@ public class ClickableItem {
      */
     public static final ClickableItem NONE = empty(null);
 
-    private static final Predicate<Player> ALWAYS_TRUE = p -> true;
 
     private final ItemStack item;
     private final Consumer<?> consumer;
     private final boolean legacy;
-	private Predicate<Player> canSee = ALWAYS_TRUE, canClick = ALWAYS_TRUE;
-    private ItemStack notVisibleFallBackItem;
+	private Predicate<Player> canSee = null, canClick = null;
+    private ItemStack notVisibleFallBackItem = null;
 
     private ClickableItem(ItemStack item, Consumer<?> consumer, boolean legacy) {
         this.item = item;
@@ -98,7 +97,7 @@ public class ClickableItem {
      * @param data the data of the click
      */
     public void run(ItemClickData data) {
-        if (canSee.test(data.getPlayer()) && canClick.test(data.getPlayer())) {
+        if ((canSee == null || canSee.test(data.getPlayer())) && (canClick == null || canClick.test(data.getPlayer()))) {
             if(this.legacy) {
                 if(data.getEvent() instanceof InventoryClickEvent) {
                     InventoryClickEvent event = (InventoryClickEvent) data.getEvent();
@@ -132,7 +131,7 @@ public class ClickableItem {
      * @return the item, the fallback item when not visible to the player, or <code>null</code> if there is no item
      */
     public ItemStack getItem(Player player) {
-        if (canSee.test(player)) {
+        if (canSee == null || canSee.test(player)) {
             return this.item;
         } else {
             return this.notVisibleFallBackItem;
