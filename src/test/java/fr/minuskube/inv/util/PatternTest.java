@@ -36,8 +36,8 @@ public class PatternTest {
     @Test(expected = IndexOutOfBoundsException.class)
     public void testNegativeGetPattern() {
         Pattern<String> pattern = new Pattern<>(
-            "XOOX",
-            "XOOX"
+                "XOOX",
+                "XOOX"
         );
 
         pattern.getObject(-1, 0);
@@ -46,8 +46,8 @@ public class PatternTest {
     @Test(expected = IndexOutOfBoundsException.class)
     public void testOversizeGetPattern() {
         Pattern<String> pattern = new Pattern<>(
-            "XOOX",
-            "XOOX"
+                "XOOX",
+                "XOOX"
         );
 
         pattern.getObject(0, 4);
