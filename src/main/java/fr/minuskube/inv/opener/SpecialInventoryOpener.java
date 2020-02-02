@@ -29,7 +29,7 @@ public class SpecialInventoryOpener implements InventoryOpener {
         InventoryManager manager = inv.getManager();
         Inventory handle = Bukkit.createInventory(player, inv.getType(), inv.getTitle());
 
-        fill(handle, manager.getContents(player).get());
+        fill(handle, manager.getContents(player).get(), player);
 
         player.openInventory(handle);
         return handle;

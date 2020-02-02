@@ -641,7 +641,7 @@ public interface InventoryContents {
             for(int row = 0; row < contents.length; row++) {
                 for(int column = 0; column < contents[0].length; column++) {
                     if(contents[row][column] != null &&
-                            itemStack.isSimilar(contents[row][column].getItem())) {
+                            itemStack.isSimilar(contents[row][column].getItem(this.player))) {
                         return Optional.of(SlotPos.of(row, column));
                     }
                 }
@@ -652,7 +652,7 @@ public interface InventoryContents {
         @Override
         public Optional<SlotPos> findItem(ClickableItem clickableItem) {
             Preconditions.checkNotNull(clickableItem, "The clickable item to look for cannot be null!");
-            return findItem(clickableItem.getItem());
+            return findItem(clickableItem.getItem(this.player));
         }
 
         @Override
