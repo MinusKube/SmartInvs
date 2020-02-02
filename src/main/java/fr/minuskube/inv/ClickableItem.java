@@ -19,7 +19,7 @@ public class ClickableItem {
     private final ItemStack item;
     private final Consumer<?> consumer;
     private final boolean legacy;
-	private Predicate<Player> canSee = null, canClick = null;
+    private Predicate<Player> canSee = null, canClick = null;
     private ItemStack notVisibleFallBackItem = null;
 
     private ClickableItem(ItemStack item, Consumer<?> consumer, boolean legacy) {
