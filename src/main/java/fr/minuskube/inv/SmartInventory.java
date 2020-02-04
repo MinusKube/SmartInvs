@@ -230,7 +230,7 @@ public class SmartInventory {
         }
 
         public List<InventoryListener<? extends Event>> getListeners() {
-            return listeners;
+            return Collections.unmodifiableList(listeners);
         }
 
         public SmartInventory build() {
