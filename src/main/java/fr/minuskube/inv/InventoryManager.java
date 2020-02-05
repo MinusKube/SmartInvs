@@ -125,8 +125,9 @@ public class InventoryManager {
         @EventHandler(priority = EventPriority.LOW)
         public void onInventoryClick(InventoryClickEvent e) {
             Player p = (Player) e.getWhoClicked();
-
-            if(!inventories.containsKey(p))
+            SmartInventory inv = inventories.get(p);
+            
+            if(inv == null)
                 return;
 
             if( e.getAction() == InventoryAction.COLLECT_TO_CURSOR ||
@@ -138,26 +139,28 @@ public class InventoryManager {
             }
 
             if(e.getClickedInventory() == p.getOpenInventory().getTopInventory()) {
-                e.setCancelled(true);
-
                 int row = e.getSlot() / 9;
                 int column = e.getSlot() % 9;
-
-                if(row < 0 || column < 0)
+                
+                if(!inv.checkBounds(row, column))
                     return;
 
-                SmartInventory inv = inventories.get(p);
-
-                if(row >= inv.getRows() || column >= inv.getColumns())
-                    return;
+                InventoryContents invContents = contents.get(p);
+                SlotPos slot = SlotPos.of(row, column);
+                
+                if(!invContents.isEditable(slot))
+                    e.setCancelled(true);
 
                 inv.getListeners().stream()
                         .filter(listener -> listener.getType() == InventoryClickEvent.class)
                         .forEach(listener -> ((InventoryListener<InventoryClickEvent>) listener).accept(e));
 
-                contents.get(p).get(row, column).ifPresent(item -> item.run(new ItemClickData(e, p, e.getCurrentItem(), SlotPos.of(row, column))));
+                invContents.get(slot).ifPresent(item -> item.run(new ItemClickData(e, p, e.getCurrentItem(), slot)));
 
-                p.updateInventory();
+                // Don't update if the clicked slot is editable - prevent item glitching
+                if(!invContents.isEditable(slot)) {
+                    p.updateInventory();
+                }
             }
         }
 

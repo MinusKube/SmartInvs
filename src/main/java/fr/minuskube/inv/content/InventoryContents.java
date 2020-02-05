@@ -490,6 +490,24 @@ public interface InventoryContents {
      * @return <code>this</code>, for chained calls
      */
     InventoryContents setProperty(String name, Object value);
+    
+    /**
+     * Makes a slot editable, which enables the player to
+     * put items in and take items out of the inventory in the
+     * specified slot.
+     * @param slot The slot to set editable
+     * @param editable {@code true} to make a slot editable, {@code false}
+     *        to make it 'static' again.
+     */
+    void setEditable(SlotPos slot, boolean editable);
+    
+    /**
+     * Returns if a given slot is editable or not.
+     * @param slot The slot to check
+     * @return {@code true} if the editable.
+     * @see #setEditable(SlotPos, boolean)
+     */
+    boolean isEditable(SlotPos slot);
 
     class Impl implements InventoryContents {
 
@@ -501,6 +519,8 @@ public interface InventoryContents {
         private Pagination pagination = new Pagination.Impl();
         private Map<String, SlotIterator> iterators = new HashMap<>();
         private Map<String, Object> properties = new HashMap<>();
+        
+        private Set<SlotPos> editableSlots = new HashSet<SlotPos>();
 
         public Impl(SmartInventory inv, Player player) {
             this.inv = inv;
@@ -848,6 +868,19 @@ public interface InventoryContents {
 
             Inventory topInventory = player.getOpenInventory().getTopInventory();
             topInventory.setItem(inv.getColumns() * row + column, item);
+        }
+
+        @Override
+        public void setEditable(SlotPos slot, boolean editable) {
+            if(editable)
+                editableSlots.add(slot);
+            else
+                editableSlots.remove(slot);
+        }
+
+        @Override
+        public boolean isEditable(SlotPos slot) {
+            return editableSlots.contains(slot);
         }
 
     }
