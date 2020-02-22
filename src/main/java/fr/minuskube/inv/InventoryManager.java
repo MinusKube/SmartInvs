@@ -126,39 +126,40 @@ public class InventoryManager {
         public void onInventoryClick(InventoryClickEvent e) {
             Player p = (Player) e.getWhoClicked();
 
-            if(!inventories.containsKey(p))
+            if (!inventories.containsKey(p))
                 return;
 
-            if( e.getAction() == InventoryAction.COLLECT_TO_CURSOR ||
+            if (e.getAction() == InventoryAction.COLLECT_TO_CURSOR ||
                 e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY ||
                 e.getAction() == InventoryAction.NOTHING) {
 
-            if(e.getAction() == InventoryAction.NOTHING && e.getClick() != ClickType.MIDDLE) {
-                e.setCancelled(true);
-                return;
-            }
-
-            if(e.getClickedInventory() == p.getOpenInventory().getTopInventory()) {
-                e.setCancelled(true);
-
-                int row = e.getSlot() / 9;
-                int column = e.getSlot() % 9;
-
-                if(row < 0 || column < 0)
+                if (e.getAction() == InventoryAction.NOTHING && e.getClick() != ClickType.MIDDLE) {
+                    e.setCancelled(true);
                     return;
+                }
 
-                SmartInventory inv = inventories.get(p);
+                if (e.getClickedInventory() == p.getOpenInventory().getTopInventory()) {
+                    e.setCancelled(true);
 
-                if(row >= inv.getRows() || column >= inv.getColumns())
-                    return;
+                    int row = e.getSlot() / 9;
+                    int column = e.getSlot() % 9;
 
-                inv.getListeners().stream()
+                    if (row < 0 || column < 0)
+                        return;
+
+                    SmartInventory inv = inventories.get(p);
+
+                    if (row >= inv.getRows() || column >= inv.getColumns())
+                        return;
+
+                    inv.getListeners().stream()
                         .filter(listener -> listener.getType() == InventoryClickEvent.class)
                         .forEach(listener -> ((InventoryListener<InventoryClickEvent>) listener).accept(e));
 
-                contents.get(p).get(row, column).ifPresent(item -> item.run(new ItemClickData(e, p, e.getCurrentItem(), SlotPos.of(row, column))));
+                    contents.get(p).get(row, column).ifPresent(item -> item.run(new ItemClickData(e, p, e.getCurrentItem(), SlotPos.of(row, column))));
 
-                p.updateInventory();
+                    p.updateInventory();
+                }
             }
         }
 
