@@ -1,5 +1,9 @@
 package fr.minuskube.inv.content;
 
+/**
+ * Represents the position (row + column) of a slot
+ * in an inventory.
+ */
 public class SlotPos {
 
     private final int row;
@@ -28,6 +32,14 @@ public class SlotPos {
         result = 31 * result + column;
 
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "SlotPos{" +
+                "row=" + row +
+                ", column=" + column +
+                '}';
     }
 
     public int getRow() { return row; }

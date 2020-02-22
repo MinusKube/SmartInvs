@@ -4,18 +4,30 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class SmartInvsPlugin extends JavaPlugin {
 
-    private static SmartInvsPlugin instance;
+    private static JavaPlugin instance;
     private static InventoryManager invManager;
 
     @Override
     public void onEnable() {
-        instance = this;
+        setPlugin(this);
+    }
 
-        invManager = new InventoryManager(this);
-        invManager.init();
+    @Override
+    public void onDisable() {
+        deleteStaticReferences();
     }
 
     public static InventoryManager manager() { return invManager; }
-    public static SmartInvsPlugin instance() { return instance; }
+    public static JavaPlugin instance() { return instance; }
 
+    public static void setPlugin(JavaPlugin javaPlugin) {
+        instance = javaPlugin;
+        invManager = new InventoryManager(javaPlugin);
+        invManager.init();
+    }
+
+    public static void deleteStaticReferences() {
+        instance = null;
+        invManager = null;
+    }
 }
