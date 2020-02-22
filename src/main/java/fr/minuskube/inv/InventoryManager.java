@@ -130,13 +130,14 @@ public class InventoryManager {
             if(inv == null)
                 return;
 
-            if( e.getAction() == InventoryAction.COLLECT_TO_CURSOR ||
+            if (e.getAction() == InventoryAction.COLLECT_TO_CURSOR ||
                 e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY ||
                 e.getAction() == InventoryAction.NOTHING) {
 
-                e.setCancelled(true);
-                return;
-            }
+                if (e.getAction() == InventoryAction.NOTHING && e.getClick() != ClickType.MIDDLE) {
+                    e.setCancelled(true);
+                    return;
+                }
 
             if(e.getClickedInventory() == p.getOpenInventory().getTopInventory()) {
                 int row = e.getSlot() / 9;
@@ -151,7 +152,7 @@ public class InventoryManager {
                 if(!invContents.isEditable(slot))
                     e.setCancelled(true);
 
-                inv.getListeners().stream()
+                    inv.getListeners().stream()
                         .filter(listener -> listener.getType() == InventoryClickEvent.class)
                         .forEach(listener -> ((InventoryListener<InventoryClickEvent>) listener).accept(e));
 

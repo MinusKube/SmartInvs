@@ -56,14 +56,15 @@ public class SmartInventory {
 
         oldInv.ifPresent(inv -> {
             inv.getListeners().stream()
-                    .filter(listener -> listener.getType() == InventoryCloseEvent.class)
-                    .forEach(listener -> ((InventoryListener<InventoryCloseEvent>) listener)
-                            .accept(new InventoryCloseEvent(player.getOpenInventory())));
+                .filter(listener -> listener.getType() == InventoryCloseEvent.class)
+                .forEach(listener -> ((InventoryListener<InventoryCloseEvent>) listener)
+                    .accept(new InventoryCloseEvent(player.getOpenInventory())));
 
             this.manager.setInventory(player, null);
         });
 
         InventoryContents contents = new InventoryContents.Impl(this, player);
+        properties.forEach(contents::setProperty);
         contents.pagination().page(page);
         properties.forEach(contents::setProperty);
         
@@ -71,7 +72,7 @@ public class SmartInventory {
         this.provider.init(player, contents);
 
         InventoryOpener opener = this.manager.findOpener(type)
-                .orElseThrow(() -> new IllegalStateException("No opener found for the inventory type " + type.name()));
+            .orElseThrow(() -> new IllegalStateException("No opener found for the inventory type " + type.name()));
         Inventory handle = opener.open(this, player);
 
         this.manager.setInventory(player, this);
