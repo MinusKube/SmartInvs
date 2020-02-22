@@ -72,7 +72,7 @@ public class ClickableItem {
     @SuppressWarnings("DeprecatedIsStillUsed")
     @Deprecated
     public void run(InventoryClickEvent e) {
-        if (canSee.test((Player) e.getWhoClicked()) && canClick.test((Player) e.getWhoClicked())) {
+        if ((canSee == null || canSee.test((Player) e.getWhoClicked())) && (canClick == null || canClick.test((Player) e.getWhoClicked()))) {
             if(!this.legacy)
                 return;
 
