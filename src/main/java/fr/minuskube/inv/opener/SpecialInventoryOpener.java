@@ -3,12 +3,11 @@ package fr.minuskube.inv.opener;
 import com.google.common.collect.ImmutableList;
 import fr.minuskube.inv.InventoryManager;
 import fr.minuskube.inv.SmartInventory;
+import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-
-import java.util.List;
 
 public class SpecialInventoryOpener implements InventoryOpener {
 

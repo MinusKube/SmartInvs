@@ -1,7 +1,6 @@
 package fr.minuskube.inv.content;
 
 import fr.minuskube.inv.ClickableItem;
-
 import java.util.Arrays;
 
 /**

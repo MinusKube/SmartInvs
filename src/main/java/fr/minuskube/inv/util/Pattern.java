@@ -2,7 +2,6 @@ package fr.minuskube.inv.util;
 
 import com.google.common.base.Preconditions;
 import fr.minuskube.inv.content.SlotPos;
-
 import java.util.*;
 
 /**

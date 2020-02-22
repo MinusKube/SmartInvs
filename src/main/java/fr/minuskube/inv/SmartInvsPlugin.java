@@ -1,33 +1,52 @@
 package fr.minuskube.inv;
 
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class SmartInvsPlugin extends JavaPlugin {
+public final class SmartInvsPlugin extends JavaPlugin {
 
-    private static JavaPlugin instance;
-    private static InventoryManager invManager;
+    @Nullable
+    private static Plugin instance = null;
+
+    @Nullable
+    private static InventoryManager manager = null;
 
     @Override
     public void onEnable() {
-        setPlugin(this);
+        super.onEnable();
+        SmartInvsPlugin.setPlugin(this);
     }
 
     @Override
     public void onDisable() {
-        deleteStaticReferences();
+        super.onDisable();
+        SmartInvsPlugin.deleteStaticReferences();
     }
 
-    public static InventoryManager manager() { return invManager; }
-    public static JavaPlugin instance() { return instance; }
-
-    public static void setPlugin(JavaPlugin javaPlugin) {
-        instance = javaPlugin;
-        invManager = new InventoryManager(javaPlugin);
-        invManager.init();
+    public static InventoryManager getManager() {
+        if (SmartInvsPlugin.manager == null) {
+            throw new IllegalStateException("You can't use SmartInvsPlugin#getManager before it start!");
+        }
+        return SmartInvsPlugin.manager;
     }
 
-    public static void deleteStaticReferences() {
-        instance = null;
-        invManager = null;
+    public static Plugin getInstance() {
+        if (SmartInvsPlugin.instance == null) {
+            throw new IllegalStateException("You can't use SmartInvsPlugin#getInstance before it start!");
+        }
+        return SmartInvsPlugin.instance;
+    }
+
+    private static void setPlugin(@NotNull final Plugin plugin) {
+        SmartInvsPlugin.instance = plugin;
+        SmartInvsPlugin.manager = new InventoryManager(plugin);
+        SmartInvsPlugin.manager.init();
+    }
+
+    private static void deleteStaticReferences() {
+        SmartInvsPlugin.instance = null;
+        SmartInvsPlugin.manager = null;
     }
 }

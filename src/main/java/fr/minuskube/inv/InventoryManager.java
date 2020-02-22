@@ -6,6 +6,7 @@ import fr.minuskube.inv.content.SlotPos;
 import fr.minuskube.inv.opener.ChestInventoryOpener;
 import fr.minuskube.inv.opener.InventoryOpener;
 import fr.minuskube.inv.opener.SpecialInventoryOpener;
+import java.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,15 +15,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
-
 public class InventoryManager {
 
-    private final JavaPlugin plugin;
+    private final Plugin plugin;
     private final PluginManager pluginManager;
 
     private final Map<Player, SmartInventory> inventories;
@@ -32,7 +32,7 @@ public class InventoryManager {
     private final List<InventoryOpener> defaultOpeners;
     private final List<InventoryOpener> openers;
 
-    public InventoryManager(JavaPlugin plugin) {
+    public InventoryManager(Plugin plugin) {
         this.plugin = plugin;
         this.pluginManager = Bukkit.getPluginManager();
 
