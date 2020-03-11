@@ -14,6 +14,7 @@ import org.junit.Test;
 public class InventoryContentsTest {
 
     private static final ItemStack TEST_ITEM = new ItemStack(Material.DIRT);
+
     private static final ClickableItem TEST_CLICKABLE = ClickableItem.empty(TEST_ITEM);
 
     @Test
@@ -35,6 +36,17 @@ public class InventoryContentsTest {
                 }
             }
         }
+    }
+
+    private SmartInventory mockInventory(int rows, int columns) {
+        InventoryManager manager = mock(InventoryManager.class);
+
+        SmartInventory inv = mock(SmartInventory.class);
+        when(inv.getRows()).thenReturn(rows);
+        when(inv.getColumns()).thenReturn(columns);
+        when(inv.getManager()).thenReturn(manager);
+
+        return inv;
     }
 
     @Test
@@ -80,17 +92,6 @@ public class InventoryContentsTest {
 
         assertTrue(contents.firstEmpty().isPresent());
         assertEquals(contents.firstEmpty().get(), SlotPos.of(0, 1));
-    }
-
-    private SmartInventory mockInventory(int rows, int columns) {
-        InventoryManager manager = mock(InventoryManager.class);
-
-        SmartInventory inv = mock(SmartInventory.class);
-        when(inv.getRows()).thenReturn(rows);
-        when(inv.getColumns()).thenReturn(columns);
-        when(inv.getManager()).thenReturn(manager);
-
-        return inv;
     }
 
 }

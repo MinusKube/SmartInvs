@@ -31,4 +31,5 @@ public class InventoryOpenerTest {
             assertEquals(expectedSize, opener.defaultSize(type));
         });
     }
+
 }
