@@ -17,19 +17,28 @@
 package fr.minuskube.inv;
 
 import java.util.function.Consumer;
+import org.jetbrains.annotations.NotNull;
 
-public class InventoryListener<T> {
+public final class InventoryListener<T> {
 
+    @NotNull
     private final Class<T> type;
+
+    @NotNull
     private final Consumer<T> consumer;
 
-    public InventoryListener(Class<T> type, Consumer<T> consumer) {
-        this.type = type;
-        this.consumer = consumer;
+    public InventoryListener(@NotNull final Class<T> tClass, @NotNull final Consumer<T> tConsumer) {
+        this.type = tClass;
+        this.consumer = tConsumer;
     }
 
-    public void accept(T t) { consumer.accept(t); }
+    public void accept(@NotNull final T handle) {
+        this.consumer.accept(handle);
+    }
 
-    public Class<T> getType() { return type; }
+    @NotNull
+    public Class<T> getType() {
+        return this.type;
+    }
 
 }

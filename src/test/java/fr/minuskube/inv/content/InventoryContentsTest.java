@@ -1,33 +1,20 @@
 package fr.minuskube.inv.content;
 
-import fr.minuskube.inv.ClickableItem;
-import fr.minuskube.inv.InventoryManager;
-import fr.minuskube.inv.SmartInventory;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.junit.Test;
-
-import java.util.Optional;
-
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import fr.minuskube.inv.ClickableItem;
+import fr.minuskube.inv.InventoryManager;
+import fr.minuskube.inv.SmartInventory;
+import java.util.Optional;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.junit.Test;
 
 public class InventoryContentsTest {
 
     private static final ItemStack TEST_ITEM = new ItemStack(Material.DIRT);
     private static final ClickableItem TEST_CLICKABLE = ClickableItem.empty(TEST_ITEM);
-
-    private SmartInventory mockInventory(int rows, int columns) {
-        InventoryManager manager = mock(InventoryManager.class);
-
-        SmartInventory inv = mock(SmartInventory.class);
-        when(inv.getRows()).thenReturn(rows);
-        when(inv.getColumns()).thenReturn(columns);
-        when(inv.getManager()).thenReturn(manager);
-
-        return inv;
-    }
 
     @Test
     public void testAddItem() {
@@ -36,15 +23,14 @@ public class InventoryContentsTest {
 
         contents.add(TEST_CLICKABLE);
 
-        for(int row = 0; row < 6; row++) {
-            for(int column = 0; column < 9; column++) {
+        for (int row = 0; row < 6; row++) {
+            for (int column = 0; column < 9; column++) {
                 Optional<ClickableItem> result = contents.get(SlotPos.of(row, column));
 
-                if(row == 0 && column == 0) {
+                if (row == 0 && column == 0) {
                     assertTrue(result.isPresent());
                     assertEquals(result.get(), TEST_CLICKABLE);
-                }
-                else {
+                } else {
                     assertFalse(result.isPresent());
                 }
             }
@@ -58,8 +44,8 @@ public class InventoryContentsTest {
 
         contents.add(null);
 
-        for(int row = 0; row < 6; row++) {
-            for(int column = 0; column < 9; column++) {
+        for (int row = 0; row < 6; row++) {
+            for (int column = 0; column < 9; column++) {
                 Optional<ClickableItem> result = contents.get(SlotPos.of(row, column));
 
                 assertFalse(result.isPresent());
@@ -72,8 +58,8 @@ public class InventoryContentsTest {
         SmartInventory inv = mockInventory(6, 9);
         InventoryContents contents = new InventoryContents.Impl(inv, null);
 
-        for(int row = 0; row < inv.getRows(); row++) {
-            for(int column = 0; column < inv.getColumns(); column++) {
+        for (int row = 0; row < inv.getRows(); row++) {
+            for (int column = 0; column < inv.getColumns(); column++) {
                 assertFalse(contents.get(row, column).isPresent());
                 assertFalse(contents.get(SlotPos.of(row, column)).isPresent());
             }
@@ -94,6 +80,17 @@ public class InventoryContentsTest {
 
         assertTrue(contents.firstEmpty().isPresent());
         assertEquals(contents.firstEmpty().get(), SlotPos.of(0, 1));
+    }
+
+    private SmartInventory mockInventory(int rows, int columns) {
+        InventoryManager manager = mock(InventoryManager.class);
+
+        SmartInventory inv = mock(SmartInventory.class);
+        when(inv.getRows()).thenReturn(rows);
+        when(inv.getColumns()).thenReturn(columns);
+        when(inv.getManager()).thenReturn(manager);
+
+        return inv;
     }
 
 }

@@ -17,5 +17,7 @@
 /**
  * Lists the classes related to the content of an
  * inventory, and the ways to edit this content.
+ *
+ * @since 1.0
  */
 package fr.minuskube.inv.content;

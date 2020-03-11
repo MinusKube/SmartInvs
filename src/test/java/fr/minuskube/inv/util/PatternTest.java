@@ -1,9 +1,8 @@
 package fr.minuskube.inv.util;
 
+import static org.junit.Assert.assertEquals;
 import fr.minuskube.inv.content.SlotPos;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class PatternTest {
 
@@ -15,18 +14,18 @@ public class PatternTest {
     @Test(expected = IllegalArgumentException.class)
     public void testUnequalColumnsPattern() {
         new Pattern<>(
-                "X   X",
-                "X    X",
-                "X   X"
+            "X   X",
+            "X    X",
+            "X   X"
         );
     }
 
     @Test
     public void testRowColumnCountPattern() {
         Pattern<String> pattern = new Pattern<>(
-                "XOOOX",
-                "XOXOX",
-                "XOOOX"
+            "XOOOX",
+            "XOXOX",
+            "XOOOX"
         );
 
         assertEquals(3, pattern.getRowCount());
@@ -36,8 +35,8 @@ public class PatternTest {
     @Test(expected = IndexOutOfBoundsException.class)
     public void testNegativeGetPattern() {
         Pattern<String> pattern = new Pattern<>(
-                "XOOX",
-                "XOOX"
+            "XOOX",
+            "XOOX"
         );
 
         pattern.getObject(-1, 0);
@@ -46,8 +45,8 @@ public class PatternTest {
     @Test(expected = IndexOutOfBoundsException.class)
     public void testOversizeGetPattern() {
         Pattern<String> pattern = new Pattern<>(
-                "XOOX",
-                "XOOX"
+            "XOOX",
+            "XOOX"
         );
 
         pattern.getObject(0, 4);
@@ -56,27 +55,26 @@ public class PatternTest {
     @Test
     public void testAttachPattern() {
         Pattern<String> pattern = new Pattern<>(
-                "XXXXXXX",
-                "XOOOOOX",
-                "XOOOOOX",
-                "XOOOOOX",
-                "XOOOOOX",
-                "XXXXXXX"
+            "XXXXXXX",
+            "XOOOOOX",
+            "XOOOOOX",
+            "XOOOOOX",
+            "XOOOOOX",
+            "XXXXXXX"
         );
 
         pattern.setDefault("Empty");
         pattern.attach('X', "Full");
 
-        for(int row = 0; row < pattern.getRowCount(); row++) {
-            for(int column = 0; column < pattern.getColumnCount(); column++) {
+        for (int row = 0; row < pattern.getRowCount(); row++) {
+            for (int column = 0; column < pattern.getColumnCount(); column++) {
                 String expected;
 
-                if(row == 0 || row == (pattern.getRowCount() - 1)
-                        || column == 0 || column == (pattern.getColumnCount() - 1)) {
+                if (row == 0 || row == (pattern.getRowCount() - 1)
+                    || column == 0 || column == (pattern.getColumnCount() - 1)) {
 
                     expected = "Full";
-                }
-                else {
+                } else {
                     expected = "Empty";
                 }
 

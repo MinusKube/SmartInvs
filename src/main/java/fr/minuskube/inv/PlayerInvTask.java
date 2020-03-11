@@ -14,9 +14,12 @@
  *    limitations under the License.
  */
 
-package fr.minuskube.inv.content;
+package fr.minuskube.inv;
 
+import fr.minuskube.inv.content.InventoryContents;
+import fr.minuskube.inv.content.InventoryProvider;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -24,11 +27,28 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 1.0
  */
-public interface InventoryProvider {
+final class PlayerInvTask extends BukkitRunnable {
 
-    void init(@NotNull Player player, @NotNull InventoryContents contents);
+    @NotNull
+    private final Player player;
 
-    default void update(@NotNull final Player player, @NotNull final InventoryContents contents) {
+    @NotNull
+    private final InventoryProvider provider;
+
+    @NotNull
+    private final InventoryContents contents;
+
+    PlayerInvTask(@NotNull final Player plyr, @NotNull final InventoryProvider prvdr,
+                  @NotNull final InventoryContents cntnts) {
+        super();
+        this.player = plyr;
+        this.provider = prvdr;
+        this.contents = cntnts;
+    }
+
+    @Override
+    public void run() {
+        this.provider.update(this.player, this.contents);
     }
 
 }

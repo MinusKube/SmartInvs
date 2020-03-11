@@ -1,16 +1,14 @@
 package fr.minuskube.inv;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.junit.Test;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class ClickableItemTest {
 
@@ -18,7 +16,7 @@ public class ClickableItemTest {
     public void testNone() {
         ClickableItem item = ClickableItem.NONE;
 
-        assertNull("The item from ClickableItem.NONE is not null", item.getItem());
+        assertNotNull("The item from ClickableItem.NONE is not null", item.getItem());
     }
 
     @SuppressWarnings("deprecation")

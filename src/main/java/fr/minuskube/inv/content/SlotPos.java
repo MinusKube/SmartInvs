@@ -20,49 +20,54 @@ package fr.minuskube.inv.content;
  * Represents the position (row + column) of a slot
  * in an inventory.
  */
-public class SlotPos {
+public final class SlotPos {
 
     private final int row;
+
     private final int column;
 
-    public SlotPos(int row, int column) {
+    public SlotPos(final int row, final int column) {
         this.row = row;
         this.column = column;
     }
 
+    public static SlotPos of(final int row, final int column) {
+        return new SlotPos(row, column);
+    }
+
     @Override
-    public boolean equals(Object obj) {
-        if(this == obj)
+    public boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
-        if(obj == null || getClass() != obj.getClass())
+        }
+        if (obj == null || this.getClass() != obj.getClass()) {
             return false;
-
-        SlotPos slotPos = (SlotPos) obj;
-
-        return row == slotPos.row && column == slotPos.column;
+        }
+        final SlotPos slotPos = (SlotPos) obj;
+        return this.row == slotPos.row && this.column == slotPos.column;
     }
 
     @Override
     public int hashCode() {
-        int result = row;
-        result = 31 * result + column;
-
+        int result = this.row;
+        result = 31 * result + this.column;
         return result;
     }
 
     @Override
     public String toString() {
         return "SlotPos{" +
-                "row=" + row +
-                ", column=" + column +
-                '}';
+            "row=" + this.row +
+            ", column=" + this.column +
+            '}';
     }
 
-    public int getRow() { return row; }
-    public int getColumn() { return column; }
+    public int getRow() {
+        return this.row;
+    }
 
-    public static SlotPos of(int row, int column) {
-        return new SlotPos(row, column);
+    public int getColumn() {
+        return this.column;
     }
 
 }

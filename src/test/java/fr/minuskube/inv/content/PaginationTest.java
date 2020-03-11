@@ -1,13 +1,11 @@
 package fr.minuskube.inv.content;
 
+import static org.junit.Assert.*;
 import fr.minuskube.inv.ClickableItem;
+import java.util.Arrays;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.junit.Test;
-
-import java.util.Arrays;
-
-import static org.junit.Assert.*;
 
 public class PaginationTest {
 
@@ -17,7 +15,7 @@ public class PaginationTest {
 
         ClickableItem[] items = new ClickableItem[64];
 
-        for(int i = 0; i < items.length; i++)
+        for (int i = 0; i < items.length; i++)
             items[i] = ClickableItem.empty(new ItemStack(Material.STONE, i));
 
         pagination.setItems(items);

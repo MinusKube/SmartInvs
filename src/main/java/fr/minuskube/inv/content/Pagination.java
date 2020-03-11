@@ -17,34 +17,34 @@
 package fr.minuskube.inv.content;
 
 import fr.minuskube.inv.ClickableItem;
-
 import java.util.Arrays;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * <p>
- *     Pagination system which lets you switch pages;
- *     easily get items in the given page,
- *     easily manipulate the pages and
- *     check if a page is the first or the last one
- *     ({@link Pagination#isFirst()} / {@link Pagination#isLast()}).
+ * Pagination system which lets you switch pages;
+ * easily get items in the given page,
+ * easily manipulate the pages and
+ * check if a page is the first or the last one
+ * ({@link Pagination#isFirst()} / {@link Pagination#isLast()}).
  * </p>
  *
  * <p>
- *     You must start by setting the <b>items</b> and the <b>itemsPerPage</b>,
- *     then you can manipulate the pages by using the
- *     {@link Pagination#page(int)} /
- *     {@link Pagination#first()} /
- *     {@link Pagination#previous()} /
- *     {@link Pagination#next()} /
- *     {@link Pagination#last()}
- *     methods.
+ * You must start by setting the <b>items</b> and the <b>itemsPerPage</b>,
+ * then you can manipulate the pages by using the
+ * {@link Pagination#page(int)} /
+ * {@link Pagination#first()} /
+ * {@link Pagination#previous()} /
+ * {@link Pagination#next()} /
+ * {@link Pagination#last()}
+ * methods.
  * </p>
  *
  * <p>
- *     Then, when you need to get all the items of the current page,
- *     either use the {@link Pagination#getPageItems()} method, or directly
- *     add the items to your inventory with a SlotIterator and the
- *     method {@link Pagination#addToIterator(SlotIterator)}
+ * Then, when you need to get all the items of the current page,
+ * either use the {@link Pagination#getPageItems()} method, or directly
+ * add the items to your inventory with a SlotIterator and the
+ * method {@link Pagination#addToIterator(SlotIterator)}
  * </p>
  */
 public interface Pagination {
@@ -56,6 +56,7 @@ public interface Pagination {
      *
      * @return the current page items
      */
+    @NotNull
     ClickableItem[] getPageItems();
 
     /**
@@ -69,60 +70,65 @@ public interface Pagination {
      * Sets the current page.
      *
      * @param page the current page
-     * @return <code>this</code>, for chained calls
+     * @return {@code this}, for chained calls
      */
+    @NotNull
     Pagination page(int page);
 
     /**
      * Checks if the current page is the first page.
      * <br>
-     * This is equivalent to: <code>page == 0</code>
+     * This is equivalent to: {@code page == 0}
      *
-     * @return <code>true</code> if this page is the first page
+     * @return {@code true} if this page is the first page
      */
     boolean isFirst();
 
     /**
      * Checks if the current page is the last page.
      * <br>
-     * This is equivalent to: <code>page == itemsCount / itemsPerPage</code>
+     * This is equivalent to: {@code page == itemsCount / itemsPerPage}
      *
-     * @return <code>true</code> if this page is the last page
+     * @return {@code true} if this page is the last page
      */
     boolean isLast();
 
     /**
      * Sets the current page to the first page.
      * <br>
-     * This is equivalent to: <code>page(0)</code>
+     * This is equivalent to: {@code page(0)}
      *
-     * @return <code>this</code>, for chained calls
+     * @return {@code this}, for chained calls
      */
+    @NotNull
     Pagination first();
 
     /**
      * Sets the current page to the previous page,
      * if the current page is already the first page, this do nothing.
      *
-     * @return <code>this</code>, for chained calls
+     * @return {@code this}, for chained calls
      */
+    @NotNull
     Pagination previous();
 
     /**
      * Sets the current page to the next page,
      * if the current page is already the last page, this do nothing.
      *
-     * @return <code>this</code>, for chained calls
+     * @return {@code this}, for chained calls
      */
+    @NotNull
     Pagination next();
 
     /**
      * Sets the current page to the last page.
      * <br>
-     * This is equivalent to: <code>page(itemsCount / itemsPerPage)</code>
+     * This is equivalent to: {@code page(itemsCount / itemsPerPage)}
      *
-     * @return <code>this</code>, for chained calls
+     * @return {@code this}, for chained calls
      */
+    @NotNull
     Pagination last();
 
     /**
@@ -130,39 +136,44 @@ public interface Pagination {
      * iterator.
      *
      * @param iterator the iterator
-     * @return <code>this</code>, for chained calls
+     * @return {@code this}, for chained calls
      */
+    @NotNull
     Pagination addToIterator(SlotIterator iterator);
 
     /**
      * Sets all the items for this Pagination.
      *
      * @param items the items
-     * @return <code>this</code>, for chained calls
+     * @return {@code this}, for chained calls
      */
-    Pagination setItems(ClickableItem... items);
+    @NotNull
+    Pagination setItems(@NotNull ClickableItem... items);
 
     /**
      * Sets the maximum amount of items per page.
      *
      * @param itemsPerPage the maximum amount of items per page
-     * @return <code>this</code>, for chained calls
+     * @return {@code this}, for chained calls
      */
+    @NotNull
     Pagination setItemsPerPage(int itemsPerPage);
 
-
-    class Impl implements Pagination {
+    final class Impl implements Pagination {
 
         private int currentPage;
 
+        @NotNull
         private ClickableItem[] items = new ClickableItem[0];
+
         private int itemsPerPage = 5;
 
+        @NotNull
         @Override
         public ClickableItem[] getPageItems() {
-            return Arrays.copyOfRange(items,
-                    currentPage * itemsPerPage,
-                    (currentPage + 1) * itemsPerPage);
+            return Arrays.copyOfRange(this.items,
+                this.currentPage * this.itemsPerPage,
+                (this.currentPage + 1) * this.itemsPerPage);
         }
 
         @Override
@@ -171,7 +182,7 @@ public interface Pagination {
         }
 
         @Override
-        public Pagination page(int page) {
+        public Pagination page(final int page) {
             this.currentPage = page;
             return this;
         }
@@ -183,58 +194,64 @@ public interface Pagination {
 
         @Override
         public boolean isLast() {
-            int pageCount = (int) Math.ceil((double) this.items.length / this.itemsPerPage);
+            final int pageCount = (int) Math.ceil((double) this.items.length / (double) this.itemsPerPage);
             return this.currentPage >= pageCount - 1;
         }
 
+        @NotNull
         @Override
         public Pagination first() {
             this.currentPage = 0;
             return this;
         }
 
+        @NotNull
         @Override
         public Pagination previous() {
-            if(!isFirst())
+            if (!this.isFirst()) {
                 this.currentPage--;
-
+            }
             return this;
         }
 
+        @NotNull
         @Override
         public Pagination next() {
-            if(!isLast())
+            if (!this.isLast()) {
                 this.currentPage++;
-
+            }
             return this;
         }
 
+        @NotNull
         @Override
         public Pagination last() {
             this.currentPage = this.items.length / this.itemsPerPage;
             return this;
         }
 
+        @NotNull
         @Override
-        public Pagination addToIterator(SlotIterator iterator) {
-            for(ClickableItem item : getPageItems()) {
+        public Pagination addToIterator(@NotNull final SlotIterator iterator) {
+            for (final ClickableItem item : this.getPageItems()) {
                 iterator.next().set(item);
-
-                if(iterator.ended())
+                if (iterator.ended()) {
                     break;
+                }
             }
-
             return this;
         }
 
+        @NotNull
         @Override
-        public Pagination setItems(ClickableItem... items) {
+        public Pagination setItems(@NotNull final ClickableItem... items) {
             this.items = items;
             return this;
         }
 
+        @NotNull
         @Override
-        public Pagination setItemsPerPage(int itemsPerPage) {
+        public Pagination setItemsPerPage(final int itemsPerPage) {
             this.itemsPerPage = itemsPerPage;
             return this;
         }
