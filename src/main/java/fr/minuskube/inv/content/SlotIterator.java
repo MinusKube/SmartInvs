@@ -357,6 +357,11 @@ public interface SlotIterator {
         private Pattern<Boolean> blacklistPattern;
 
         public Impl(@NotNull final InventoryContents contents, @NotNull final SmartInventory inv,
+                    @NotNull final SlotIterator.Type type) {
+            this(contents, inv, type, 0, 0);
+        }
+
+        public Impl(@NotNull final InventoryContents contents, @NotNull final SmartInventory inv,
                     @NotNull final SlotIterator.Type type, final int startRow, final int startColumn) {
             this.contents = contents;
             this.inv = inv;
@@ -367,11 +372,6 @@ public interface SlotIterator {
             this.row = startRow;
             this.startColumn = startColumn;
             this.column = startColumn;
-        }
-
-        public Impl(@NotNull final InventoryContents contents, @NotNull final SmartInventory inv,
-                    @NotNull final SlotIterator.Type type) {
-            this(contents, inv, type, 0, 0);
         }
 
         @NotNull
@@ -626,5 +626,7 @@ public interface SlotIterator {
                 this.column < pattern.getColumnCount() + columnOffset &&
                 pattern.getObject(this.row - rowOffset, this.column - columnOffset);
         }
+
     }
+
 }

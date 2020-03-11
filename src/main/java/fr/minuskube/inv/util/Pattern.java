@@ -111,17 +111,12 @@ public final class Pattern<T> {
     }
 
     /**
-     * This method is simple a shorthand to the method call {@link #getObject(int, int) getObject(slot.getRow(),
-     * slot.getColumn())},
-     * so all the special cases described in that method will apply to this one
+     * This method counts the amount of rows this pattern has based on the length of the lines
      *
-     * @param slot The slot position to extract the row and column from
-     * @return The object associated with the key, or the default object
-     * @see #getObject(int, int) For the more detailed information
+     * @return the amount of columns
      */
-    @NotNull
-    public T getObject(@NotNull final SlotPos slot) {
-        return this.getObject(slot.getRow(), slot.getColumn());
+    public int getColumnCount() {
+        return this.lines[0].length();
     }
 
     /**
@@ -158,6 +153,29 @@ public final class Pattern<T> {
             Preconditions.checkElementIndex(columnclone, this.lines[0].length(), "The column must be between 0 and the column size");
         }
         return this.mapping.getOrDefault(this.lines[rowclone].charAt(columnclone), this.defaultValue);
+    }
+
+    /**
+     * This method counts the amount of rows this pattern has based on the amount of lines provided at creation
+     *
+     * @return the amount of rows
+     */
+    public int getRowCount() {
+        return this.lines.length;
+    }
+
+    /**
+     * This method is simple a shorthand to the method call {@link #getObject(int, int) getObject(slot.getRow(),
+     * slot.getColumn())},
+     * so all the special cases described in that method will apply to this one
+     *
+     * @param slot The slot position to extract the row and column from
+     * @return The object associated with the key, or the default object
+     * @see #getObject(int, int) For the more detailed information
+     */
+    @NotNull
+    public T getObject(@NotNull final SlotPos slot) {
+        return this.getObject(slot.getRow(), slot.getColumn());
     }
 
     /**
@@ -226,24 +244,6 @@ public final class Pattern<T> {
     }
 
     /**
-     * This method counts the amount of rows this pattern has based on the amount of lines provided at creation
-     *
-     * @return the amount of rows
-     */
-    public int getRowCount() {
-        return this.lines.length;
-    }
-
-    /**
-     * This method counts the amount of rows this pattern has based on the length of the lines
-     *
-     * @return the amount of columns
-     */
-    public int getColumnCount() {
-        return this.lines[0].length();
-    }
-
-    /**
      * A simple getter for the value provided at the Patterns creation, if this pattern supports wrapAround
      *
      * @return {@code true} if wrapAround is enabled for this instance
@@ -251,4 +251,5 @@ public final class Pattern<T> {
     public boolean isWrapAround() {
         return this.wrapAround;
     }
+
 }

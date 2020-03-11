@@ -70,21 +70,6 @@ public final class ClickableItem {
     }
 
     /**
-     * Creates a ClickableItem made of a given item and a given InventoryClickEvent's consumer.
-     *
-     * @param item the item
-     * @param consumer the consumer which will be called when the item is clicked
-     * @return the created ClickableItem
-     * @deprecated Replaced by {@link ClickableItem#from(ItemStack, Consumer)}
-     */
-    @NotNull
-    @Deprecated
-    public static ClickableItem of(@NotNull final ItemStack item,
-                                   @NotNull final Consumer<InventoryClickEvent> consumer) {
-        return new ClickableItem(item, consumer, true);
-    }
-
-    /**
      * Creates a ClickableItem made of a given item and a given ItemClickData's consumer.
      *
      * @param item the item
@@ -97,22 +82,18 @@ public final class ClickableItem {
     }
 
     /**
-     * Executes this ClickableItem's consumer using the given click event.
+     * Creates a ClickableItem made of a given item and a given InventoryClickEvent's consumer.
      *
-     * @param e the click event
-     * @deprecated This has been replaced by {@link ClickableItem#run(ItemClickData)}.
+     * @param item the item
+     * @param consumer the consumer which will be called when the item is clicked
+     * @return the created ClickableItem
+     * @deprecated Replaced by {@link ClickableItem#from(ItemStack, Consumer)}
      */
-    @SuppressWarnings("DeprecatedIsStillUsed")
+    @NotNull
     @Deprecated
-    public void run(@NotNull final InventoryClickEvent e) {
-        if ((this.canSee == null || this.canSee.test((Player) e.getWhoClicked())) &&
-            (this.canClick == null || this.canClick.test((Player) e.getWhoClicked()))) {
-            if (!this.legacy) {
-                return;
-            }
-            final Consumer<InventoryClickEvent> legacyConsumer = (Consumer<InventoryClickEvent>) this.consumer;
-            legacyConsumer.accept(e);
-        }
+    public static ClickableItem of(@NotNull final ItemStack item,
+                                   @NotNull final Consumer<InventoryClickEvent> consumer) {
+        return new ClickableItem(item, consumer, true);
     }
 
     /**
@@ -144,6 +125,25 @@ public final class ClickableItem {
                 final Consumer<ItemClickData> newConsumer = (Consumer<ItemClickData>) this.consumer;
                 newConsumer.accept(data);
             }
+        }
+    }
+
+    /**
+     * Executes this ClickableItem's consumer using the given click event.
+     *
+     * @param e the click event
+     * @deprecated This has been replaced by {@link ClickableItem#run(ItemClickData)}.
+     */
+    @SuppressWarnings("DeprecatedIsStillUsed")
+    @Deprecated
+    public void run(@NotNull final InventoryClickEvent e) {
+        if ((this.canSee == null || this.canSee.test((Player) e.getWhoClicked())) &&
+            (this.canClick == null || this.canClick.test((Player) e.getWhoClicked()))) {
+            if (!this.legacy) {
+                return;
+            }
+            final Consumer<InventoryClickEvent> legacyConsumer = (Consumer<InventoryClickEvent>) this.consumer;
+            legacyConsumer.accept(e);
         }
     }
 
@@ -235,4 +235,5 @@ public final class ClickableItem {
         this.canClick = canClick;
         return this;
     }
+
 }

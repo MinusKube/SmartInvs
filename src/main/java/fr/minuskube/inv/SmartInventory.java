@@ -91,16 +91,6 @@ public final class SmartInventory {
     }
 
     @NotNull
-    public Inventory open(@NotNull final Player player, final int page) {
-        return this.open(player, page, Collections.emptyMap());
-    }
-
-    @NotNull
-    public Inventory open(@NotNull final Player player, @NotNull final Map<String, Object> properties) {
-        return this.open(player, 0, properties);
-    }
-
-    @NotNull
     public Inventory open(@NotNull final Player player, final int page, @NotNull final Map<String, Object> properties) {
         final Optional<SmartInventory> oldInv = this.manager.getInventory(player);
         oldInv.ifPresent(inv -> {
@@ -124,6 +114,20 @@ public final class SmartInventory {
         this.manager.setInventory(player, this);
         this.manager.scheduleUpdateTask(player, this);
         return handle;
+    }
+
+    List<InventoryListener<? extends Event>> getListeners() {
+        return Collections.unmodifiableList(this.listeners);
+    }
+
+    @NotNull
+    public Inventory open(@NotNull final Player player, final int page) {
+        return this.open(player, page, Collections.emptyMap());
+    }
+
+    @NotNull
+    public Inventory open(@NotNull final Player player, @NotNull final Map<String, Object> properties) {
+        return this.open(player, 0, properties);
     }
 
     public void close(@NotNull final Player player) {
@@ -194,10 +198,6 @@ public final class SmartInventory {
 
     public InventoryManager getManager() {
         return this.manager;
-    }
-
-    List<InventoryListener<? extends Event>> getListeners() {
-        return Collections.unmodifiableList(this.listeners);
     }
 
     public static final class Builder {
@@ -341,11 +341,6 @@ public final class SmartInventory {
         }
 
         @NotNull
-        public Optional<InventoryManager> getManager() {
-            return Optional.ofNullable(this.manager);
-        }
-
-        @NotNull
         public Optional<InventoryProvider> getProvider() {
             return Optional.ofNullable(this.provider);
         }
@@ -390,6 +385,11 @@ public final class SmartInventory {
             ).findOpener(type).orElseThrow(() ->
                 new IllegalStateException("Cannot find InventoryOpener for type " + type)
             ).defaultSize(type);
+        }
+
+        @NotNull
+        public Optional<InventoryManager> getManager() {
+            return Optional.ofNullable(this.manager);
         }
 
     }

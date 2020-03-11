@@ -50,10 +50,10 @@ public final class SmartInvsPlugin extends JavaPlugin {
         return SmartInvsPlugin.instance;
     }
 
-    private static void setPlugin(@NotNull final Plugin plugin) {
-        SmartInvsPlugin.instance = plugin;
-        SmartInvsPlugin.manager = new InventoryManager(plugin);
-        SmartInvsPlugin.manager.init();
+    @Override
+    public void onDisable() {
+        super.onDisable();
+        SmartInvsPlugin.deleteStaticReferences();
     }
 
     private static void deleteStaticReferences() {
@@ -67,9 +67,10 @@ public final class SmartInvsPlugin extends JavaPlugin {
         SmartInvsPlugin.setPlugin(this);
     }
 
-    @Override
-    public void onDisable() {
-        super.onDisable();
-        SmartInvsPlugin.deleteStaticReferences();
+    private static void setPlugin(@NotNull final Plugin plugin) {
+        SmartInvsPlugin.instance = plugin;
+        SmartInvsPlugin.manager = new InventoryManager(plugin);
+        SmartInvsPlugin.manager.init();
     }
+
 }

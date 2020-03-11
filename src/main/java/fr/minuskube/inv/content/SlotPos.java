@@ -36,6 +36,13 @@ public final class SlotPos {
     }
 
     @Override
+    public int hashCode() {
+        int result = this.row;
+        result = 31 * result + this.column;
+        return result;
+    }
+
+    @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
@@ -45,13 +52,6 @@ public final class SlotPos {
         }
         final SlotPos slotPos = (SlotPos) obj;
         return this.row == slotPos.row && this.column == slotPos.column;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = this.row;
-        result = 31 * result + this.column;
-        return result;
     }
 
     @Override

@@ -626,16 +626,16 @@ public interface InventoryContents {
 
         @NotNull
         @Override
-        public SlotIterator newIterator(@NotNull final String id, @NotNull final SlotIterator.Type type,
-                                        @NotNull final SlotPos startPos) {
-            return this.newIterator(id, type, startPos.getRow(), startPos.getColumn());
+        public SlotIterator newIterator(@NotNull final SlotIterator.Type type, final int startRow,
+                                        final int startColumn) {
+            return new SlotIterator.Impl(this, this.inventory, type, startRow, startColumn);
         }
 
         @NotNull
         @Override
-        public SlotIterator newIterator(@NotNull final SlotIterator.Type type, final int startRow,
-                                        final int startColumn) {
-            return new SlotIterator.Impl(this, this.inventory, type, startRow, startColumn);
+        public SlotIterator newIterator(@NotNull final String id, @NotNull final SlotIterator.Type type,
+                                        @NotNull final SlotPos startPos) {
+            return this.newIterator(id, type, startPos.getRow(), startPos.getColumn());
         }
 
         @NotNull
@@ -891,6 +891,21 @@ public interface InventoryContents {
 
         @NotNull
         @Override
+        public InventoryContents fillPattern(@NotNull final Pattern<ClickableItem> pattern, final int startRow,
+                                             final int startColumn) {
+            for (int row = 0; row < pattern.getRowCount(); row++) {
+                for (int column = 0; column < pattern.getColumnCount(); column++) {
+                    final ClickableItem item = pattern.getObject(row, column);
+                    if (item != null) {
+                        this.set(startRow + row, startColumn + column, item);
+                    }
+                }
+            }
+            return this;
+        }
+
+        @NotNull
+        @Override
         public InventoryContents fillPattern(@NotNull final Pattern<ClickableItem> pattern,
                                              @NotNull final SlotPos startPos) {
             return this.fillPattern(pattern, startPos.getRow(), startPos.getColumn());
@@ -950,21 +965,6 @@ public interface InventoryContents {
                                                       @NotNull final SlotPos startPos, @NotNull final SlotPos endPos) {
             return this.fillPatternRepeating(pattern, startPos.getRow(), startPos.getColumn(), endPos.getRow(),
                 endPos.getColumn());
-        }
-
-        @NotNull
-        @Override
-        public InventoryContents fillPattern(@NotNull final Pattern<ClickableItem> pattern, final int startRow,
-                                             final int startColumn) {
-            for (int row = 0; row < pattern.getRowCount(); row++) {
-                for (int column = 0; column < pattern.getColumnCount(); column++) {
-                    final ClickableItem item = pattern.getObject(row, column);
-                    if (item != null) {
-                        this.set(startRow + row, startColumn + column, item);
-                    }
-                }
-            }
-            return this;
         }
 
         @SuppressWarnings("unchecked")
