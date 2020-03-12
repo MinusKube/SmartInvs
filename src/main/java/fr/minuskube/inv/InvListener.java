@@ -26,7 +26,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginDisableEvent;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * TODO: Write well javadoc.
@@ -36,10 +35,9 @@ import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("unchecked")
 final class InvListener implements Listener {
 
-    @NotNull
     private final InventoryManager manager;
 
-    InvListener(@NotNull final InventoryManager mngr) {
+    InvListener(final InventoryManager mngr) {
         this.manager = mngr;
     }
 

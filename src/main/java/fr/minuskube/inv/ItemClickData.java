@@ -20,46 +20,37 @@ import fr.minuskube.inv.content.SlotPos;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 public final class ItemClickData {
 
-    @NotNull
     private final Event event;
 
-    @NotNull
     private final Player player;
 
-    @NotNull
     private final ItemStack item;
 
-    @NotNull
     private final SlotPos slot;
 
-    public ItemClickData(@NotNull final Event event, @NotNull final Player player, @NotNull final ItemStack item,
-                         @NotNull final SlotPos slot) {
+    public ItemClickData(final Event event, final Player player, final ItemStack item,
+                         final SlotPos slot) {
         this.event = event;
         this.player = player;
         this.item = item;
         this.slot = slot;
     }
 
-    @NotNull
     public Event getEvent() {
         return this.event;
     }
 
-    @NotNull
     public Player getPlayer() {
         return this.player;
     }
 
-    @NotNull
     public ItemStack getItem() {
         return this.item;
     }
 
-    @NotNull
     public SlotPos getSlot() {
         return this.slot;
     }

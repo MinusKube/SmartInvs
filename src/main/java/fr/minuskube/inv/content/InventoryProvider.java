@@ -17,7 +17,6 @@
 package fr.minuskube.inv.content;
 
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * TODO: Write well javadoc.
@@ -26,8 +25,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface InventoryProvider {
 
-    void init(@NotNull Player player, @NotNull InventoryContents contents);
+    void init(Player player, InventoryContents contents);
 
-    void update(@NotNull Player player, @NotNull InventoryContents contents);
+    void update(Player player, InventoryContents contents);
 
 }

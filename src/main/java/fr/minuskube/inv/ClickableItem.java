@@ -21,8 +21,6 @@ import java.util.function.Predicate;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("unchecked")
 public final class ClickableItem {
@@ -32,24 +30,19 @@ public final class ClickableItem {
      */
     public static final ClickableItem NONE = ClickableItem.empty(null);
 
-    @Nullable
     private final ItemStack item;
 
-    @NotNull
     private final Consumer<?> consumer;
 
     private final boolean legacy;
 
-    @Nullable
     private Predicate<Player> canSee;
 
-    @Nullable
     private Predicate<Player> canClick;
 
-    @Nullable
     private ItemStack notVisibleFallBackItem = null;
 
-    private ClickableItem(@Nullable final ItemStack item, @NotNull final Consumer<?> consumer, final boolean legacy) {
+    private ClickableItem(final ItemStack item, final Consumer<?> consumer, final boolean legacy) {
         this.item = item;
         this.consumer = consumer;
         this.legacy = legacy;
@@ -62,8 +55,7 @@ public final class ClickableItem {
      * @param item the item
      * @return the created ClickableItem
      */
-    @NotNull
-    public static ClickableItem empty(@Nullable final ItemStack item) {
+    public static ClickableItem empty(final ItemStack item) {
         return ClickableItem.from(item, data -> {
         });
     }
@@ -75,8 +67,7 @@ public final class ClickableItem {
      * @param consumer the consumer which will be called when the item is clicked
      * @return the created ClickableItem
      */
-    @NotNull
-    public static ClickableItem from(@Nullable final ItemStack item, @NotNull final Consumer<ItemClickData> consumer) {
+    public static ClickableItem from(final ItemStack item, final Consumer<ItemClickData> consumer) {
         return new ClickableItem(item, consumer, false);
     }
 
@@ -88,10 +79,9 @@ public final class ClickableItem {
      * @return the created ClickableItem
      * @deprecated Replaced by {@link ClickableItem#from(ItemStack, Consumer)}
      */
-    @NotNull
     @Deprecated
-    public static ClickableItem of(@NotNull final ItemStack item,
-                                   @NotNull final Consumer<InventoryClickEvent> consumer) {
+    public static ClickableItem of(final ItemStack item,
+                                   final Consumer<InventoryClickEvent> consumer) {
         return new ClickableItem(item, consumer, true);
     }
 
@@ -101,8 +91,7 @@ public final class ClickableItem {
      * @param newItem the new item
      * @return the created ClickableItem
      */
-    @NotNull
-    public ClickableItem clone(@NotNull final ItemStack newItem) {
+    public ClickableItem clone(final ItemStack newItem) {
         return new ClickableItem(newItem, this.consumer, this.legacy);
     }
 
@@ -111,7 +100,7 @@ public final class ClickableItem {
      *
      * @param data the data of the click
      */
-    public void run(@NotNull final ItemClickData data) {
+    public void run(final ItemClickData data) {
         if ((this.canSee == null || this.canSee.test(data.getPlayer())) &&
             (this.canClick == null || this.canClick.test(data.getPlayer()))) {
             if (this.legacy) {
@@ -135,7 +124,7 @@ public final class ClickableItem {
      */
     @SuppressWarnings("DeprecatedIsStillUsed")
     @Deprecated
-    public void run(@NotNull final InventoryClickEvent e) {
+    public void run(final InventoryClickEvent e) {
         if ((this.canSee == null || this.canSee.test((Player) e.getWhoClicked())) &&
             (this.canClick == null || this.canClick.test((Player) e.getWhoClicked()))) {
             if (!this.legacy) {
@@ -154,7 +143,6 @@ public final class ClickableItem {
      *
      * @return the item, or {@code null} if there is no item
      */
-    @Nullable
     public ItemStack getItem() {
         return this.item;
     }
@@ -168,8 +156,7 @@ public final class ClickableItem {
      * @param player The player to test against if he can see this item
      * @return the item, the fallback item when not visible to the player, or {@code null} if there is no item
      */
-    @Nullable
-    public ItemStack getItem(@NotNull final Player player) {
+    public ItemStack getItem(final Player player) {
         if (this.canSee == null || this.canSee.test(player)) {
             return this.item;
         }
@@ -191,8 +178,7 @@ public final class ClickableItem {
      * @return {@code this} for a builder-like usage
      * @see #canSee(Predicate, ItemStack) If you want to set a specific fallback item
      */
-    @NotNull
-    public ClickableItem canSee(@NotNull final Predicate<Player> canSee) {
+    public ClickableItem canSee(final Predicate<Player> canSee) {
         return this.canSee(canSee, null);
     }
 
@@ -214,8 +200,7 @@ public final class ClickableItem {
      * @return {@code this} for a builder-like usage
      * @see #canSee(Predicate) If you want the slot to be empty
      */
-    @NotNull
-    public ClickableItem canSee(@NotNull final Predicate<Player> canSee, @Nullable final ItemStack fallBackItem) {
+    public ClickableItem canSee(final Predicate<Player> canSee, final ItemStack fallBackItem) {
         this.canSee = canSee;
         this.notVisibleFallBackItem = fallBackItem;
         return this;
@@ -229,8 +214,7 @@ public final class ClickableItem {
      * @param canClick the test, if a player should be allowed to see this item
      * @return {@code this} for a builder-like usage
      */
-    @NotNull
-    public ClickableItem canClick(@NotNull final Predicate<Player> canClick) {
+    public ClickableItem canClick(final Predicate<Player> canClick) {
         this.canClick = canClick;
         return this;
     }

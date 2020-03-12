@@ -18,7 +18,6 @@ package fr.minuskube.inv.content;
 
 import fr.minuskube.inv.ClickableItem;
 import java.util.Arrays;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * <p>
@@ -56,7 +55,6 @@ public interface Pagination {
      *
      * @return the current page items
      */
-    @NotNull
     ClickableItem[] getPageItems();
 
     /**
@@ -72,7 +70,6 @@ public interface Pagination {
      * @param page the current page
      * @return {@code this}, for chained calls
      */
-    @NotNull
     Pagination page(int page);
 
     /**
@@ -100,7 +97,6 @@ public interface Pagination {
      *
      * @return {@code this}, for chained calls
      */
-    @NotNull
     Pagination first();
 
     /**
@@ -109,7 +105,6 @@ public interface Pagination {
      *
      * @return {@code this}, for chained calls
      */
-    @NotNull
     Pagination previous();
 
     /**
@@ -118,7 +113,6 @@ public interface Pagination {
      *
      * @return {@code this}, for chained calls
      */
-    @NotNull
     Pagination next();
 
     /**
@@ -128,7 +122,6 @@ public interface Pagination {
      *
      * @return {@code this}, for chained calls
      */
-    @NotNull
     Pagination last();
 
     /**
@@ -138,7 +131,6 @@ public interface Pagination {
      * @param iterator the iterator
      * @return {@code this}, for chained calls
      */
-    @NotNull
     Pagination addToIterator(SlotIterator iterator);
 
     /**
@@ -147,8 +139,7 @@ public interface Pagination {
      * @param items the items
      * @return {@code this}, for chained calls
      */
-    @NotNull
-    Pagination setItems(@NotNull ClickableItem... items);
+    Pagination setItems(ClickableItem... items);
 
     /**
      * Sets the maximum amount of items per page.
@@ -156,19 +147,16 @@ public interface Pagination {
      * @param itemsPerPage the maximum amount of items per page
      * @return {@code this}, for chained calls
      */
-    @NotNull
     Pagination setItemsPerPage(int itemsPerPage);
 
     final class Impl implements Pagination {
 
         private int currentPage;
 
-        @NotNull
         private ClickableItem[] items = new ClickableItem[0];
 
         private int itemsPerPage = 5;
 
-        @NotNull
         @Override
         public ClickableItem[] getPageItems() {
             return Arrays.copyOfRange(this.items,
@@ -198,14 +186,12 @@ public interface Pagination {
             return this.currentPage >= pageCount - 1;
         }
 
-        @NotNull
         @Override
         public Pagination first() {
             this.currentPage = 0;
             return this;
         }
 
-        @NotNull
         @Override
         public Pagination previous() {
             if (!this.isFirst()) {
@@ -214,7 +200,6 @@ public interface Pagination {
             return this;
         }
 
-        @NotNull
         @Override
         public Pagination next() {
             if (!this.isLast()) {
@@ -223,16 +208,14 @@ public interface Pagination {
             return this;
         }
 
-        @NotNull
         @Override
         public Pagination last() {
             this.currentPage = this.items.length / this.itemsPerPage;
             return this;
         }
 
-        @NotNull
         @Override
-        public Pagination addToIterator(@NotNull final SlotIterator iterator) {
+        public Pagination addToIterator(final SlotIterator iterator) {
             for (final ClickableItem item : this.getPageItems()) {
                 iterator.next().set(item);
                 if (iterator.ended()) {
@@ -242,14 +225,12 @@ public interface Pagination {
             return this;
         }
 
-        @NotNull
         @Override
-        public Pagination setItems(@NotNull final ClickableItem... items) {
+        public Pagination setItems(final ClickableItem... items) {
             this.items = items;
             return this;
         }
 
-        @NotNull
         @Override
         public Pagination setItemsPerPage(final int itemsPerPage) {
             this.itemsPerPage = itemsPerPage;

@@ -18,18 +18,13 @@ package fr.minuskube.inv;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public final class SmartInvsPlugin extends JavaPlugin {
 
-    @Nullable
     private static Plugin instance;
 
-    @Nullable
     private static InventoryManager manager;
 
-    @NotNull
     public static InventoryManager getManager() {
         if (SmartInvsPlugin.manager == null) {
             throw new IllegalStateException("You can't use SmartInvsPlugin#getManager() method before initialization!");
@@ -37,7 +32,6 @@ public final class SmartInvsPlugin extends JavaPlugin {
         return SmartInvsPlugin.manager;
     }
 
-    @NotNull
     public static Plugin getInstance() {
         if (SmartInvsPlugin.instance == null) {
             throw new IllegalStateException("You can't use SmartInvsPlugin#getInstance() method before initialization!");
@@ -60,7 +54,7 @@ public final class SmartInvsPlugin extends JavaPlugin {
         SmartInvsPlugin.setPlugin(this);
     }
 
-    private static void setPlugin(@NotNull final Plugin plugin) {
+    private static void setPlugin(final Plugin plugin) {
         SmartInvsPlugin.instance = plugin;
         SmartInvsPlugin.manager = new InventoryManager(plugin);
         SmartInvsPlugin.manager.init();

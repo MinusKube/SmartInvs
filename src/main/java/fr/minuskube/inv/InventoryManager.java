@@ -28,12 +28,9 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public final class InventoryManager {
 
-    @NotNull
     private final Plugin plugin;
 
     private final PluginManager pluginmanager = Bukkit.getPluginManager();
@@ -50,7 +47,7 @@ public final class InventoryManager {
 
     private final Collection<InventoryOpener> openers = new ArrayList<>();
 
-    public InventoryManager(@NotNull final Plugin plgn) {
+    public InventoryManager(final Plugin plgn) {
         this.plugin = plgn;
     }
 
@@ -69,8 +66,7 @@ public final class InventoryManager {
     //        }
     //    }
 
-    @NotNull
-    public Optional<InventoryOpener> findOpener(@NotNull final InventoryType type) {
+    public Optional<InventoryOpener> findOpener(final InventoryType type) {
         final Optional<InventoryOpener> optional = this.openers.stream()
             .filter(opener -> opener.supports(type))
             .findAny();
@@ -80,12 +76,11 @@ public final class InventoryManager {
         return this.defaulters.stream().filter(opener -> opener.supports(type)).findAny();
     }
 
-    public void registerOpeners(@NotNull final InventoryOpener... opnrs) {
+    public void registerOpeners(final InventoryOpener... opnrs) {
         this.openers.addAll(Arrays.asList(opnrs));
     }
 
-    @NotNull
-    public List<Player> getOpenedPlayers(@NotNull final SmartInventory inv) {
+    public List<Player> getOpenedPlayers(final SmartInventory inv) {
         final List<Player> list = new ArrayList<>();
         this.inventories.forEach((player, playerInv) -> {
             if (inv.equals(playerInv)) {
@@ -95,31 +90,27 @@ public final class InventoryManager {
         return list;
     }
 
-    @NotNull
-    public Optional<SmartInventory> getInventory(@NotNull final Player player) {
+    public Optional<SmartInventory> getInventory(final Player player) {
         return Optional.ofNullable(this.inventories.get(player));
     }
 
-    @NotNull
-    public Optional<InventoryContents> getContents(@NotNull final Player player) {
+    public Optional<InventoryContents> getContents(final Player player) {
         return Optional.ofNullable(this.contents.get(player));
     }
 
-    @NotNull
     public Plugin getPlugin() {
         return this.plugin;
     }
 
-    @NotNull
     public Map<Player, SmartInventory> getInventories() {
         return Collections.unmodifiableMap(this.inventories);
     }
 
-    public void removeInventory(@NotNull final Player player) {
+    public void removeInventory(final Player player) {
         this.inventories.remove(player);
     }
 
-    public void removeContent(@NotNull final Player player) {
+    public void removeContent(final Player player) {
         this.contents.remove(player);
     }
 
@@ -131,7 +122,7 @@ public final class InventoryManager {
         this.contents.clear();
     }
 
-    void setInventory(@NotNull final Player player, @Nullable final SmartInventory inv) {
+    void setInventory(final Player player, final SmartInventory inv) {
         if (inv == null) {
             this.inventories.remove(player);
         } else {
@@ -139,7 +130,7 @@ public final class InventoryManager {
         }
     }
 
-    void setContents(@NotNull final Player player, @Nullable final InventoryContents contest) {
+    void setContents(final Player player, final InventoryContents contest) {
         if (contest == null) {
             this.contents.remove(player);
         } else {
@@ -147,14 +138,14 @@ public final class InventoryManager {
         }
     }
 
-    void scheduleUpdateTask(@NotNull final Player player, @NotNull final SmartInventory inv) {
+    void scheduleUpdateTask(final Player player, final SmartInventory inv) {
         final PlayerInvTask task =
             new PlayerInvTask(player, inv.getProvider(), this.contents.get(player));
         task.runTaskTimer(this.plugin, 1L, inv.getUpdateFrequency());
         this.tasks.put(player, task);
     }
 
-    void cancelUpdateTask(@NotNull final Player player) {
+    void cancelUpdateTask(final Player player) {
         if (this.tasks.containsKey(player)) {
             final int id = this.tasks.get(player).getTaskId();
             Bukkit.getScheduler().cancelTask(id);

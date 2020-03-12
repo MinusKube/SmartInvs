@@ -23,7 +23,6 @@ import fr.minuskube.inv.content.SlotPos;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Write well javadoc
@@ -32,13 +31,12 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface InventoryOpener {
 
-    @NotNull
-    Inventory open(@NotNull SmartInventory inv, @NotNull Player player);
+    Inventory open(SmartInventory inv, Player player);
 
-    boolean supports(@NotNull InventoryType type);
+    boolean supports(InventoryType type);
 
-    default void fill(@NotNull final Inventory handle, @NotNull final InventoryContents contents,
-                      @NotNull final Player player) {
+    default void fill(final Inventory handle, final InventoryContents contents,
+                      final Player player) {
         final ClickableItem[][] items = contents.all();
         for (int row = 0; row < items.length; row++) {
             for (int column = 0; column < items[row].length; column++) {
@@ -61,8 +59,7 @@ public interface InventoryOpener {
      * (3x9) for type (ender)chest, (3x3) for dispenser & dropper and
      * (1x_sizeOfInventoryType_) for everything else.
      */
-    @NotNull
-    default SlotPos defaultSize(@NotNull final InventoryType type) {
+    default SlotPos defaultSize(final InventoryType type) {
         switch (type) {
             case CHEST:
             case ENDER_CHEST:

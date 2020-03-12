@@ -23,8 +23,6 @@ import fr.minuskube.inv.util.Pattern;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * <p>
@@ -40,7 +38,6 @@ public interface SlotIterator {
      *
      * @return the item at the current position
      */
-    @NotNull
     Optional<ClickableItem> get();
 
     /**
@@ -50,8 +47,7 @@ public interface SlotIterator {
      * @param item the new item
      * @return {@code this}, for chained calls
      */
-    @NotNull
-    SlotIterator set(@NotNull ClickableItem item);
+    SlotIterator set(ClickableItem item);
 
     /**
      * Moves the cursor to the previous position inside
@@ -62,7 +58,6 @@ public interface SlotIterator {
      *
      * @return {@code this}, for chained calls
      */
-    @NotNull
     SlotIterator previous();
 
     /**
@@ -74,7 +69,6 @@ public interface SlotIterator {
      *
      * @return {@code this}, for chained calls
      */
-    @NotNull
     SlotIterator next();
 
     /**
@@ -87,7 +81,6 @@ public interface SlotIterator {
      * @param index the index to blacklist
      * @return {@code this}, for chained calls
      */
-    @NotNull
     SlotIterator blacklist(int index);
 
     /**
@@ -101,7 +94,6 @@ public interface SlotIterator {
      * @param column the column of the slot to blacklist
      * @return {@code this}, for chained calls
      */
-    @NotNull
     SlotIterator blacklist(int row, int column);
 
     /**
@@ -114,8 +106,7 @@ public interface SlotIterator {
      * @param slotPos the slot to blacklist
      * @return {@code this}, for chained calls
      */
-    @NotNull
-    SlotIterator blacklist(@NotNull SlotPos slotPos);
+    SlotIterator blacklist(SlotPos slotPos);
 
     /**
      * Gets the current row of the iterator.
@@ -130,7 +121,6 @@ public interface SlotIterator {
      * @param row the new row
      * @return {@code this}, for chained calls
      */
-    @NotNull
     SlotIterator row(int row);
 
     /**
@@ -146,7 +136,6 @@ public interface SlotIterator {
      * @param column the new column
      * @return {@code this}, for chained calls
      */
-    @NotNull
     SlotIterator column(int column);
 
     /**
@@ -156,7 +145,6 @@ public interface SlotIterator {
      *
      * @return {@code this}, for chained calls
      */
-    @NotNull
     SlotIterator reset();
 
     /**
@@ -190,7 +178,6 @@ public interface SlotIterator {
      * @param column The column where the iterator should end
      * @return {@code this}, for chained calls
      */
-    @NotNull
     SlotIterator endPosition(int row, int column);
 
     /**
@@ -202,8 +189,7 @@ public interface SlotIterator {
      * @param endPosition The slot where the iterator should end
      * @return {@code this}, for chained calls
      */
-    @NotNull
-    SlotIterator endPosition(@NotNull SlotPos endPosition);
+    SlotIterator endPosition(SlotPos endPosition);
 
     /**
      * Gets the value of the allow override option.
@@ -230,7 +216,6 @@ public interface SlotIterator {
      * @param override the value of the allow override option
      * @return {@code this}, for chained calls
      */
-    @NotNull
     SlotIterator allowOverride(boolean override);
 
     /**
@@ -247,8 +232,7 @@ public interface SlotIterator {
      * @param pattern The pattern to use as a guideline
      * @return {@code this}, for chained calls
      */
-    @NotNull
-    SlotIterator withPattern(@NotNull Pattern<Boolean> pattern);
+    SlotIterator withPattern(Pattern<Boolean> pattern);
 
     /**
      * Setting a pattern using this method will use it as a guideline where the slot iterator can set items or not.
@@ -269,8 +253,7 @@ public interface SlotIterator {
      * @param columnOffset The column offset from the top left corner
      * @return {@code this}, for chained calls
      */
-    @NotNull
-    SlotIterator withPattern(@NotNull Pattern<Boolean> pattern, int rowOffset, int columnOffset);
+    SlotIterator withPattern(Pattern<Boolean> pattern, int rowOffset, int columnOffset);
 
     /**
      * This method has the inverse effect of {@link #withPattern(Pattern)}, where the other method would only allow the
@@ -279,8 +262,7 @@ public interface SlotIterator {
      * @param pattern The pattern where the slot iterator cannot iterate
      * @return {@code this}, for chained calls
      */
-    @NotNull
-    SlotIterator blacklistPattern(@NotNull Pattern<Boolean> pattern);
+    SlotIterator blacklistPattern(Pattern<Boolean> pattern);
 
     /**
      * This method has the inverse effect of {@link #withPattern(Pattern, int, int)}, where the other method would only allow the
@@ -291,8 +273,7 @@ public interface SlotIterator {
      * @param columnOffset The column offset from the top left corner
      * @return {@code this}, for chained calls
      */
-    @NotNull
-    SlotIterator blacklistPattern(@NotNull Pattern<Boolean> pattern, int rowOffset, int columnOffset);
+    SlotIterator blacklistPattern(Pattern<Boolean> pattern, int rowOffset, int columnOffset);
 
     /**
      * The iterate type of the inventory.
@@ -315,13 +296,10 @@ public interface SlotIterator {
 
     final class Impl implements SlotIterator {
 
-        @NotNull
         private final SmartInventory inv;
 
-        @NotNull
         private final SlotIterator.Type type;
 
-        @NotNull
         private final InventoryContents contents;
 
         private final int startRow;
@@ -346,23 +324,21 @@ public interface SlotIterator {
 
         private int patternColumnOffset;
 
-        @Nullable
         private Pattern<Boolean> pattern;
 
         private int blacklistPatternRowOffset;
 
         private int blacklistPatternColumnOffset;
 
-        @Nullable
         private Pattern<Boolean> blacklistPattern;
 
-        public Impl(@NotNull final InventoryContents contents, @NotNull final SmartInventory inv,
-                    @NotNull final SlotIterator.Type type) {
+        public Impl(final InventoryContents contents, final SmartInventory inv,
+                    final SlotIterator.Type type) {
             this(contents, inv, type, 0, 0);
         }
 
-        public Impl(@NotNull final InventoryContents contents, @NotNull final SmartInventory inv,
-                    @NotNull final SlotIterator.Type type, final int startRow, final int startColumn) {
+        public Impl(final InventoryContents contents, final SmartInventory inv,
+                    final SlotIterator.Type type, final int startRow, final int startColumn) {
             this.contents = contents;
             this.inv = inv;
             this.type = type;
@@ -374,15 +350,13 @@ public interface SlotIterator {
             this.column = startColumn;
         }
 
-        @NotNull
         @Override
         public Optional<ClickableItem> get() {
             return this.contents.get(this.row, this.column);
         }
 
-        @NotNull
         @Override
-        public SlotIterator set(@NotNull final ClickableItem item) {
+        public SlotIterator set(final ClickableItem item) {
             if (this.canPlace()) {
                 this.contents.set(this.row, this.column, item);
             }
@@ -390,7 +364,6 @@ public interface SlotIterator {
             return this;
         }
 
-        @NotNull
         @Override
         public SlotIterator previous() {
             if (this.row == 0 && this.column == 0) {
@@ -426,7 +399,6 @@ public interface SlotIterator {
             return this;
         }
 
-        @NotNull
         @Override
         public SlotIterator next() {
             if (this.ended()) {
@@ -463,7 +435,6 @@ public interface SlotIterator {
             return this;
         }
 
-        @NotNull
         @Override
         public SlotIterator blacklist(final int index) {
             final int count = this.inv.getColumns();
@@ -471,16 +442,14 @@ public interface SlotIterator {
             return this;
         }
 
-        @NotNull
         @Override
         public SlotIterator blacklist(final int row, final int column) {
             this.blacklisted.add(SlotPos.of(row, column));
             return this;
         }
 
-        @NotNull
         @Override
-        public SlotIterator blacklist(@NotNull final SlotPos slotPos) {
+        public SlotIterator blacklist(final SlotPos slotPos) {
             return this.blacklist(slotPos.getRow(), slotPos.getColumn());
         }
 
@@ -489,7 +458,6 @@ public interface SlotIterator {
             return this.row;
         }
 
-        @NotNull
         @Override
         public SlotIterator row(final int row) {
             this.row = row;
@@ -501,14 +469,12 @@ public interface SlotIterator {
             return this.column;
         }
 
-        @NotNull
         @Override
         public SlotIterator column(final int column) {
             this.column = column;
             return this;
         }
 
-        @NotNull
         @Override
         public SlotIterator reset() {
             this.started = false;
@@ -528,7 +494,6 @@ public interface SlotIterator {
                 && this.column == this.endColumn;
         }
 
-        @NotNull
         @Override
         public SlotIterator endPosition(int row, int column) {
             if (row < 0) {
@@ -544,9 +509,8 @@ public interface SlotIterator {
             return this;
         }
 
-        @NotNull
         @Override
-        public SlotIterator endPosition(@NotNull final SlotPos endPosition) {
+        public SlotIterator endPosition(final SlotPos endPosition) {
             return this.endPosition(endPosition.getRow(), endPosition.getColumn());
         }
 
@@ -555,22 +519,19 @@ public interface SlotIterator {
             return this.allowOverride;
         }
 
-        @NotNull
         @Override
         public SlotIterator allowOverride(final boolean override) {
             this.allowOverride = override;
             return this;
         }
 
-        @NotNull
         @Override
-        public SlotIterator withPattern(@NotNull final Pattern<Boolean> pattern) {
+        public SlotIterator withPattern(final Pattern<Boolean> pattern) {
             return this.withPattern(pattern, 0, 0);
         }
 
-        @NotNull
         @Override
-        public SlotIterator withPattern(@NotNull final Pattern<Boolean> pattern, final int rowOffset,
+        public SlotIterator withPattern(final Pattern<Boolean> pattern, final int rowOffset,
                                         final int columnOffset) {
             this.patternRowOffset = rowOffset;
             this.patternColumnOffset = columnOffset;
@@ -581,15 +542,13 @@ public interface SlotIterator {
             return this;
         }
 
-        @NotNull
         @Override
-        public SlotIterator blacklistPattern(@NotNull final Pattern<Boolean> pattern) {
+        public SlotIterator blacklistPattern(final Pattern<Boolean> pattern) {
             return this.blacklistPattern(pattern, 0, 0);
         }
 
-        @NotNull
         @Override
-        public SlotIterator blacklistPattern(@NotNull final Pattern<Boolean> pattern, final int rowOffset,
+        public SlotIterator blacklistPattern(final Pattern<Boolean> pattern, final int rowOffset,
                                              final int columnOffset) {
             this.blacklistPatternRowOffset = rowOffset;
             this.blacklistPatternColumnOffset = columnOffset;
@@ -616,7 +575,7 @@ public interface SlotIterator {
                 blacklistPatternAllows;
         }
 
-        private boolean checkPattern(@NotNull final Pattern<Boolean> pattern, final int rowOffset,
+        private boolean checkPattern(final Pattern<Boolean> pattern, final int rowOffset,
                                      final int columnOffset) {
             if (pattern.isWrapAround()) {
                 return pattern.getObject(this.row - rowOffset, this.column - columnOffset);

@@ -24,7 +24,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-import org.jetbrains.annotations.NotNull;
 
 public final class SpecialInventoryOpener implements InventoryOpener {
 
@@ -41,7 +40,7 @@ public final class SpecialInventoryOpener implements InventoryOpener {
     );
 
     @Override
-    public Inventory open(@NotNull final SmartInventory inv, final Player player) {
+    public Inventory open(final SmartInventory inv, final Player player) {
         final InventoryManager manager = inv.getManager();
         final Inventory handle = Bukkit.createInventory(player, inv.getType(), inv.getTitle());
         this.fill(handle, manager.getContents(player).get(), player);

@@ -19,8 +19,6 @@ package fr.minuskube.inv.util;
 import com.google.common.base.Preconditions;
 import fr.minuskube.inv.content.SlotPos;
 import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * A class representing a pattern with arbitrary keys and values
@@ -31,12 +29,10 @@ public final class Pattern<T> {
 
     private final Map<Character, T> mapping = new HashMap<>();
 
-    @NotNull
     private final String[] lines;
 
     private final boolean wrapAround;
 
-    @Nullable
     private T defaultValue;
 
     /**
@@ -51,7 +47,7 @@ public final class Pattern<T> {
      * @throws IllegalArgumentException If the length of a line is not equal to the length of the first line
      * @see #Pattern(boolean, String...) To get the possibility to create a repeating pattern
      */
-    public Pattern(@NotNull final String... lines) {
+    public Pattern(final String... lines) {
         this(false, lines);
     }
 
@@ -68,7 +64,7 @@ public final class Pattern<T> {
      * @throws IllegalArgumentException If the length of {@code lines} is zero
      * @throws IllegalArgumentException If the length of a line is not equal to the length of the first line
      */
-    public Pattern(final boolean wrapAround, @NotNull final String... lines) {
+    public Pattern(final boolean wrapAround, final String... lines) {
         Preconditions.checkArgument(lines.length > 0, "The given pattern lines must not be empty.");
         final int count = lines[0].length();
         this.lines = new String[lines.length];
@@ -89,7 +85,7 @@ public final class Pattern<T> {
      * @param object The object to attach to that character
      * @return {@code this} for a builder-like usage
      */
-    public Pattern<T> attach(final char character, @NotNull final T object) {
+    public Pattern<T> attach(final char character, final T object) {
         this.mapping.put(character, object);
         return this;
     }
@@ -173,8 +169,7 @@ public final class Pattern<T> {
      * @return The object associated with the key, or the default object
      * @see #getObject(int, int) For the more detailed information
      */
-    @NotNull
-    public T getObject(@NotNull final SlotPos slot) {
+    public T getObject(final SlotPos slot) {
         return this.getObject(slot.getRow(), slot.getColumn());
     }
 
@@ -185,7 +180,6 @@ public final class Pattern<T> {
      * @param character The character key to look for
      * @return An optional containing the slot position in this pattern, or empty if it could not be found
      */
-    @NotNull
     public Optional<SlotPos> findKey(final char character) {
         for (int row = 0; row < this.getRowCount(); row++) {
             for (int column = 0; column < this.getColumnCount(); column++) {
@@ -206,7 +200,6 @@ public final class Pattern<T> {
      * @param character The character key to look for
      * @return A mutable list containing all positions where that key occurs
      */
-    @NotNull
     public List<SlotPos> findAllKeys(final char character) {
         final List<SlotPos> positions = new ArrayList<>();
         for (int row = 0; row < this.getRowCount(); row++) {
@@ -226,7 +219,6 @@ public final class Pattern<T> {
      *
      * @return The default value
      */
-    @Nullable
     public T getDefault() {
         return this.defaultValue;
     }
@@ -237,8 +229,7 @@ public final class Pattern<T> {
      * @param defaultValue The new default value
      * @return {@code this} for a builder-like usage
      */
-    @NotNull
-    public Pattern<T> setDefault(@NotNull final T defaultValue) {
+    public Pattern<T> setDefault(final T defaultValue) {
         this.defaultValue = defaultValue;
         return this;
     }

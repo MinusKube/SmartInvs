@@ -20,7 +20,6 @@ import fr.minuskube.inv.content.InventoryContents;
 import fr.minuskube.inv.content.InventoryProvider;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * TODO: Write well javadoc.
@@ -29,17 +28,14 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class PlayerInvTask extends BukkitRunnable {
 
-    @NotNull
     private final Player player;
 
-    @NotNull
     private final InventoryProvider provider;
 
-    @NotNull
     private final InventoryContents contents;
 
-    public PlayerInvTask(@NotNull final Player plyr, @NotNull final InventoryProvider prvdr,
-                  @NotNull final InventoryContents cntnts) {
+    public PlayerInvTask(final Player plyr, final InventoryProvider prvdr,
+                         final InventoryContents cntnts) {
         super();
         this.player = plyr;
         this.provider = prvdr;
