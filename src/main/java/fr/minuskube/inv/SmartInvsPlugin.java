@@ -37,7 +37,7 @@ public final class SmartInvsPlugin extends JavaPlugin {
     @NotNull
     public static InventoryManager getManager() {
         if (SmartInvsPlugin.manager == null) {
-            throw new IllegalStateException("You can't use SmartInvsPlugin#getInstance() method before plugin start!");
+            throw new IllegalStateException("You can't use SmartInvsPlugin#getInstance() method before initialization!");
         }
         return SmartInvsPlugin.manager;
     }
@@ -45,7 +45,7 @@ public final class SmartInvsPlugin extends JavaPlugin {
     @NotNull
     public static Plugin getInstance() {
         if (SmartInvsPlugin.instance == null) {
-            throw new IllegalStateException("You can't use SmartInvsPlugin#getInstance() method before plugin start!");
+            throw new IllegalStateException("You can't use SmartInvsPlugin#getInstance() method before initialization!");
         }
         return SmartInvsPlugin.instance;
     }
