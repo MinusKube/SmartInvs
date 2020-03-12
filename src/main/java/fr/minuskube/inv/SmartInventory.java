@@ -20,6 +20,7 @@ import com.google.common.base.Preconditions;
 import fr.minuskube.inv.content.InventoryContents;
 import fr.minuskube.inv.content.InventoryProvider;
 import fr.minuskube.inv.content.SlotPos;
+import fr.minuskube.inv.internal.InventoryListener;
 import fr.minuskube.inv.opener.InventoryOpener;
 import java.util.*;
 import org.bukkit.entity.Player;

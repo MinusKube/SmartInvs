@@ -17,6 +17,7 @@
 package fr.minuskube.inv;
 
 import fr.minuskube.inv.content.SlotPos;
+import fr.minuskube.inv.internal.InventoryListener;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

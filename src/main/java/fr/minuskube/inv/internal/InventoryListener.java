@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package fr.minuskube.inv;
+package fr.minuskube.inv.internal;
 
 import java.util.function.Consumer;
 import org.jetbrains.annotations.NotNull;
