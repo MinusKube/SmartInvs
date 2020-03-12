@@ -38,7 +38,7 @@ public final class PlayerInvTask extends BukkitRunnable {
     @NotNull
     private final InventoryContents contents;
 
-    PlayerInvTask(@NotNull final Player plyr, @NotNull final InventoryProvider prvdr,
+    public PlayerInvTask(@NotNull final Player plyr, @NotNull final InventoryProvider prvdr,
                   @NotNull final InventoryContents cntnts) {
         super();
         this.player = plyr;
