@@ -28,7 +28,6 @@ public interface InventoryProvider {
 
     void init(@NotNull Player player, @NotNull InventoryContents contents);
 
-    default void update(@NotNull final Player player, @NotNull final InventoryContents contents) {
-    }
+    void update(@NotNull Player player, @NotNull InventoryContents contents);
 
 }
