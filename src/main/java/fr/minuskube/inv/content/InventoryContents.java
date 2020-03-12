@@ -559,7 +559,6 @@ public interface InventoryContents {
      * @param editable {@code true} to make a slot editable, {@code false}
      * to make it 'static' again.
      */
-    @NotNull
     void setEditable(@NotNull SlotPos slot, boolean editable);
 
     /**
@@ -991,7 +990,6 @@ public interface InventoryContents {
             return this;
         }
 
-        @NotNull
         @Override
         public void setEditable(@NotNull final SlotPos slot, final boolean editable) {
             if (editable) {
