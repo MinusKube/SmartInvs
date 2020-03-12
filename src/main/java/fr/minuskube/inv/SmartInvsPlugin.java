@@ -52,7 +52,6 @@ public final class SmartInvsPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        super.onDisable();
         SmartInvsPlugin.deleteStaticReferences();
     }
 
@@ -63,7 +62,6 @@ public final class SmartInvsPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        super.onEnable();
         SmartInvsPlugin.setPlugin(this);
     }
 
