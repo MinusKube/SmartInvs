@@ -15,22 +15,22 @@ public class InventoryContentsTest {
 
     private static final ItemStack TEST_ITEM = new ItemStack(Material.DIRT);
 
-    private static final ClickableItem TEST_CLICKABLE = ClickableItem.empty(TEST_ITEM);
+    private static final ClickableItem TEST_CLICKABLE = ClickableItem.empty(InventoryContentsTest.TEST_ITEM);
 
     @Test
     public void testAddItem() {
-        SmartInventory inv = mockInventory(6, 9);
-        InventoryContents contents = new InventoryContents.Impl(inv, null);
+        final SmartInventory inv = this.mockInventory(6, 9);
+        final InventoryContents contents = new InventoryContents.Impl(inv, null);
 
-        contents.add(TEST_CLICKABLE);
+        contents.add(InventoryContentsTest.TEST_CLICKABLE);
 
         for (int row = 0; row < 6; row++) {
             for (int column = 0; column < 9; column++) {
-                Optional<ClickableItem> result = contents.get(SlotPos.of(row, column));
+                final Optional<ClickableItem> result = contents.get(SlotPos.of(row, column));
 
                 if (row == 0 && column == 0) {
                     assertTrue(result.isPresent());
-                    assertEquals(result.get(), TEST_CLICKABLE);
+                    assertEquals(result.get(), InventoryContentsTest.TEST_CLICKABLE);
                 } else {
                     assertFalse(result.isPresent());
                 }
@@ -38,10 +38,10 @@ public class InventoryContentsTest {
         }
     }
 
-    private SmartInventory mockInventory(int rows, int columns) {
-        InventoryManager manager = mock(InventoryManager.class);
+    private SmartInventory mockInventory(final int rows, final int columns) {
+        final InventoryManager manager = mock(InventoryManager.class);
 
-        SmartInventory inv = mock(SmartInventory.class);
+        final SmartInventory inv = mock(SmartInventory.class);
         when(inv.getRows()).thenReturn(rows);
         when(inv.getColumns()).thenReturn(columns);
         when(inv.getManager()).thenReturn(manager);
@@ -51,14 +51,14 @@ public class InventoryContentsTest {
 
     @Test
     public void testAddNull() {
-        SmartInventory inv = mockInventory(6, 9);
-        InventoryContents contents = new InventoryContents.Impl(inv, null);
+        final SmartInventory inv = this.mockInventory(6, 9);
+        final InventoryContents contents = new InventoryContents.Impl(inv, null);
 
         contents.add(null);
 
         for (int row = 0; row < 6; row++) {
             for (int column = 0; column < 9; column++) {
-                Optional<ClickableItem> result = contents.get(SlotPos.of(row, column));
+                final Optional<ClickableItem> result = contents.get(SlotPos.of(row, column));
 
                 assertFalse(result.isPresent());
             }
@@ -67,8 +67,8 @@ public class InventoryContentsTest {
 
     @Test
     public void test() {
-        SmartInventory inv = mockInventory(6, 9);
-        InventoryContents contents = new InventoryContents.Impl(inv, null);
+        final SmartInventory inv = this.mockInventory(6, 9);
+        final InventoryContents contents = new InventoryContents.Impl(inv, null);
 
         for (int row = 0; row < inv.getRows(); row++) {
             for (int column = 0; column < inv.getColumns(); column++) {
@@ -82,13 +82,13 @@ public class InventoryContentsTest {
         assertEquals(contents.property("test"), "Test String");
         assertNull(contents.property("unknownProperty"));
 
-        contents.add(ClickableItem.empty(TEST_ITEM));
+        contents.add(ClickableItem.empty(InventoryContentsTest.TEST_ITEM));
 
         assertTrue(contents.get(0, 0).isPresent());
         assertTrue(contents.get(SlotPos.of(0, 0)).isPresent());
 
-        assertSame(contents.get(0, 0).get().getItem(), TEST_ITEM);
-        assertSame(contents.get(SlotPos.of(0, 0)).get().getItem(), TEST_ITEM);
+        assertSame(contents.get(0, 0).get().getItem(), InventoryContentsTest.TEST_ITEM);
+        assertSame(contents.get(SlotPos.of(0, 0)).get().getItem(), InventoryContentsTest.TEST_ITEM);
 
         assertTrue(contents.firstEmpty().isPresent());
         assertEquals(contents.firstEmpty().get(), SlotPos.of(0, 1));

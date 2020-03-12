@@ -25,7 +25,7 @@ public class InventoryOpenerTest {
         expectedSizes.put(InventoryType.FURNACE, SlotPos.of(1, 3));
         expectedSizes.put(InventoryType.WORKBENCH, SlotPos.of(1, 10));
 
-        SpecialInventoryOpener opener = new SpecialInventoryOpener();
+        final SpecialInventoryOpener opener = new SpecialInventoryOpener();
 
         expectedSizes.forEach((type, expectedSize) -> {
             assertEquals(expectedSize, opener.defaultSize(type));

@@ -14,19 +14,19 @@ public class ClickableItemTest {
 
     @Test
     public void testNone() {
-        ClickableItem item = ClickableItem.NONE;
+        final ClickableItem item = ClickableItem.NONE;
 
-        assertNotNull("The item from ClickableItem.NONE is not null", item.getItem());
+        assertNull("The item from ClickableItem.NONE is not null", item.getItem());
     }
 
     @SuppressWarnings("deprecation")
     @Test
     public void testLegacyInventoryConsumer() {
-        AtomicBoolean bool = new AtomicBoolean(false);
+        final AtomicBoolean bool = new AtomicBoolean(false);
 
-        ClickableItem item = ClickableItem.of(null, event -> bool.set(true));
+        final ClickableItem item = ClickableItem.of(null, event -> bool.set(true));
 
-        ItemClickData clickData = mock(ItemClickData.class);
+        final ItemClickData clickData = mock(ItemClickData.class);
         when(clickData.getEvent()).thenReturn(mock(InventoryClickEvent.class));
 
         item.run(clickData);
@@ -37,11 +37,11 @@ public class ClickableItemTest {
     @SuppressWarnings("deprecation")
     @Test
     public void testLegacyInteractConsumer() {
-        AtomicBoolean bool = new AtomicBoolean(false);
+        final AtomicBoolean bool = new AtomicBoolean(false);
 
-        ClickableItem item = ClickableItem.of(null, event -> bool.set(true));
+        final ClickableItem item = ClickableItem.of(null, event -> bool.set(true));
 
-        ItemClickData clickData = mock(ItemClickData.class);
+        final ItemClickData clickData = mock(ItemClickData.class);
         when(clickData.getEvent()).thenReturn(mock(PlayerInteractEvent.class));
 
         item.run(clickData);
@@ -51,11 +51,11 @@ public class ClickableItemTest {
 
     @Test
     public void testInventoryConsumer() {
-        AtomicBoolean bool = new AtomicBoolean(false);
+        final AtomicBoolean bool = new AtomicBoolean(false);
 
-        ClickableItem item = ClickableItem.from(null, event -> bool.set(true));
+        final ClickableItem item = ClickableItem.from(null, event -> bool.set(true));
 
-        ItemClickData clickData = mock(ItemClickData.class);
+        final ItemClickData clickData = mock(ItemClickData.class);
         when(clickData.getEvent()).thenReturn(mock(InventoryClickEvent.class));
 
         item.run(clickData);
@@ -65,11 +65,11 @@ public class ClickableItemTest {
 
     @Test
     public void testInteractConsumer() {
-        AtomicBoolean bool = new AtomicBoolean(false);
+        final AtomicBoolean bool = new AtomicBoolean(false);
 
-        ClickableItem item = ClickableItem.from(null, event -> bool.set(true));
+        final ClickableItem item = ClickableItem.from(null, event -> bool.set(true));
 
-        ItemClickData clickData = mock(ItemClickData.class);
+        final ItemClickData clickData = mock(ItemClickData.class);
         when(clickData.getEvent()).thenReturn(mock(PlayerInteractEvent.class));
 
         item.run(clickData);
@@ -79,12 +79,12 @@ public class ClickableItemTest {
 
     @Test
     public void testClone() {
-        ItemStack itemStack = new ItemStack(Material.APPLE);
+        final ItemStack itemStack = new ItemStack(Material.APPLE);
 
-        AtomicBoolean bool = new AtomicBoolean(false);
+        final AtomicBoolean bool = new AtomicBoolean(false);
 
-        ClickableItem item = ClickableItem.from(null, event -> bool.set(true));
-        ClickableItem clone = item.clone(itemStack);
+        final ClickableItem item = ClickableItem.from(null, event -> bool.set(true));
+        final ClickableItem clone = item.clone(itemStack);
         clone.run(mock(ItemClickData.class));
 
         assertEquals("The cloned ClickableItem's item is wrong", clone.getItem(), itemStack);

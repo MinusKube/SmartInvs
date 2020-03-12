@@ -11,9 +11,9 @@ public class PaginationTest {
 
     @Test
     public void test() {
-        Pagination pagination = new Pagination.Impl();
+        final Pagination pagination = new Pagination.Impl();
 
-        ClickableItem[] items = new ClickableItem[64];
+        final ClickableItem[] items = new ClickableItem[64];
 
         for (int i = 0; i < items.length; i++) {
             items[i] = ClickableItem.empty(new ItemStack(Material.STONE, i));

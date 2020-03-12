@@ -22,7 +22,7 @@ public class PatternTest {
 
     @Test
     public void testRowColumnCountPattern() {
-        Pattern<String> pattern = new Pattern<>(
+        final Pattern<String> pattern = new Pattern<>(
             "XOOOX",
             "XOXOX",
             "XOOOX"
@@ -34,7 +34,7 @@ public class PatternTest {
 
     @Test(expected = IndexOutOfBoundsException.class)
     public void testNegativeGetPattern() {
-        Pattern<String> pattern = new Pattern<>(
+        final Pattern<String> pattern = new Pattern<>(
             "XOOX",
             "XOOX"
         );
@@ -44,7 +44,7 @@ public class PatternTest {
 
     @Test(expected = IndexOutOfBoundsException.class)
     public void testOversizeGetPattern() {
-        Pattern<String> pattern = new Pattern<>(
+        final Pattern<String> pattern = new Pattern<>(
             "XOOX",
             "XOOX"
         );
@@ -54,7 +54,7 @@ public class PatternTest {
 
     @Test
     public void testAttachPattern() {
-        Pattern<String> pattern = new Pattern<>(
+        final Pattern<String> pattern = new Pattern<>(
             "XXXXXXX",
             "XOOOOOX",
             "XOOOOOX",
@@ -68,10 +68,10 @@ public class PatternTest {
 
         for (int row = 0; row < pattern.getRowCount(); row++) {
             for (int column = 0; column < pattern.getColumnCount(); column++) {
-                String expected;
+                final String expected;
 
-                if (row == 0 || row == (pattern.getRowCount() - 1)
-                    || column == 0 || column == (pattern.getColumnCount() - 1)) {
+                if (row == 0 || row == pattern.getRowCount() - 1
+                    || column == 0 || column == pattern.getColumnCount() - 1) {
 
                     expected = "Full";
                 } else {

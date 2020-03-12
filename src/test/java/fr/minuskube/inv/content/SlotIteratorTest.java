@@ -13,7 +13,7 @@ public class SlotIteratorTest {
 
     @Test
     public void testPreviousNext() {
-        SlotIterator iterator = this.createIterator(5, 5);
+        final SlotIterator iterator = this.createIterator(5, 5);
 
         assertEquals(0, iterator.row());
         assertEquals(0, iterator.column());
@@ -48,21 +48,21 @@ public class SlotIteratorTest {
         assertEquals(3, iterator.column());
     }
 
-    private SlotIterator createIterator(int rows, int columns) {
-        InventoryManager manager = mock(InventoryManager.class);
+    private SlotIterator createIterator(final int rows, final int columns) {
+        final InventoryManager manager = mock(InventoryManager.class);
 
-        SmartInventory inv = mock(SmartInventory.class);
+        final SmartInventory inv = mock(SmartInventory.class);
         when(inv.getRows()).thenReturn(rows);
         when(inv.getColumns()).thenReturn(columns);
         when(inv.getManager()).thenReturn(manager);
 
-        InventoryContents contents = new InventoryContents.Impl(inv, null);
+        final InventoryContents contents = new InventoryContents.Impl(inv, null);
         return contents.newIterator(SlotIterator.Type.HORIZONTAL, 0, 0);
     }
 
     @Test
     public void testStartedEnded() {
-        SlotIterator iterator = this.createIterator(3, 9);
+        final SlotIterator iterator = this.createIterator(3, 9);
 
         assertFalse("The started() method returns true before the start", iterator.started());
         assertFalse("The ended() method returns true before the end", iterator.ended());
