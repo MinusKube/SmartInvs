@@ -37,7 +37,7 @@ public final class SmartInvsPlugin extends JavaPlugin {
     @NotNull
     public static InventoryManager getManager() {
         if (SmartInvsPlugin.manager == null) {
-            throw new IllegalStateException("You can't use SmartInvsPlugin#getInstance() method before initialization!");
+            throw new IllegalStateException("You can't use SmartInvsPlugin#getManager() method before initialization!");
         }
         return SmartInvsPlugin.manager;
     }
