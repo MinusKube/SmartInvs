@@ -21,11 +21,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Main plugin class of SmartInventory plugin/library.
- *
- * @since 1.0
- */
 public final class SmartInvsPlugin extends JavaPlugin {
 
     @Nullable
