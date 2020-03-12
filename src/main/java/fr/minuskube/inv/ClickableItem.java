@@ -18,7 +18,6 @@ package fr.minuskube.inv;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -31,9 +30,9 @@ public final class ClickableItem {
     /**
      * ClickableItem constant with no item and empty consumer.
      */
-    public static final ClickableItem NONE = ClickableItem.empty(new ItemStack(Material.AIR));
+    public static final ClickableItem NONE = ClickableItem.empty(null);
 
-    @NotNull
+    @Nullable
     private final ItemStack item;
 
     @NotNull
@@ -47,10 +46,10 @@ public final class ClickableItem {
     @Nullable
     private Predicate<Player> canClick;
 
-    @NotNull
-    private ItemStack notVisibleFallBackItem = new ItemStack(Material.AIR);
+    @Nullable
+    private ItemStack notVisibleFallBackItem = null;
 
-    private ClickableItem(@NotNull final ItemStack item, @NotNull final Consumer<?> consumer, final boolean legacy) {
+    private ClickableItem(@Nullable final ItemStack item, @NotNull final Consumer<?> consumer, final boolean legacy) {
         this.item = item;
         this.consumer = consumer;
         this.legacy = legacy;
@@ -64,7 +63,7 @@ public final class ClickableItem {
      * @return the created ClickableItem
      */
     @NotNull
-    public static ClickableItem empty(@NotNull final ItemStack item) {
+    public static ClickableItem empty(@Nullable final ItemStack item) {
         return ClickableItem.from(item, data -> {
         });
     }
@@ -77,7 +76,7 @@ public final class ClickableItem {
      * @return the created ClickableItem
      */
     @NotNull
-    public static ClickableItem from(@NotNull final ItemStack item, @NotNull final Consumer<ItemClickData> consumer) {
+    public static ClickableItem from(@Nullable final ItemStack item, @NotNull final Consumer<ItemClickData> consumer) {
         return new ClickableItem(item, consumer, false);
     }
 
@@ -155,7 +154,7 @@ public final class ClickableItem {
      *
      * @return the item, or {@code null} if there is no item
      */
-    @NotNull
+    @Nullable
     public ItemStack getItem() {
         return this.item;
     }
@@ -169,7 +168,7 @@ public final class ClickableItem {
      * @param player The player to test against if he can see this item
      * @return the item, the fallback item when not visible to the player, or {@code null} if there is no item
      */
-    @NotNull
+    @Nullable
     public ItemStack getItem(@NotNull final Player player) {
         if (this.canSee == null || this.canSee.test(player)) {
             return this.item;
@@ -194,7 +193,7 @@ public final class ClickableItem {
      */
     @NotNull
     public ClickableItem canSee(@NotNull final Predicate<Player> canSee) {
-        return this.canSee(canSee, new ItemStack(Material.AIR));
+        return this.canSee(canSee, null);
     }
 
     /**
@@ -216,7 +215,7 @@ public final class ClickableItem {
      * @see #canSee(Predicate) If you want the slot to be empty
      */
     @NotNull
-    public ClickableItem canSee(@NotNull final Predicate<Player> canSee, @NotNull final ItemStack fallBackItem) {
+    public ClickableItem canSee(@NotNull final Predicate<Player> canSee, @Nullable final ItemStack fallBackItem) {
         this.canSee = canSee;
         this.notVisibleFallBackItem = fallBackItem;
         return this;
