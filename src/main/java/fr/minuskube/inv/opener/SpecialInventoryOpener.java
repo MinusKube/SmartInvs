@@ -44,10 +44,8 @@ public final class SpecialInventoryOpener implements InventoryOpener {
     public Inventory open(@NotNull final SmartInventory inv, final Player player) {
         final InventoryManager manager = inv.getManager();
         final Inventory handle = Bukkit.createInventory(player, inv.getType(), inv.getTitle());
-        manager.getContents(player).ifPresent(contents -> {
-            this.fill(handle, contents, player);
-            player.openInventory(handle);
-        });
+        this.fill(handle, manager.getContents(player).get(), player);
+        player.openInventory(handle);
         return handle;
     }
 
