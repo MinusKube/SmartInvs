@@ -524,7 +524,7 @@ public interface InventoryContents {
      * @param <T> the type of the value
      * @return the property's value
      */
-    @NotNull <T> T property(@NotNull String name);
+    @Nullable <T> T property(@NotNull String name);
 
     /**
      * Gets the value of the property with the given name,
@@ -968,7 +968,7 @@ public interface InventoryContents {
         }
 
         @SuppressWarnings("unchecked")
-        @NotNull
+        @Nullable
         @Override
         public <T> T property(@NotNull final String name) {
             return (T) this.properties.get(name);
