@@ -37,8 +37,8 @@ repositories {
 
 dependencies {
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:2.19.0'
-    testImplementation 'org.mockito:mockito-inline:2.13.0'
+    testImplementation 'org.mockito:mockito-core:3.3.0'
+    testImplementation 'org.mockito:mockito-inline:3.3.0'
     testImplementation 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
 
     compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'

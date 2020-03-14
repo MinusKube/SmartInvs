@@ -18,6 +18,7 @@ package fr.minuskube.inv;
 
 import fr.minuskube.inv.content.SlotPos;
 import fr.minuskube.inv.internal.InventoryListener;
+import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -43,10 +44,12 @@ final class InvListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onInventoryClick(final InventoryClickEvent event) {
+        if (event.getClickedInventory() == null) {
+            return;
+        }
         final Player player = (Player) event.getWhoClicked();
         this.manager.getInventory(player).ifPresent(inv -> {
             if (event.getAction() == InventoryAction.COLLECT_TO_CURSOR ||
-                event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY ||
                 event.getAction() == InventoryAction.NOTHING) {
                 event.setCancelled(true);
                 return;
@@ -144,7 +147,7 @@ final class InvListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onPluginDisable(final PluginDisableEvent event) {
-        this.manager.getInventories().forEach((player, inv) -> {
+        new HashMap<>(this.manager.getInventories()).forEach((player, inv) -> {
             inv.getListeners().stream()
                 .filter(listener -> listener.getType().equals(PluginDisableEvent.class))
                 // FIXME: 23.02.2020 We should not use casting.
