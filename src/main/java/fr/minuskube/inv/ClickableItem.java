@@ -104,7 +104,10 @@ public class ClickableItem {
      * @return the created ClickableItem
      */
     public ClickableItem clone(ItemStack newItem) {
-        return new ClickableItem(newItem, this.consumer, this.legacy);
+        ClickableItem clone = new ClickableItem(newItem, this.consumer, this.legacy);
+        clone.canSee = this.canSee;
+        clone.canClick = this.canClick;
+        return clone;
     }
 
     /**
