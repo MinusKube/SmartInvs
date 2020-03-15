@@ -234,6 +234,72 @@ public interface InventoryContents {
     Optional<SlotPos> findItem(ClickableItem item);
 
     /**
+     * Clears the first slot where the given item is in.
+     * <br>
+     * The items will be compared using {@link ItemStack#isSimilar(ItemStack)} to check if the are equal.
+     * <br><br>
+     * The amount stored in the item is ignored for simplicity.
+     *
+     * @param item the item as an ItemStack that shall be removed from the inventory
+     */
+    void removeFirst(ItemStack item);
+
+    /**
+     * Clears the first slot where the given item is in.
+     * <br>
+     * The items will be compared using {@link ItemStack#isSimilar(ItemStack)} to check if the are equal.
+     * <br>
+     * {@link ClickableItem#getItem()} is used to get the item that will be compared against
+     * <br><br>
+     * The amount stored in the item is ignored for simplicity.
+     *
+     * @param item the item as a ClickableItem that shall be removed from the inventory
+     */
+    void removeFirst(ClickableItem item);
+
+    /**
+     * Removes the specified amount of items from the inventory.
+     * <br>
+     * The items will be compared using {@link ItemStack#isSimilar(ItemStack)} to check if the are equal.
+     *
+     * @param item   the item as an ItemStack that shall be removed from the inventory
+     * @param amount the amount that shall be removed
+     */
+    void removeAmount(ItemStack item, int amount);
+
+    /**
+     * Removes the specified amount of items from the inventory.
+     * <br>
+     * The items will be compared using {@link ItemStack#isSimilar(ItemStack)} to check if the are equal.
+     * <br>
+     * {@link ClickableItem#getItem()} is used to get the item that will be compared against
+     *
+     * @param item   the item as a ClickableItem that shall be removed from the inventory
+     * @param amount the amount that shall be removed
+     */
+    void removeAmount(ClickableItem item, int amount);
+
+    /**
+     * Removes all occurrences of the item from the inventory.
+     * <br>
+     * The items will be compared using {@link ItemStack#isSimilar(ItemStack)} to check if the are equal.
+     *
+     * @param item the item as an ItemStack that shall be removed from the inventory
+     */
+    void removeAll(ItemStack item);
+
+    /**
+     * Removes all occurrences of the item from the inventory.
+     * <br>
+     * The items will be compared using {@link ItemStack#isSimilar(ItemStack)} to check if the are equal.
+     * <br>
+     * {@link ClickableItem#getItem()} is used to get the item that will be compared against
+     *
+     * @param item the item as an ClickableItem that shall be removed from the inventory
+     */
+    void removeAll(ClickableItem item);
+
+    /**
      * Fills the inventory with the given item.
      *
      * @param item the item
@@ -506,7 +572,7 @@ public interface InventoryContents {
      * @return <code>this</code>, for chained calls
      */
     InventoryContents setProperty(String name, Object value);
-    
+
     /**
      * Makes a slot editable, which enables the player to
      * put items in and take items out of the inventory in the
@@ -516,7 +582,7 @@ public interface InventoryContents {
      *        to make it 'static' again.
      */
     void setEditable(SlotPos slot, boolean editable);
-    
+
     /**
      * Returns if a given slot is editable or not.
      * @param slot The slot to check
@@ -535,7 +601,7 @@ public interface InventoryContents {
         private Pagination pagination = new Pagination.Impl();
         private Map<String, SlotIterator> iterators = new HashMap<>();
         private Map<String, Object> properties = new HashMap<>();
-        
+
         private Set<SlotPos> editableSlots = new HashSet<SlotPos>();
 
         public Impl(SmartInventory inv, Player player) {
@@ -689,6 +755,72 @@ public interface InventoryContents {
         public Optional<SlotPos> findItem(ClickableItem clickableItem) {
             Preconditions.checkNotNull(clickableItem, "The clickable item to look for cannot be null!");
             return findItem(clickableItem.getItem(this.player));
+        }
+
+        @Override
+        public void removeFirst(ItemStack item) {
+            Preconditions.checkNotNull(item, "The itemstack to remove cannot be null");
+            this.findItem(item).ifPresent(slotPos -> {
+                set(slotPos, null);
+            });
+        }
+
+        @Override
+        public void removeAmount(ItemStack item, int amount) {
+            Preconditions.checkNotNull(item, "The itemstack to remove cannot be null");
+            for(int row = 0; row < contents.length; row++) {
+                for(int column = 0; column < contents[row].length; column++) {
+                    ClickableItem clickableItem = contents[row][column];
+                    if(clickableItem != null &&
+                        item.isSimilar(clickableItem.getItem())) {
+                        ItemStack foundStack = clickableItem.getItem();
+                        // if the stack amount is smaller than what needs to be removed, remove the stack and continue
+                        if(foundStack.getAmount() <= amount) {
+                            amount -= foundStack.getAmount();
+                            this.set(row, column, null);
+                            if(amount == 0)
+                                return;
+                        } else if(foundStack.getAmount() > amount) {// but if the stack is bigger that what needs to be removed, shrink the stack and then finish
+                            ItemStack clonedStack = foundStack.clone();
+                            clonedStack.setAmount(clonedStack.getAmount() - amount);
+                            ClickableItem clonedClickableItem = clickableItem.clone(clonedStack);
+                            this.set(row, column, clonedClickableItem);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void removeAll(ItemStack item) {
+            Preconditions.checkNotNull(item, "The itemstack to remove cannot be null");
+            for(int row = 0; row < contents.length; row++) {
+                for(int column = 0; column < contents[row].length; column++) {
+                    if(contents[row][column] != null &&
+                        item.isSimilar(contents[row][column].getItem())) {
+                        this.set(row, column, null);
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void removeFirst(ClickableItem item) {
+            Preconditions.checkNotNull(item, "The clickableitem to remove cannot be null");
+            this.removeFirst(item.getItem());
+        }
+
+        @Override
+        public void removeAmount(ClickableItem item, int amount) {
+            Preconditions.checkNotNull(item, "The clickableitem to remove cannot be null");
+            this.removeAmount(item.getItem(), amount);
+        }
+
+        @Override
+        public void removeAll(ClickableItem item) {
+            Preconditions.checkNotNull(item, "The clickableitem to remove cannot be null");
+            this.removeAll(item.getItem());
         }
 
         @Override
