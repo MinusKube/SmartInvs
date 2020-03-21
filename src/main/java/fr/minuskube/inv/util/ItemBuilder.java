@@ -16,6 +16,8 @@
 
 package fr.minuskube.inv.util;
 
+import fr.minuskube.inv.ClickableItem;
+import fr.minuskube.inv.ItemClickData;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -26,6 +28,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * This is a simple class that simplifies the creation of ItemStacks
@@ -47,6 +50,18 @@ public class ItemBuilder {
      */
     public static ItemBuilder builder(ItemStack stack) {
         return new ItemBuilder(stack);
+    }
+
+    /**
+     * Create a new ItemBuilder instance based on the existing stack in the clickable item
+     * <br><br>
+     * The stack is copied using {@link ItemStack#ItemStack(ItemStack)}
+     *
+     * @param item The clickable item of which the item stack should be used
+     * @return A new ItemBuilder instance
+     */
+    public static ItemBuilder builder(ClickableItem item) {
+        return builder(item.getItem());
     }
 
     /**
@@ -246,5 +261,15 @@ public class ItemBuilder {
     public ItemStack build() {
         this.stack.setItemMeta(this.meta);
         return this.stack;
+    }
+
+    /**
+     * Applies all the modifications to the item meta to the item stack and the creates a new clickable item with the given click handler
+     *
+     * @param consumer the consumer which will be called when the item is clicked
+     * @return The newly created clickable item
+     */
+    public ClickableItem build(Consumer<ItemClickData> consumer) {
+        return ClickableItem.from(this.build(), consumer);
     }
 }
