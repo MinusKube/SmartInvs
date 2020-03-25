@@ -217,7 +217,7 @@ public class ItemBuilder {
      * @return <code>this</code> instance
      */
     public ItemBuilder enchantment(Enchantment enchantment, int level) {
-        stack.addUnsafeEnchantment(enchantment, level);
+        meta.addEnchant(enchantment, level, true);
         return this;
     }
 
@@ -229,28 +229,6 @@ public class ItemBuilder {
      */
     public ItemBuilder enchantment(Enchantment enchantment) {
         return enchantment(enchantment, 1);
-    }
-
-    /**
-     * Adds an enchantment to the item meta without level restrictions
-     *
-     * @param enchantment The enchantment to add
-     * @param level The level of the enchantment
-     * @return <code>this</code> instance
-     */
-    public ItemBuilder metaEnchantment(Enchantment enchantment, int level) {
-        meta.addEnchant(enchantment, level, true);
-        return this;
-    }
-
-    /**
-     * Adds an enchantment with the level 1 to the item meta
-     *
-     * @param enchantment The enchantment to add
-     * @return <code>this</code> instance
-     */
-    public ItemBuilder metaEnchantment(Enchantment enchantment) {
-        return metaEnchantment(enchantment, 1);
     }
 
     /**
