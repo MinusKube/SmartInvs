@@ -52,11 +52,11 @@ public class SmartInventory {
      * Rows &amp; Columns Integer. This field has default values for both rows (6) &amp; columns (9).
      */
     private int rows, columns;
-    private boolean closeable;
     /**
      * Inventory close boolean. This field being a boolean, is the key to allowing the inventory to
      * be closed or not.
      */
+    private boolean closeable;
 
     /**
      * Provider Inventory. This field is the provider interface for getting contents inside the SmartInvs.
