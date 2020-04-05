@@ -10,8 +10,11 @@ public class SmartInvsPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        initInventoryManager(this);
+    }
 
-        invManager = new InventoryManager(this);
+    public static void initInventoryManager(JavaPlugin plugin) {
+        invManager = new InventoryManager(plugin);
         invManager.init();
     }
 
