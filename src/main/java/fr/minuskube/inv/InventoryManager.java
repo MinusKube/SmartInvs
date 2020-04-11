@@ -1,3 +1,19 @@
+/*
+ * Copyright 2018-2020 Isaac Montagne
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package fr.minuskube.inv;
 
 import fr.minuskube.inv.content.InventoryContents;
@@ -125,8 +141,9 @@ public class InventoryManager {
         @EventHandler(priority = EventPriority.LOW)
         public void onInventoryClick(InventoryClickEvent e) {
             Player p = (Player) e.getWhoClicked();
-
-            if(!inventories.containsKey(p))
+            SmartInventory inv = inventories.get(p);
+            
+            if(inv == null)
                 return;
 
             if( e.getAction() == InventoryAction.COLLECT_TO_CURSOR ||
@@ -138,26 +155,28 @@ public class InventoryManager {
             }
 
             if(e.getClickedInventory() == p.getOpenInventory().getTopInventory()) {
-                e.setCancelled(true);
-
                 int row = e.getSlot() / 9;
                 int column = e.getSlot() % 9;
-
-                if(row < 0 || column < 0)
+                
+                if(!inv.checkBounds(row, column))
                     return;
 
-                SmartInventory inv = inventories.get(p);
-
-                if(row >= inv.getRows() || column >= inv.getColumns())
-                    return;
+                InventoryContents invContents = contents.get(p);
+                SlotPos slot = SlotPos.of(row, column);
+                
+                if(!invContents.isEditable(slot))
+                    e.setCancelled(true);
 
                 inv.getListeners().stream()
                         .filter(listener -> listener.getType() == InventoryClickEvent.class)
                         .forEach(listener -> ((InventoryListener<InventoryClickEvent>) listener).accept(e));
 
-                contents.get(p).get(row, column).ifPresent(item -> item.run(new ItemClickData(e, p, e.getCurrentItem(), SlotPos.of(row, column))));
+                invContents.get(slot).ifPresent(item -> item.run(new ItemClickData(e, p, e.getCurrentItem(), slot)));
 
-                p.updateInventory();
+                // Don't update if the clicked slot is editable - prevent item glitching
+                if(!invContents.isEditable(slot)) {
+                    p.updateInventory();
+                }
             }
         }
 

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2018-2020 Isaac Montagne
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package fr.minuskube.inv;
 
 import org.bukkit.entity.Player;
@@ -7,7 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-@SuppressWarnings({ "unchecked", "deprecation" })
+@SuppressWarnings({ "unchecked" })
 public class ClickableItem {
 
     /**
@@ -15,13 +31,12 @@ public class ClickableItem {
      */
     public static final ClickableItem NONE = empty(null);
 
-    private static final Predicate<Player> ALWAYS_TRUE = p -> true;
 
     private final ItemStack item;
     private final Consumer<?> consumer;
     private final boolean legacy;
-    private Predicate<Player> canSee = ALWAYS_TRUE, canClick = ALWAYS_TRUE;
-    private ItemStack notVisibleFallBackItem;
+    private Predicate<Player> canSee = null, canClick = null;
+    private ItemStack notVisibleFallBackItem = null;
 
     private ClickableItem(ItemStack item, Consumer<?> consumer, boolean legacy) {
         this.item = item;
@@ -73,7 +88,7 @@ public class ClickableItem {
     @SuppressWarnings("DeprecatedIsStillUsed")
     @Deprecated
     public void run(InventoryClickEvent e) {
-        if (canSee.test((Player) e.getWhoClicked()) && canClick.test((Player) e.getWhoClicked())) {
+        if ((canSee == null || canSee.test((Player) e.getWhoClicked())) && (canClick == null || canClick.test((Player) e.getWhoClicked()))) {
             if(!this.legacy)
                 return;
 
@@ -98,7 +113,7 @@ public class ClickableItem {
      * @param data the data of the click
      */
     public void run(ItemClickData data) {
-        if (canSee.test(data.getPlayer()) && canClick.test(data.getPlayer())) {
+        if ((canSee == null || canSee.test(data.getPlayer())) && (canClick == null || canClick.test(data.getPlayer()))) {
             if(this.legacy) {
                 if(data.getEvent() instanceof InventoryClickEvent) {
                     InventoryClickEvent event = (InventoryClickEvent) data.getEvent();
@@ -132,7 +147,7 @@ public class ClickableItem {
      * @return the item, the fallback item when not visible to the player, or <code>null</code> if there is no item
      */
     public ItemStack getItem(Player player) {
-        if (canSee.test(player)) {
+        if (canSee == null || canSee.test(player)) {
             return this.item;
         } else {
             return this.notVisibleFallBackItem;

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2018-2020 Isaac Montagne
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package fr.minuskube.inv.content;
 
 import com.google.common.base.Preconditions;
@@ -490,6 +506,24 @@ public interface InventoryContents {
      * @return <code>this</code>, for chained calls
      */
     InventoryContents setProperty(String name, Object value);
+    
+    /**
+     * Makes a slot editable, which enables the player to
+     * put items in and take items out of the inventory in the
+     * specified slot.
+     * @param slot The slot to set editable
+     * @param editable {@code true} to make a slot editable, {@code false}
+     *        to make it 'static' again.
+     */
+    void setEditable(SlotPos slot, boolean editable);
+    
+    /**
+     * Returns if a given slot is editable or not.
+     * @param slot The slot to check
+     * @return {@code true} if the editable.
+     * @see #setEditable(SlotPos, boolean)
+     */
+    boolean isEditable(SlotPos slot);
 
     class Impl implements InventoryContents {
 
@@ -501,6 +535,8 @@ public interface InventoryContents {
         private Pagination pagination = new Pagination.Impl();
         private Map<String, SlotIterator> iterators = new HashMap<>();
         private Map<String, Object> properties = new HashMap<>();
+        
+        private Set<SlotPos> editableSlots = new HashSet<SlotPos>();
 
         public Impl(SmartInventory inv, Player player) {
             this.inv = inv;
@@ -641,7 +677,7 @@ public interface InventoryContents {
             for(int row = 0; row < contents.length; row++) {
                 for(int column = 0; column < contents[0].length; column++) {
                     if(contents[row][column] != null &&
-                            itemStack.isSimilar(contents[row][column].getItem())) {
+                            itemStack.isSimilar(contents[row][column].getItem(this.player))) {
                         return Optional.of(SlotPos.of(row, column));
                     }
                 }
@@ -652,7 +688,7 @@ public interface InventoryContents {
         @Override
         public Optional<SlotPos> findItem(ClickableItem clickableItem) {
             Preconditions.checkNotNull(clickableItem, "The clickable item to look for cannot be null!");
-            return findItem(clickableItem.getItem());
+            return findItem(clickableItem.getItem(this.player));
         }
 
         @Override
@@ -848,6 +884,19 @@ public interface InventoryContents {
 
             Inventory topInventory = player.getOpenInventory().getTopInventory();
             topInventory.setItem(inv.getColumns() * row + column, item);
+        }
+
+        @Override
+        public void setEditable(SlotPos slot, boolean editable) {
+            if(editable)
+                editableSlots.add(slot);
+            else
+                editableSlots.remove(slot);
+        }
+
+        @Override
+        public boolean isEditable(SlotPos slot) {
+            return editableSlots.contains(slot);
         }
 
     }

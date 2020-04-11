@@ -1,3 +1,19 @@
+/*
+ * Copyright 2018-2020 Isaac Montagne
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package fr.minuskube.inv;
 
 import fr.minuskube.inv.content.InventoryContents;
@@ -65,10 +81,7 @@ public class SmartInventory {
 
         InventoryContents contents = new InventoryContents.Impl(this, player);
         contents.pagination().page(page);
-        
-        for (Map.Entry<String, Object> property : properties.entrySet()) {	
-            contents.setProperty(property.getKey(), property.getValue());	
-        }
+        properties.forEach(contents::setProperty);
         
         this.manager.setContents(player, contents);
         this.provider.init(player, contents);
@@ -94,6 +107,16 @@ public class SmartInventory {
 
         this.manager.setContents(player, null);
         this.manager.cancelUpdateTask(player);
+    }
+    /**
+     * Checks if this inventory has a slot at the specified position
+     * @param row Slot row (starts at 0)
+     * @param col Slot column (starts at 0)
+     */
+    public boolean checkBounds(int row, int col) {
+        if(row < 0 || col < 0)
+            return false;
+        return row < this.rows && col < this.columns;
     }
 
     public String getId() { return id; }
@@ -191,6 +214,50 @@ public class SmartInventory {
             this.manager = manager;
             return this;
         }
+        
+        public String getId() {
+            return id;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public InventoryType getType() {
+            return type;
+        }
+
+        public Optional<Integer> getRows() {
+            return rows;
+        }
+
+        public Optional<Integer> getColumns() {
+            return columns;
+        }
+
+        public boolean isCloseable() {
+            return closeable;
+        }
+
+        public int getUpdateFrequency() {
+            return updateFrequency;
+        }
+
+        public InventoryManager getManager() {
+            return manager;
+        }
+
+        public InventoryProvider getProvider() {
+            return provider;
+        }
+
+        public SmartInventory getParent() {
+            return parent;
+        }
+
+        public List<InventoryListener<? extends Event>> getListeners() {
+            return Collections.unmodifiableList(listeners);
+        }
 
         public SmartInventory build() {
             if(this.provider == null)
@@ -228,6 +295,7 @@ public class SmartInventory {
             
             return size;
         }
+
     }
 
 }
