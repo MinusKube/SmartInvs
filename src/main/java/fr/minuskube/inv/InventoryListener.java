@@ -15,8 +15,20 @@ import java.util.function.Consumer;
  *           becomes Object.
  */
 public class InventoryListener<T> {
-
+    /**
+     * Type Class Object. This field allows instantiation of classes in a type-safe manner. Where <T> represents the class itself, enabling
+     * you to avoid unpleasant effects of type erasure by storing Class<T> a generic class or passing it in as a parameter to a generic
+     * method. Also, note that 'T' by itself would not be sufficient to complete the task at hand. The type of 'T' is erased, so it becomes
+     * an {@link Object} under the hood.
+     * <p>
+     * It is also important to have access to the 'Class<T>' object inside the 'select' method. Since 'netInstance' returns an object of type
+     * <T>, the compiler can perform type checking, eliminating a cast.
+     */
     private Class<T> type;
+    /**
+     * Consumer function. This field is being used as the assignment target for a lambda expression, or a method reference. The
+     * consumer's function descriptor is 'T -> ()', which means an object if type T is input to the lambda with no return value.
+     */
     private Consumer<T> consumer;
 
     /**
@@ -36,7 +48,7 @@ public class InventoryListener<T> {
      * will ensure that no new classes are created for parameterized types. This feature is called
      * @see "<a href="https://docs.oracle.com/javase/tutorial/java/generics/erasure.html" target="_top">Type Erasure</a>".
      *
-     * @param t Replaces the bounded type parameter T with hte first bound interface.
+     * @param t Replaces the bounded type parameter T with the first bound interface.
      */
     public void accept(T t) { consumer.accept(t); }
 
