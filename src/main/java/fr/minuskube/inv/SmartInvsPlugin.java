@@ -9,8 +9,13 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @version 1.2.7
  */
 public class SmartInvsPlugin extends JavaPlugin {
-
+    /**
+     * Create an instantiation of SmartInvsPLugin class.
+     */
     private static SmartInvsPlugin instance;
+    /**
+     * Create an instantiation of InventoryManager Class.
+     */
     private static InventoryManager invManager;
 
     /**
