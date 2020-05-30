@@ -111,7 +111,7 @@ public class InventoryManager {
             if(!inventories.containsKey(p))
                 return;
 
-            if(e.getAction() == InventoryAction.COLLECT_TO_CURSOR || e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+            if(e.getAction() == InventoryAction.COLLECT_TO_CURSOR || (e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY && !(e.getClick() == ClickType.SHIFT_LEFT || e.getClick() == ClickType.SHIFT_RIGHT))) {
                 e.setCancelled(true);
                 return;
             }
