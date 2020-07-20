@@ -7,7 +7,7 @@
 Advanced Inventory API for your Minecraft Bukkit plugins.
 
 *Tested Minecraft versions: 1.7, 1.8, 1.9, 1.10, 1.11, 1.12, 1.13, 1.14*  
-**You can use this as a Plugin, or use it as a library** (see [the docs](https://minuskube.gitbooks.io/smartinvs/))
+**You can use this as a Plugin, or use it as a library** (see [the docs](https://minuskube.gitbook.io/smartinvs/))
 
 ## Features
 * Inventories of any type (workbench, chest, furnace, ...)
@@ -22,7 +22,7 @@ Advanced Inventory API for your Minecraft Bukkit plugins.
 * Update methods to edit the content of the inventory every tick
 
 ## Docs
-[Click here to read the docs on Gitbooks](https://minuskube.gitbooks.io/smartinvs/)
+[Click here to read the docs on Gitbook](https://minuskube.gitbook.io/smartinvs/)
 
 ## Usage
 To use the SmartInvs API, either:
