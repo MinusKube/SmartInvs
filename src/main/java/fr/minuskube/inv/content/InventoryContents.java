@@ -25,6 +25,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * <p>
@@ -172,6 +174,32 @@ public interface InventoryContents {
      * @see InventoryContents#get(int)
      */
     Optional<ClickableItem> get(SlotPos slotPos);
+
+    /**
+     * Apply the consumer on a rectangle inside the inventory using the given
+     * positions.
+     * <br>
+     * The created rectangle will have its top-left position at
+     * the given <b>from slot index</b> and its bottom-right position at
+     * the given <b>to slot index</b>.
+     *
+     * @param apply BiConsumer to accept row and column
+     * @return <code>this</code>, for chained calls
+     */
+    InventoryContents applyRect(int fromRow, int fromColumn, int toRow, int toColumn, BiConsumer<Integer, Integer> apply);
+
+    /**
+     * Apply the consumer on a rectangle inside the inventory using the given
+     * positions. Applies only when the ClickableItem exist in this GUI.
+     * <br>
+     * The created rectangle will have its top-left position at
+     * the given <b>from slot index</b> and its bottom-right position at
+     * the given <b>to slot index</b>.
+     *
+     * @param apply Consumer to accept each slot
+     * @return <code>this</code>, for chained calls
+     */
+    InventoryContents applyRect(int fromRow, int fromColumn, int toRow, int toColumn, Consumer<ClickableItem> apply);
 
     /**
      * Sets the item in the inventory at the given
@@ -525,7 +553,7 @@ public interface InventoryContents {
      */
     boolean isEditable(SlotPos slot);
 
-    class Impl implements InventoryContents {
+    class Impl implements InventoryContents{
 
         private final SmartInventory inv;
         private final Player player;
@@ -631,6 +659,23 @@ public interface InventoryContents {
         @Override
         public Optional<ClickableItem> get(SlotPos slotPos) {
             return get(slotPos.getRow(), slotPos.getColumn());
+        }
+
+        @Override
+        public InventoryContents applyRect(int fromRow, int fromColumn, int toRow, int toColumn, BiConsumer<Integer, Integer> apply) {
+            for(int row = fromRow; row <= toRow; row++) {
+                for(int column = fromColumn; column <= toColumn; column++) {
+                    apply.accept(row, column);
+                }
+            }
+
+            return this;
+        }
+
+        @Override
+        public InventoryContents applyRect(int fromRow, int fromColumn, int toRow, int toColumn, Consumer<ClickableItem> apply) {
+            applyRect(fromRow, fromColumn, toRow, toColumn, (row, column) -> get(row, column).ifPresent(apply));
+            return this;
         }
 
         @Override
@@ -741,14 +786,12 @@ public interface InventoryContents {
 
         @Override
         public InventoryContents fillRect(int fromRow, int fromColumn, int toRow, int toColumn, ClickableItem item) {
-            for(int row = fromRow; row <= toRow; row++) {
-                for(int column = fromColumn; column <= toColumn; column++) {
-                    if(row != fromRow && row != toRow && column != fromColumn && column != toColumn)
-                        continue;
+            applyRect(fromRow, fromColumn, toRow, toColumn, (row, column) -> {
+                if(row != fromRow && row != toRow && column != fromColumn && column != toColumn)
+                    return;
 
-                    set(row, column, item);
-                }
-            }
+                set(row, column, item);
+            });
 
             return this;
         }
