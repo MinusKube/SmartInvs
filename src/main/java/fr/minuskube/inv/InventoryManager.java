@@ -225,19 +225,21 @@ public class InventoryManager {
 
             SmartInventory inv = inventories.get(p);
 
-            inv.getListeners().stream()
-                    .filter(listener -> listener.getType() == InventoryCloseEvent.class)
-                    .forEach(listener -> ((InventoryListener<InventoryCloseEvent>) listener).accept(e));
+            try{
+                inv.getListeners().stream()
+                        .filter(listener -> listener.getType() == InventoryCloseEvent.class)
+                        .forEach(listener -> ((InventoryListener<InventoryCloseEvent>) listener).accept(e));
+            } finally {
+                if(inv.isCloseable()) {
+                    e.getInventory().clear();
+                    InventoryManager.this.cancelUpdateTask(p);
 
-            if(inv.isCloseable()) {
-                e.getInventory().clear();
-                InventoryManager.this.cancelUpdateTask(p);
-
-                inventories.remove(p);
-                contents.remove(p);
+                    inventories.remove(p);
+                    contents.remove(p);
+                }
+                else
+                    Bukkit.getScheduler().runTask(plugin, () -> p.openInventory(e.getInventory()));
             }
-            else
-                Bukkit.getScheduler().runTask(plugin, () -> p.openInventory(e.getInventory()));
         }
 
         @EventHandler(priority = EventPriority.LOW)
@@ -249,22 +251,26 @@ public class InventoryManager {
 
             SmartInventory inv = inventories.get(p);
 
-            inv.getListeners().stream()
-                    .filter(listener -> listener.getType() == PlayerQuitEvent.class)
-                    .forEach(listener -> ((InventoryListener<PlayerQuitEvent>) listener).accept(e));
-
-            inventories.remove(p);
-            contents.remove(p);
+            try{
+                inv.getListeners().stream()
+                        .filter(listener -> listener.getType() == PlayerQuitEvent.class)
+                        .forEach(listener -> ((InventoryListener<PlayerQuitEvent>) listener).accept(e));
+            } finally {
+                inventories.remove(p);
+                contents.remove(p);
+            }
         }
 
         @EventHandler(priority = EventPriority.LOW)
         public void onPluginDisable(PluginDisableEvent e) {
             new HashMap<>(inventories).forEach((player, inv) -> {
-                inv.getListeners().stream()
-                        .filter(listener -> listener.getType() == PluginDisableEvent.class)
-                        .forEach(listener -> ((InventoryListener<PluginDisableEvent>) listener).accept(e));
-
-                inv.close(player);
+                try{
+                    inv.getListeners().stream()
+                            .filter(listener -> listener.getType() == PluginDisableEvent.class)
+                            .forEach(listener -> ((InventoryListener<PluginDisableEvent>) listener).accept(e));
+                } finally {
+                    inv.close(player);
+                }
             });
 
             inventories.clear();
