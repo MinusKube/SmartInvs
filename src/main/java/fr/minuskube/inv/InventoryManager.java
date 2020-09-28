@@ -23,6 +23,7 @@ import fr.minuskube.inv.opener.ChestInventoryOpener;
 import fr.minuskube.inv.opener.InventoryOpener;
 import fr.minuskube.inv.opener.SpecialInventoryOpener;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,6 +31,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -41,9 +43,9 @@ public class InventoryManager {
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
 
-    private final Map<Player, SmartInventory> inventories;
-    private final Map<Player, InventoryContents> contents;
-    private final Map<Player, BukkitRunnable> updateTasks;
+    private final Map<Inventory, SmartInventory> inventories;
+    private final Map<Inventory, InventoryContents> contents;
+    private final Map<Inventory, BukkitRunnable> updateTasks;
 
     private final List<InventoryOpener> defaultOpeners;
     private final List<InventoryOpener> openers;
@@ -91,47 +93,53 @@ public class InventoryManager {
     public List<Player> getOpenedPlayers(SmartInventory inv) {
         List<Player> list = new ArrayList<>();
 
-        this.inventories.forEach((player, playerInv) -> {
+        // TODO: this can be optimized?
+        // if we use regular for-loop and break once find the inventory, average execution time can be dropped.
+        // Worst case would be O(n) anyway, so could someone come up with better idea?
+        this.inventories.forEach((Inventory, playerInv) -> {
             if(inv.equals(playerInv))
-                list.add(player);
+                Inventory.getViewers().stream()
+                        .filter(Player.class::isInstance)
+                        .map(Player.class::cast)
+                        .forEach(list::add);
         });
 
         return list;
     }
 
-    public Optional<SmartInventory> getInventory(Player p) {
-        return Optional.ofNullable(this.inventories.get(p));
+    public Optional<SmartInventory> getInventory(Inventory inventory) {
+        return Optional.ofNullable(this.inventories.get(inventory));
     }
 
-    protected void setInventory(Player p, SmartInventory inv) {
+    protected void setInventory(Inventory inventory, SmartInventory inv) {
         if(inv == null)
-            this.inventories.remove(p);
+            this.inventories.remove(inventory);
         else
-            this.inventories.put(p, inv);
+            this.inventories.put(inventory, inv);
     }
 
-    public Optional<InventoryContents> getContents(Player p) {
-        return Optional.ofNullable(this.contents.get(p));
+    public Optional<InventoryContents> getContents(Inventory inventory) {
+        return Optional.ofNullable(this.contents.get(inventory));
     }
 
-    protected void setContents(Player p, InventoryContents contents) {
+    protected void setContents(Inventory inventory, InventoryContents contents) {
         if(contents == null)
-            this.contents.remove(p);
+            this.contents.remove(inventory);
         else
-            this.contents.put(p, contents);
+            this.contents.put(inventory, contents);
     }
     
-    protected void scheduleUpdateTask(Player p, SmartInventory inv) {
-    	PlayerInvTask task = new PlayerInvTask(p, inv.getProvider(), contents.get(p));
+    protected void scheduleUpdateTask(Inventory inventory, SmartInventory inv) {
+    	PlayerInvTask task = new PlayerInvTask(inventory, inv.getProvider(), contents.get(inventory));
     	task.runTaskTimer(plugin, 1, inv.getUpdateFrequency());
-    	this.updateTasks.put(p, task);
+    	this.updateTasks.put(inventory, task);
     }
     
-    protected void cancelUpdateTask(Player p) {
-    	if(updateTasks.containsKey(p)) {
-          int bukkitTaskId = this.updateTasks.get(p).getTaskId();
+    protected void cancelUpdateTask(Inventory inventory) {
+    	if(updateTasks.containsKey(inventory)) {
+          int bukkitTaskId = this.updateTasks.get(inventory).getTaskId();
           Bukkit.getScheduler().cancelTask(bukkitTaskId);
-          this.updateTasks.remove(p);
+          this.updateTasks.remove(inventory);
     	}
     }
 
@@ -140,8 +148,9 @@ public class InventoryManager {
 
         @EventHandler(priority = EventPriority.LOW)
         public void onInventoryClick(InventoryClickEvent e) {
-            Player p = (Player) e.getWhoClicked();
-            SmartInventory inv = inventories.get(p);
+            Player player = (Player) e.getWhoClicked();
+            Inventory inventory = e.getInventory();
+            SmartInventory inv = inventories.get(inventory);
             
             if(inv == null)
                 return;
@@ -154,14 +163,14 @@ public class InventoryManager {
                 return;
             }
 
-            if(e.getClickedInventory() == p.getOpenInventory().getTopInventory()) {
+            if(inventory == player.getOpenInventory().getTopInventory()) {
                 int row = e.getSlot() / 9;
                 int column = e.getSlot() % 9;
                 
                 if(!inv.checkBounds(row, column))
                     return;
 
-                InventoryContents invContents = contents.get(p);
+                InventoryContents invContents = contents.get(inventory);
                 SlotPos slot = SlotPos.of(row, column);
                 
                 if(!invContents.isEditable(slot))
@@ -171,26 +180,27 @@ public class InventoryManager {
                         .filter(listener -> listener.getType() == InventoryClickEvent.class)
                         .forEach(listener -> ((InventoryListener<InventoryClickEvent>) listener).accept(e));
 
-                invContents.get(slot).ifPresent(item -> item.run(new ItemClickData(e, p, e.getCurrentItem(), slot)));
+                invContents.get(slot).ifPresent(item -> item.run(new ItemClickData(e, player, e.getCurrentItem(), slot)));
 
                 // Don't update if the clicked slot is editable - prevent item glitching
                 if(!invContents.isEditable(slot)) {
-                    p.updateInventory();
+                    player.updateInventory();
                 }
             }
         }
 
         @EventHandler(priority = EventPriority.LOW)
         public void onInventoryDrag(InventoryDragEvent e) {
-            Player p = (Player) e.getWhoClicked();
+            Player player = (Player) e.getWhoClicked();
+            Inventory inventory = e.getInventory();
 
-            if(!inventories.containsKey(p))
+            if(!inventories.containsKey(inventory))
                 return;
 
-            SmartInventory inv = inventories.get(p);
+            SmartInventory inv = inventories.get(inventory);
 
             for(int slot : e.getRawSlots()) {
-                if(slot >= p.getOpenInventory().getTopInventory().getSize())
+                if(slot >= player.getOpenInventory().getTopInventory().getSize())
                     continue;
 
                 e.setCancelled(true);
@@ -204,12 +214,12 @@ public class InventoryManager {
 
         @EventHandler(priority = EventPriority.LOW)
         public void onInventoryOpen(InventoryOpenEvent e) {
-            Player p = (Player) e.getPlayer();
+            Inventory inventory = e.getInventory();
 
-            if(!inventories.containsKey(p))
+            if(!inventories.containsKey(inventory))
                 return;
 
-            SmartInventory inv = inventories.get(p);
+            SmartInventory inv = inventories.get(inventory);
 
             inv.getListeners().stream()
                     .filter(listener -> listener.getType() == InventoryOpenEvent.class)
@@ -218,12 +228,13 @@ public class InventoryManager {
 
         @EventHandler(priority = EventPriority.LOW)
         public void onInventoryClose(InventoryCloseEvent e) {
-            Player p = (Player) e.getPlayer();
+            Player player = (Player) e.getPlayer();
+            Inventory inventory = e.getInventory();
 
-            if(!inventories.containsKey(p))
+            if(!inventories.containsKey(inventory))
                 return;
 
-            SmartInventory inv = inventories.get(p);
+            SmartInventory inv = inventories.get(inventory);
 
             try{
                 inv.getListeners().stream()
@@ -232,44 +243,52 @@ public class InventoryManager {
             } finally {
                 if(inv.isCloseable()) {
                     e.getInventory().clear();
-                    InventoryManager.this.cancelUpdateTask(p);
+                    InventoryManager.this.cancelUpdateTask(inventory);
 
-                    inventories.remove(p);
-                    contents.remove(p);
+                    inventories.remove(inventory);
+                    contents.remove(inventory);
                 }
                 else
-                    Bukkit.getScheduler().runTask(plugin, () -> p.openInventory(e.getInventory()));
+                    Bukkit.getScheduler().runTask(plugin, () -> player.openInventory(e.getInventory()));
             }
         }
 
         @EventHandler(priority = EventPriority.LOW)
         public void onPlayerQuit(PlayerQuitEvent e) {
-            Player p = e.getPlayer();
-
-            if(!inventories.containsKey(p))
-                return;
-
-            SmartInventory inv = inventories.get(p);
-
-            try{
-                inv.getListeners().stream()
-                        .filter(listener -> listener.getType() == PlayerQuitEvent.class)
-                        .forEach(listener -> ((InventoryListener<PlayerQuitEvent>) listener).accept(e));
-            } finally {
-                inventories.remove(p);
-                contents.remove(p);
-            }
+            //This is no longer needed if we keep track of Inventory instead of Player
+            //InventoryCloseEvent will be called when a player quit
+            //Downside: Some way to pass PlayerQuitEvent to the listener is needed.
+            //          Or, is PlayerQuitEvent really useful in GUI context?
+//            Inventory inventory = e.getPlayer();
+//
+//            if(!inventories.containsKey(p))
+//                return;
+//
+//            SmartInventory inv = inventories.get(p);
+//
+//            try{
+//                inv.getListeners().stream()
+//                        .filter(listener -> listener.getType() == PlayerQuitEvent.class)
+//                        .forEach(listener -> ((InventoryListener<PlayerQuitEvent>) listener).accept(e));
+//            } finally {
+//                inventories.remove(p);
+//                contents.remove(p);
+//            }
         }
 
         @EventHandler(priority = EventPriority.LOW)
         public void onPluginDisable(PluginDisableEvent e) {
-            new HashMap<>(inventories).forEach((player, inv) -> {
-                try{
-                    inv.getListeners().stream()
+            new HashMap<>(inventories).forEach((inventory, smartInv) -> {
+                try {
+                    smartInv.getListeners().stream()
                             .filter(listener -> listener.getType() == PluginDisableEvent.class)
                             .forEach(listener -> ((InventoryListener<PluginDisableEvent>) listener).accept(e));
                 } finally {
-                    inv.close(player);
+                    inventory.getViewers().stream()
+                            .filter(Player.class::isInstance)
+                            .map(Player.class::cast)
+                            .forEach(HumanEntity::closeInventory);
+                    //smartInv.close(player);
                 }
             });
 
@@ -290,19 +309,19 @@ public class InventoryManager {
     
     class PlayerInvTask extends BukkitRunnable {
 
-        private Player player;
+        private Inventory inventorylayer;
         private InventoryProvider provider;
         private InventoryContents contents;
 
-        public PlayerInvTask(Player player, InventoryProvider provider, InventoryContents contents) {
-          this.player = Objects.requireNonNull(player);
+        public PlayerInvTask(Inventory inventorylayer, InventoryProvider provider, InventoryContents contents) {
+          this.inventorylayer = Objects.requireNonNull(inventorylayer);
           this.provider = Objects.requireNonNull(provider);
           this.contents = Objects.requireNonNull(contents);
         }
 
         @Override
         public void run() {
-            provider.update(this.player, this.contents);
+            provider.update(this.inventorylayer, this.contents);
         }
     	
     }

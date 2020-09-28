@@ -16,11 +16,11 @@
 
 package fr.minuskube.inv.content;
 
-import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 public interface InventoryProvider {
 
-    void init(Player player, InventoryContents contents);
-    void update(Player player, InventoryContents contents);
+    void init(Inventory inventory, InventoryContents contents);
+    void update(Inventory inventory, InventoryContents contents);
 
 }

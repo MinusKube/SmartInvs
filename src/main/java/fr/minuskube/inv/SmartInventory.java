@@ -16,24 +16,17 @@
 
 package fr.minuskube.inv;
 
+import com.google.common.base.Preconditions;
 import fr.minuskube.inv.content.InventoryContents;
 import fr.minuskube.inv.content.InventoryProvider;
 import fr.minuskube.inv.content.SlotPos;
 import fr.minuskube.inv.opener.InventoryOpener;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import com.google.common.base.Preconditions;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
+
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class SmartInventory {
@@ -67,46 +60,51 @@ public class SmartInventory {
         return open(player, 0, properties);	
     }	
 
-    public Inventory open(Player player, int page, Map<String, Object> properties) {	
-        Optional<SmartInventory> oldInv = this.manager.getInventory(player);
-
-        oldInv.ifPresent(inv -> {
-            inv.getListeners().stream()
-                    .filter(listener -> listener.getType() == InventoryCloseEvent.class)
-                    .forEach(listener -> ((InventoryListener<InventoryCloseEvent>) listener)
-                            .accept(new InventoryCloseEvent(player.getOpenInventory())));
-
-            this.manager.setInventory(player, null);
-        });
-
-        InventoryContents contents = new InventoryContents.Impl(this, player);
-        contents.pagination().page(page);
-        properties.forEach(contents::setProperty);
-        
-        this.manager.setContents(player, contents);
-        this.provider.init(player, contents);
+    public Inventory open(Player player, int page, Map<String, Object> properties) {
+        //Not required. Inventory and SmartInventory is mapped 1 to 1, so it's not Player specific anymore.
+//        Optional<SmartInventory> oldInv = this.manager.getInventory(player);
+//
+//        oldInv.ifPresent(inv -> {
+//            inv.getListeners().stream()
+//                    .filter(listener -> listener.getType() == InventoryCloseEvent.class)
+//                    .forEach(listener -> ((InventoryListener<InventoryCloseEvent>) listener)
+//                            .accept(new InventoryCloseEvent(player.getOpenInventory())));
+//
+//            this.manager.setInventory(player, null);
+//        });
 
         InventoryOpener opener = this.manager.findOpener(type)
                 .orElseThrow(() -> new IllegalStateException("No opener found for the inventory type " + type.name()));
         Inventory handle = opener.open(this, player);
 
-        this.manager.setInventory(player, this);
-        this.manager.scheduleUpdateTask(player, this);
+        InventoryContents contents = new InventoryContents.Impl(this, player);
+        contents.pagination().page(page);
+        properties.forEach(contents::setProperty);
+        
+        this.manager.setContents(handle, contents);
+        this.provider.init(handle, contents);
+
+        this.manager.setInventory(handle, this);
+        this.manager.scheduleUpdateTask(handle, this);
         
         return handle;
     }
 
     public void close(Player player) {
-        listeners.stream()
-                .filter(listener -> listener.getType() == InventoryCloseEvent.class)
-                .forEach(listener -> ((InventoryListener<InventoryCloseEvent>) listener)
-                        .accept(new InventoryCloseEvent(player.getOpenInventory())));
+        // not required. Will be handled in InventoryManager#onInventoryClose(InventoryCloseEvent)
+        // as Player#closeInventory() fires InventoryCloseEvent
+//        listeners.stream()
+//                .filter(listener -> listener.getType() == InventoryCloseEvent.class)
+//                .forEach(listener -> ((InventoryListener<InventoryCloseEvent>) listener)
+//                        .accept(new InventoryCloseEvent(player.getOpenInventory())));
 
-        this.manager.setInventory(player, null);
+        // Will be handled in InventoryManager#onInventoryClose(InventoryCloseEvent)
+//        this.manager.setInventory(player, null);
         player.closeInventory();
 
-        this.manager.setContents(player, null);
-        this.manager.cancelUpdateTask(player);
+        // Will be handled in InventoryManager#onInventoryClose(InventoryCloseEvent)
+//        this.manager.setContents(player, null);
+//        this.manager.cancelUpdateTask(player);
     }
     /**
      * Checks if this inventory has a slot at the specified position
@@ -184,7 +182,7 @@ public class SmartInventory {
         }
         
         /**
-         * This method is used to configure the frequency at which the {@link InventoryProvider#update(Player, InventoryContents)}
+         * This method is used to configure the frequency at which the {@link InventoryProvider#update(Inventory, InventoryContents)}
          * method is called. Defaults to 1
          * @param frequency The inventory update frequency, in ticks
          * @throws IllegalArgumentException If frequency is smaller than 1.
