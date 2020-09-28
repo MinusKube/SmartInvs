@@ -36,6 +36,7 @@ public class SmartInventory {
     private InventoryType type;
     private int rows, columns;
     private boolean closeable;
+    private boolean closed;
     private int updateFrequency;
 
     private InventoryProvider provider;
@@ -75,19 +76,18 @@ public class SmartInventory {
 
         InventoryOpener opener = this.manager.findOpener(type)
                 .orElseThrow(() -> new IllegalStateException("No opener found for the inventory type " + type.name()));
-        Inventory handle = opener.open(this, player);
 
-        InventoryContents contents = new InventoryContents.Impl(this, player);
-        contents.pagination().page(page);
-        properties.forEach(contents::setProperty);
-        
-        this.manager.setContents(handle, contents);
-        this.provider.init(handle, contents);
+        return opener.open(this, player, (handle) -> {
+            InventoryContents contents = new InventoryContents.Impl(this, player);
+            contents.pagination().page(page);
+            properties.forEach(contents::setProperty);
 
-        this.manager.setInventory(handle, this);
-        this.manager.scheduleUpdateTask(handle, this);
-        
-        return handle;
+            this.manager.setContents(handle, contents);
+            this.provider.init(handle, contents);
+
+            this.manager.setInventory(handle, this);
+            this.manager.scheduleUpdateTask(handle, this);
+        });
     }
 
     public void close(Player player) {
@@ -98,13 +98,16 @@ public class SmartInventory {
 //                .forEach(listener -> ((InventoryListener<InventoryCloseEvent>) listener)
 //                        .accept(new InventoryCloseEvent(player.getOpenInventory())));
 
-        // Will be handled in InventoryManager#onInventoryClose(InventoryCloseEvent)
 //        this.manager.setInventory(player, null);
-        player.closeInventory();
 
-        // Will be handled in InventoryManager#onInventoryClose(InventoryCloseEvent)
 //        this.manager.setContents(player, null);
 //        this.manager.cancelUpdateTask(player);
+
+        // Since we skip all steps above, closeable property will not work properly.
+        // manually indicate that this SmartInventory is closed by system, not by user
+        setClosed(true);
+
+        player.closeInventory(); // -> fires InventoryCloseEvent
     }
     /**
      * Checks if this inventory has a slot at the specified position
@@ -125,6 +128,8 @@ public class SmartInventory {
 
     public boolean isCloseable() { return closeable; }
     public void setCloseable(boolean closeable) { this.closeable = closeable; }
+    public boolean isClosed() { return closed; }
+    public void setClosed(boolean closed) { this.closed = closed; }
     
     public int getUpdateFrequency() { return updateFrequency; }
 

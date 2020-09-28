@@ -25,6 +25,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class SpecialInventoryOpener implements InventoryOpener {
 
@@ -41,9 +42,10 @@ public class SpecialInventoryOpener implements InventoryOpener {
     );
 
     @Override
-    public Inventory open(SmartInventory inv, Player player) {
+    public Inventory open(SmartInventory inv, Player player, Consumer<Inventory> doBeforeOpen) {
         InventoryManager manager = inv.getManager();
         Inventory handle = Bukkit.createInventory(player, inv.getType(), inv.getTitle());
+        doBeforeOpen.accept(handle);
 
         fill(handle, manager.getContents(handle).get(), player);
 

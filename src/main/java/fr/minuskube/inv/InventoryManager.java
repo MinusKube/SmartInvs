@@ -241,14 +241,16 @@ public class InventoryManager {
                         .filter(listener -> listener.getType() == InventoryCloseEvent.class)
                         .forEach(listener -> ((InventoryListener<InventoryCloseEvent>) listener).accept(e));
             } finally {
-                if(inv.isCloseable()) {
+                // if closeable, just close.
+                // if not closeable, check whether it's marked as closed before closing it.
+                //     if not marked as closed, it should re-open the inventory
+                if(inv.isCloseable() || inv.isClosed()) {
                     e.getInventory().clear();
                     InventoryManager.this.cancelUpdateTask(inventory);
 
                     inventories.remove(inventory);
                     contents.remove(inventory);
-                }
-                else
+                } else
                     Bukkit.getScheduler().runTask(plugin, () -> player.openInventory(e.getInventory()));
             }
         }

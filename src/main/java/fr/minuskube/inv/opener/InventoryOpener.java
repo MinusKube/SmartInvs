@@ -24,9 +24,23 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
+import java.util.function.Consumer;
+
 public interface InventoryOpener {
 
-    Inventory open(SmartInventory inv, Player player);
+    /**
+     * Create Inventory, fill the contents, and open the Inventory for Player.
+     * For 'fill' step, it expects the contents of the Inventory is already registered
+     * with {@link fr.minuskube.inv.InventoryManager#setContents(Inventory, InventoryContents)}.
+     * To do so, use doBeforeOpen argument.
+     * @param inv SmartInventory
+     * @param player target Player
+     * @param doBeforeOpen logic to be executed in between Inventory instantiation
+     *                     and {@link Player#openInventory(Inventory)}, Great place
+     *                     to register SmartInventory to {@link fr.minuskube.inv.InventoryManager};
+     * @return
+     */
+    Inventory open(SmartInventory inv, Player player, Consumer<Inventory> doBeforeOpen);
     boolean supports(InventoryType type);
 
     default void fill(Inventory handle, InventoryContents contents, Player player) {
