@@ -304,7 +304,11 @@ public class InventoryManager {
 
         @Override
         public void run() {
-            new HashMap<>(inventories).forEach((player, inv) -> inv.getProvider().update(player, contents.get(player)));
+            new HashMap<>(inventories).forEach((inventory, smartInventory) -> inventory.getViewers().stream()
+                    .filter(Player.class::isInstance)
+                    .map(Player.class::cast)
+                    .findFirst()
+                    .ifPresent(player -> smartInventory.getProvider().update(player, contents.get(inventory))));
         }
 
     }
@@ -323,7 +327,11 @@ public class InventoryManager {
 
         @Override
         public void run() {
-            provider.update(this.inventorylayer, this.contents);
+            inventorylayer.getViewers().stream()
+                    .filter(Player.class::isInstance)
+                    .map(Player.class::cast)
+                    .findFirst()
+                    .ifPresent(player -> provider.update(player, this.contents));
         }
     	
     }

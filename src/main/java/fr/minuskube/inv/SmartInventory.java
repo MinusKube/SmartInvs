@@ -83,7 +83,7 @@ public class SmartInventory {
             properties.forEach(contents::setProperty);
 
             this.manager.setContents(handle, contents);
-            this.provider.init(handle, contents);
+            this.provider.init(player, contents);
 
             this.manager.setInventory(handle, this);
             this.manager.scheduleUpdateTask(handle, this);
@@ -187,7 +187,7 @@ public class SmartInventory {
         }
         
         /**
-         * This method is used to configure the frequency at which the {@link InventoryProvider#update(Inventory, InventoryContents)}
+         * This method is used to configure the frequency at which the {@link InventoryProvider#update(Player, InventoryContents)}
          * method is called. Defaults to 1
          * @param frequency The inventory update frequency, in ticks
          * @throws IllegalArgumentException If frequency is smaller than 1.
