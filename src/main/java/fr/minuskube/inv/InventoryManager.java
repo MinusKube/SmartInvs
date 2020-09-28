@@ -163,7 +163,7 @@ public class InventoryManager {
                 return;
             }
 
-            if(inventory == player.getOpenInventory().getTopInventory()) {
+            if(e.getClickedInventory() == player.getOpenInventory().getTopInventory()) {
                 int row = e.getSlot() / 9;
                 int column = e.getSlot() % 9;
                 
