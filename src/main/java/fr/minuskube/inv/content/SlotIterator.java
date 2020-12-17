@@ -23,6 +23,9 @@ public interface SlotIterator {
     SlotIterator blacklist(int row, int column);
     SlotIterator blacklist(SlotPos slotPos);
 
+    SlotIterator whitelist(int row, int column);
+    SlotIterator whitelist (SlotPos slotPos);
+
     int row();
     SlotIterator row(int row);
 
@@ -156,8 +159,20 @@ public interface SlotIterator {
         }
 
         @Override
+        public SlotIterator whitelist(int row, int column) {
+            this.blacklisted.remove(SlotPos.of(row, column));
+            return this;
+        }
+
+
+        @Override
         public SlotIterator blacklist(SlotPos slotPos) {
             return blacklist(slotPos.getRow(), slotPos.getColumn());
+        }
+
+        @Override
+        public SlotIterator whitelist(SlotPos slotPos) {
+            return whitelist(slotPos.getRow(), slotPos.getColumn());
         }
 
         @Override
