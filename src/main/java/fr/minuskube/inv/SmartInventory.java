@@ -45,7 +45,7 @@ public class SmartInventory {
             this.manager.setInventory(player, null);
         });
 
-        InventoryContents contents = new InventoryContents.Impl(this, player);
+        InventoryContents contents = new InventoryContents.Impl(this, player.getUniqueId());
         contents.pagination().page(page);
 
         this.manager.setContents(player, contents);
