@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 
 public interface InventoryProvider {
 
-    void init(Player player, InventoryContents contents);
-    default void update(Player player, InventoryContents contents) {}
+    default init(Player player, InventoryContents contents) {update(player, contents)}
+    default void update(Player player, InventoryContents contents) {};
 
 }
