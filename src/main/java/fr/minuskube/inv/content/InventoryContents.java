@@ -36,13 +36,14 @@ public interface InventoryContents {
 
     InventoryContents add(ClickableItem item);
 
+    InventoryContents update(SlotPos slotPos, ItemStack itemStack);
+
     InventoryContents fill(ClickableItem item);
     InventoryContents fillRow(int row, ClickableItem item);
     InventoryContents fillColumn(int column, ClickableItem item);
     InventoryContents fillBorders(ClickableItem item);
 
-    InventoryContents fillRect(int fromRow, int fromColumn,
-                               int toRow, int toColumn, ClickableItem item);
+    InventoryContents fillRect(int fromRow, int fromColumn, int toRow, int toColumn, ClickableItem item);
     InventoryContents fillRect(SlotPos fromPos, SlotPos toPos, ClickableItem item);
 
     <T> T property(String name);
@@ -160,6 +161,23 @@ public interface InventoryContents {
                 }
             }
 
+            return this;
+        }
+
+        /**
+         * Updates an item in this inventory without reloading the entire GUI.
+         * @param slotPos the position of the item to update
+         * @param itemStack the new {@code ItemStack} that will replace the old one
+         * @return this {@code InventoryContents} instance
+         */
+        @Override
+        public InventoryContents update(SlotPos slotPos, ItemStack itemStack) {
+            Optional<ClickableItem> optional = get(slotPos);
+            if (!optional.isPresent())
+                return this;
+
+            ClickableItem newClickableItem = ClickableItem.updateItem(optional.get(), itemStack);
+            set(slotPos, newClickableItem);
             return this;
         }
 
