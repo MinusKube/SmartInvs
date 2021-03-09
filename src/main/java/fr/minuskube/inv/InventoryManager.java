@@ -80,12 +80,12 @@ public class InventoryManager {
         this.openers.addAll(Arrays.asList(openers));
     }
 
-    public List<Player> getOpenedPlayers(SmartInventory inv) {
-        List<Player> list = new ArrayList<>();
+    public List<UUID> getOpenedPlayers(SmartInventory inv) {
+        List<UUID> list = new ArrayList<>();
 
         this.inventories.forEach((player, playerInv) -> {
             if (inv.equals(playerInv))
-                list.add(Bukkit.getPlayer(player));
+                list.add(player);
         });
 
         return list;
