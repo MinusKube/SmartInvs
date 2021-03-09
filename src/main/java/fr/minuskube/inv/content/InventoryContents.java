@@ -239,6 +239,8 @@ public interface InventoryContents {
      */
     InventoryContents add(ClickableItem item);
 
+    InventoryContents update(SlotPos slotPos, ItemStack itemStack);
+
     /**
      * Looks for the given item and compares them using {@link ItemStack#isSimilar(ItemStack)},
      * ignoring the amount.
@@ -534,7 +536,7 @@ public interface InventoryContents {
      * @return <code>this</code>, for chained calls
      */
     InventoryContents setProperty(String name, Object value);
-    
+
     /**
      * Makes a slot editable, which enables the player to
      * put items in and take items out of the inventory in the
@@ -544,7 +546,7 @@ public interface InventoryContents {
      *        to make it 'static' again.
      */
     void setEditable(SlotPos slot, boolean editable);
-    
+
     /**
      * Returns if a given slot is editable or not.
      * @param slot The slot to check
@@ -563,7 +565,7 @@ public interface InventoryContents {
         private Pagination pagination = new Pagination.Impl();
         private Map<String, SlotIterator> iterators = new HashMap<>();
         private Map<String, Object> properties = new HashMap<>();
-        
+
         private Set<SlotPos> editableSlots = new HashSet<SlotPos>();
 
         public Impl(SmartInventory inv, Player player) {
@@ -713,6 +715,23 @@ public interface InventoryContents {
                 }
             }
 
+            return this;
+        }
+
+        /**
+         * Updates an item in this inventory without reloading the entire GUI.
+         * @param slotPos the position of the item to update
+         * @param itemStack the new {@code ItemStack} that will replace the old one
+         * @return this {@code InventoryContents} instance
+         */
+        @Override
+        public InventoryContents update(SlotPos slotPos, ItemStack itemStack) {
+            Optional<ClickableItem> optional = get(slotPos);
+            if (!optional.isPresent())
+                return this;
+
+            ClickableItem newClickableItem = ClickableItem.updateItem(optional.get(), itemStack);
+            set(slotPos, newClickableItem);
             return this;
         }
 
