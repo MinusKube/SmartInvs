@@ -43,6 +43,21 @@ dependencies {
 }
 ```
 
+### Gradle Kotlin DSL
+```gradle
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // if you are having the plugin installed, the api doesn't need to be in the compile output.
+    // compileOnly("fr.minuskube.inv", "smart-invs", "1.2.7")
+    // 
+    // else you can implement it
+    implementation("fr.minuskube.inv", "smart-invs", "1.2.7")
+}
+```
+
 ### Maven
 ```xml
 <dependency>
