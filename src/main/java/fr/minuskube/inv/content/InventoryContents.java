@@ -3,6 +3,7 @@ package fr.minuskube.inv.content;
 import fr.minuskube.inv.ClickableItem;
 import fr.minuskube.inv.SmartInventory;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -235,10 +236,11 @@ public interface InventoryContents {
         }
 
         private void update(int row, int column, ItemStack item) {
-            if(!inv.getManager().getOpenedPlayers(inv).contains(player))
+            Player currentPlayer = Bukkit.getPlayer(player);
+            if(!inv.getManager().getOpenedPlayers(inv).contains(currentPlayer))
                 return;
 
-            Inventory topInventory = Bukkit.getPlayer(player).getOpenInventory().getTopInventory();
+            Inventory topInventory = currentPlayer.getOpenInventory().getTopInventory();
             topInventory.setItem(inv.getColumns() * row + column, item);
         }
 
