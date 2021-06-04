@@ -117,6 +117,8 @@ public class InventoryManager {
 
     public void handleInventoryOpenError(SmartInventory inventory, Player player, Exception exception) {
         inventory.close(player);
+
+        Bukkit.getLogger().log(Level.SEVERE, "Error while opening SmartInventory:", exception);
     }
 
     public void handleInventoryUpdateError(SmartInventory inventory, Player player, Exception exception) {
