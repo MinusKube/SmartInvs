@@ -18,6 +18,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -123,17 +124,21 @@ public class InventoryManager {
             if (!inventories.containsKey(p.getUniqueId()))
                 return;
 
-            if (e.getAction() == InventoryAction.COLLECT_TO_CURSOR || e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
-                e.setCancelled(true);
-                return;
+            // Restrict putting items from the bottom inventory into the top inventory
+            Inventory clickedInventory = e.getClickedInventory();
+            if (clickedInventory == p.getOpenInventory().getBottomInventory()) {
+                if (e.getAction() == InventoryAction.COLLECT_TO_CURSOR || e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                    e.setCancelled(true);
+                    return;
+                }
+  
+                if (e.getAction() == InventoryAction.NOTHING && e.getClick() != ClickType.MIDDLE) {
+                    e.setCancelled(true);
+                    return;
+                }
             }
 
-            if (e.getAction() == InventoryAction.NOTHING && e.getClick() != ClickType.MIDDLE) {
-                e.setCancelled(true);
-                return;
-            }
-
-            if (e.getClickedInventory() == p.getOpenInventory().getTopInventory()) {
+            if (clickedInventory == p.getOpenInventory().getTopInventory()) {
                 e.setCancelled(true);
 
                 int row = e.getSlot() / 9;
