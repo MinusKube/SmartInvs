@@ -188,9 +188,11 @@ public class InventoryManager {
                 return;
 
             SmartInventory inv = inventories.get(p);
+            InventoryContents content = contents.get(p);
 
             for(int slot : e.getRawSlots()) {
-                if(slot >= p.getOpenInventory().getTopInventory().getSize())
+                SlotPos pos = SlotPos.of(slot/9, slot%9);
+                if(slot >= p.getOpenInventory().getTopInventory().getSize() || content.isEditable(pos))
                     continue;
 
                 e.setCancelled(true);
