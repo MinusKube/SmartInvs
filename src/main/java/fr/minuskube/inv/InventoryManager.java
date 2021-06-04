@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class InventoryManager {
 
@@ -112,6 +113,16 @@ public class InventoryManager {
             this.contents.remove(p.getUniqueId());
         else
             this.contents.put(p.getUniqueId(), contents);
+    }
+
+    public void handleInventoryOpenError(SmartInventory inventory, Player player, Exception exception) {
+        inventory.close(player);
+    }
+
+    public void handleInventoryUpdateError(SmartInventory inventory, Player player, Exception exception) {
+        inventory.close(player);
+
+        Bukkit.getLogger().log(Level.SEVERE, "Error while updating SmartInventory:", exception);
     }
 
     @SuppressWarnings("unchecked")
@@ -257,7 +268,15 @@ public class InventoryManager {
 
         @Override
         public void run() {
-            new HashMap<>(inventories).forEach((player, inv) -> inv.getProvider().update(Bukkit.getPlayer(player), contents.get(player)));
+            new HashMap<>(inventories).forEach((uuid, inv) -> {
+                Player player = Bukkit.getPlayer(uuid);
+
+                try {
+                    inv.getProvider().update(player, contents.get(uuid));
+                } catch (Exception e) {
+                    handleInventoryUpdateError(inv, player, e);
+                }
+            });
         }
 
     }

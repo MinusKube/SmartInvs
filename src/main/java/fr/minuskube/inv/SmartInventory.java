@@ -49,15 +49,21 @@ public class SmartInventory {
         contents.pagination().page(page);
 
         this.manager.setContents(player, contents);
-        this.provider.init(player, contents);
 
-        InventoryOpener opener = this.manager.findOpener(type)
-                .orElseThrow(() -> new IllegalStateException("No opener found for the inventory type " + type.name()));
-        Inventory handle = opener.open(this, player);
+        try {
+            this.provider.init(player, contents);
 
-        this.manager.setInventory(player, this);
+            InventoryOpener opener = this.manager.findOpener(type)
+                    .orElseThrow(() -> new IllegalStateException("No opener found for the inventory type " + type.name()));
+            Inventory handle = opener.open(this, player);
 
-        return handle;
+            this.manager.setInventory(player, this);
+
+            return handle;
+        } catch (Exception e) {
+            this.manager.handleInventoryOpenError(this, player, e);
+            return null;
+        }
     }
 
     @SuppressWarnings("unchecked")
