@@ -240,12 +240,33 @@ public interface InventoryContents {
     InventoryContents add(ClickableItem item);
 
     /**
-     * Updates an item in this inventory without reloading the entire GUI.
-     * @param slotPos the position of the item to update
-     * @param itemStack the new {@code ItemStack} that will replace the old one
-     * @return this {@code InventoryContents} instance
+     * Updates the {@link ItemStack} of the given {@link ClickableItem}
+     * at the given slot in this inventory.
+     * <br>
+     * If there's no {@link ClickableItem} at the given slot, it creates an empty
+     * {@link ClickableItem} with the given {@link ItemStack}.
+     *
+     * @param index the slot index of the item to update
+     * @param itemStack the new {@link ItemStack}
+     * @return <code>this</code>, for chained calls
      */
-    InventoryContents update(SlotPos slotPos, ItemStack itemStack);
+    InventoryContents updateItem(int index, ItemStack itemStack);
+
+    /**
+     * Same as {@link InventoryContents#updateItem(int, ItemStack)},
+     * but with a row and a column instead of the index.
+     *
+     * @see InventoryContents#updateItem(int, ItemStack)
+     */
+    InventoryContents updateItem(int row, int column, ItemStack itemStack);
+
+    /**
+     * Same as {@link InventoryContents#updateItem(int, ItemStack)},
+     * but with a {@link SlotPos} instead of the index.
+     *
+     * @see InventoryContents#updateItem(int, ItemStack)
+     */
+    InventoryContents updateItem(SlotPos slotPos, ItemStack itemStack);
 
     /**
      * Looks for the given item and compares them using {@link ItemStack#isSimilar(ItemStack)},
@@ -725,14 +746,29 @@ public interface InventoryContents {
         }
 
         @Override
-        public InventoryContents update(SlotPos slotPos, ItemStack itemStack) {
-            Optional<ClickableItem> optional = get(slotPos);
-            if (!optional.isPresent())
-                return this;
+        public InventoryContents updateItem(int index, ItemStack itemStack) {
+            int columnCount = this.inv.getColumns();
 
-            ClickableItem newClickableItem = ClickableItem.updateItem(optional.get(), itemStack);
-            set(slotPos, newClickableItem);
+            return updateItem(index / columnCount, index % columnCount, itemStack);
+        }
+
+        @Override
+        public InventoryContents updateItem(int row, int column, ItemStack itemStack) {
+            Optional<ClickableItem> optional = get(row, column);
+
+            if (!optional.isPresent()) {
+                set(row, column, ClickableItem.empty(itemStack));
+                return this;
+            }
+
+            ClickableItem newClickableItem = optional.get().cloneWithNewItem(itemStack);
+            set(row, column, newClickableItem);
             return this;
+        }
+
+        @Override
+        public InventoryContents updateItem(SlotPos slotPos, ItemStack itemStack) {
+            return updateItem(slotPos.getRow(), slotPos.getColumn(), itemStack);
         }
 
         @Override

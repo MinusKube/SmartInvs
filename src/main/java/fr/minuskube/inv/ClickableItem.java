@@ -139,13 +139,13 @@ public class ClickableItem {
     }
 
     /**
-     * Updates the {@code ItemStack} of a {@code ClickableItem} without changing its listener.
-     * @param clickableItem the old {@code ClickableItem}
-     * @param itemStack the new {@code ItemStack}
-     * @return a new {@code ClickableItem} with its related {@code ItemStack} updated
+     * Clones this ClickableItem while keeping its {@link Consumer}, but giving it a new {@link ItemStack}.
+     *
+     * @param item the new {@link ItemStack}
+     * @return a new ClickableItem with its related {@link ItemStack} updated
      */
-    public static ClickableItem updateItem(ClickableItem clickableItem, ItemStack itemStack) {
-        return new ClickableItem(itemStack, clickableItem.consumer, clickableItem.legacy);
+    public ClickableItem cloneWithNewItem(ItemStack item) {
+        return new ClickableItem(item, consumer, legacy);
     }
 
     /**
