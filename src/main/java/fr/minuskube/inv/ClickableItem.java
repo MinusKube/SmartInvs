@@ -108,6 +108,16 @@ public class ClickableItem {
     }
 
     /**
+     * Clones this ClickableItem while keeping its {@link Consumer}, but giving it a new {@link ItemStack}.
+     *
+     * @param item the new {@link ItemStack}
+     * @return a new ClickableItem with its related {@link ItemStack} updated
+     */
+    public ClickableItem cloneWithNewItem(ItemStack item) {
+        return new ClickableItem(item, consumer, legacy);
+    }
+
+    /**
      * Executes this ClickableItem's consumer using the given click data.
      *
      * @param data the data of the click
@@ -136,16 +146,6 @@ public class ClickableItem {
      */
     public ItemStack getItem() {
         return this.item;
-    }
-
-    /**
-     * Clones this ClickableItem while keeping its {@link Consumer}, but giving it a new {@link ItemStack}.
-     *
-     * @param item the new {@link ItemStack}
-     * @return a new ClickableItem with its related {@link ItemStack} updated
-     */
-    public ClickableItem cloneWithNewItem(ItemStack item) {
-        return new ClickableItem(item, consumer, legacy);
     }
 
     /**
