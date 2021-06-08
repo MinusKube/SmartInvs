@@ -53,6 +53,11 @@ public class SmartInventory {
         try {
             this.provider.init(player, contents);
 
+            // If the current inventory has been closed or replaced within the init method, returns
+            if (!this.manager.getContents(player).equals(Optional.of(contents))) {
+                return null;
+            }
+
             InventoryOpener opener = this.manager.findOpener(type)
                     .orElseThrow(() -> new IllegalStateException("No opener found for the inventory type " + type.name()));
             Inventory handle = opener.open(this, player);
