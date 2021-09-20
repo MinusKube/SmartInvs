@@ -18,6 +18,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class InventoryManager {
 
@@ -113,6 +115,18 @@ public class InventoryManager {
             this.contents.put(p.getUniqueId(), contents);
     }
 
+    public void handleInventoryOpenError(SmartInventory inventory, Player player, Exception exception) {
+        inventory.close(player);
+
+        Bukkit.getLogger().log(Level.SEVERE, "Error while opening SmartInventory:", exception);
+    }
+
+    public void handleInventoryUpdateError(SmartInventory inventory, Player player, Exception exception) {
+        inventory.close(player);
+
+        Bukkit.getLogger().log(Level.SEVERE, "Error while updating SmartInventory:", exception);
+    }
+
     @SuppressWarnings("unchecked")
     class InvListener implements Listener {
 
@@ -123,17 +137,21 @@ public class InventoryManager {
             if (!inventories.containsKey(p.getUniqueId()))
                 return;
 
-            if (e.getAction() == InventoryAction.COLLECT_TO_CURSOR || e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
-                e.setCancelled(true);
-                return;
+            // Restrict putting items from the bottom inventory into the top inventory
+            Inventory clickedInventory = e.getClickedInventory();
+            if (clickedInventory == p.getOpenInventory().getBottomInventory()) {
+                if (e.getAction() == InventoryAction.COLLECT_TO_CURSOR || e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                    e.setCancelled(true);
+                    return;
+                }
+  
+                if (e.getAction() == InventoryAction.NOTHING && e.getClick() != ClickType.MIDDLE) {
+                    e.setCancelled(true);
+                    return;
+                }
             }
 
-            if (e.getAction() == InventoryAction.NOTHING && e.getClick() != ClickType.MIDDLE) {
-                e.setCancelled(true);
-                return;
-            }
-
-            if (e.getClickedInventory() == p.getOpenInventory().getTopInventory()) {
+            if (clickedInventory == p.getOpenInventory().getTopInventory()) {
                 e.setCancelled(true);
 
                 int row = e.getSlot() / 9;
@@ -252,7 +270,15 @@ public class InventoryManager {
 
         @Override
         public void run() {
-            new HashMap<>(inventories).forEach((player, inv) -> inv.getProvider().update(Bukkit.getPlayer(player), contents.get(player)));
+            new HashMap<>(inventories).forEach((uuid, inv) -> {
+                Player player = Bukkit.getPlayer(uuid);
+
+                try {
+                    inv.getProvider().update(player, contents.get(uuid));
+                } catch (Exception e) {
+                    handleInventoryUpdateError(inv, player, e);
+                }
+            });
         }
 
     }
