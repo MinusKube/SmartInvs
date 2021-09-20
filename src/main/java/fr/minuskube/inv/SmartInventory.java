@@ -21,12 +21,13 @@ public class SmartInventory {
     private InventoryType type;
     private int rows, columns;
     private boolean closeable;
+    private long delay; // update time in ticks
 
     private InventoryProvider provider;
     private SmartInventory parent;
 
     private List<InventoryListener<? extends Event>> listeners;
-    private InventoryManager manager;
+    private final InventoryManager manager;
 
     private SmartInventory(InventoryManager manager) {
         this.manager = manager;
@@ -66,7 +67,7 @@ public class SmartInventory {
 
             return handle;
         } catch (Exception e) {
-            this.manager.handleInventoryOpenError(this, player, e);
+            this.manager.handleInventoryOpenError(this, player, new RuntimeException("Error while opening SmartInventory", e));
             return null;
         }
     }
@@ -93,6 +94,8 @@ public class SmartInventory {
     public boolean isCloseable() { return closeable; }
     public void setCloseable(boolean closeable) { this.closeable = closeable; }
 
+    public long getDelay() { return delay; }
+
     public InventoryProvider getProvider() { return provider; }
     public Optional<SmartInventory> getParent() { return Optional.ofNullable(parent); }
 
@@ -109,12 +112,13 @@ public class SmartInventory {
         private InventoryType type = InventoryType.CHEST;
         private int rows = 6, columns = 9;
         private boolean closeable = true;
+        private long delay = 1L;
 
         private InventoryManager manager;
         private InventoryProvider provider;
         private SmartInventory parent;
 
-        private List<InventoryListener<? extends Event>> listeners = new ArrayList<>();
+        private final List<InventoryListener<? extends Event>> listeners = new ArrayList<>();
 
         private Builder() {}
 
@@ -141,6 +145,11 @@ public class SmartInventory {
 
         public Builder closeable(boolean closeable) {
             this.closeable = closeable;
+            return this;
+        }
+
+        public Builder delay(long delay) {
+            this.delay = delay;
             return this;
         }
 
@@ -184,6 +193,10 @@ public class SmartInventory {
             inv.provider = this.provider;
             inv.parent = this.parent;
             inv.listeners = this.listeners;
+            if (delay < 1) {
+                throw new IllegalArgumentException("The delay must be strictly greater than 0. Actual value: " + delay);
+            }
+            inv.delay = this.delay;
 
             return inv;
         }

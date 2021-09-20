@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public interface InventoryContents {
 
     SmartInventory inventory();
@@ -37,13 +38,20 @@ public interface InventoryContents {
 
     InventoryContents add(ClickableItem item);
 
+    /**
+     * Updates an item in this inventory without reloading the entire GUI.
+     * @param slotPos the position of the item to update
+     * @param itemStack the new {@code ItemStack} that will replace the old one
+     * @return this {@code InventoryContents} instance
+     */
+    InventoryContents update(SlotPos slotPos, ItemStack itemStack);
+
     InventoryContents fill(ClickableItem item);
     InventoryContents fillRow(int row, ClickableItem item);
     InventoryContents fillColumn(int column, ClickableItem item);
     InventoryContents fillBorders(ClickableItem item);
 
-    InventoryContents fillRect(int fromRow, int fromColumn,
-                               int toRow, int toColumn, ClickableItem item);
+    InventoryContents fillRect(int fromRow, int fromColumn, int toRow, int toColumn, ClickableItem item);
     InventoryContents fillRect(SlotPos fromPos, SlotPos toPos, ClickableItem item);
 
     <T> T property(String name);
@@ -53,14 +61,14 @@ public interface InventoryContents {
 
     class Impl implements InventoryContents {
 
-        private SmartInventory inv;
-        private UUID player;
+        private final SmartInventory inv;
+        private final UUID player;
 
-        private ClickableItem[][] contents;
+        private final ClickableItem[][] contents;
 
-        private Pagination pagination = new Pagination.Impl();
-        private Map<String, SlotIterator> iterators = new HashMap<>();
-        private Map<String, Object> properties = new HashMap<>();
+        private final Pagination pagination = new Pagination.Impl();
+        private final Map<String, SlotIterator> iterators = new HashMap<>();
+        private final Map<String, Object> properties = new HashMap<>();
 
         public Impl(SmartInventory inv, UUID player) {
             this.inv = inv;
@@ -165,6 +173,17 @@ public interface InventoryContents {
         }
 
         @Override
+        public InventoryContents update(SlotPos slotPos, ItemStack itemStack) {
+            Optional<ClickableItem> optional = get(slotPos);
+            if (!optional.isPresent())
+                return this;
+
+            ClickableItem newClickableItem = ClickableItem.updateItem(optional.get(), itemStack);
+            set(slotPos, newClickableItem);
+            return this;
+        }
+
+        @Override
         public InventoryContents fill(ClickableItem item) {
             for(int row = 0; row < contents.length; row++)
                 for(int column = 0; column < contents[row].length; column++)
@@ -237,7 +256,7 @@ public interface InventoryContents {
 
         private void update(int row, int column, ItemStack item) {
             Player currentPlayer = Bukkit.getPlayer(player);
-            if(!inv.getManager().getOpenedPlayers(inv).contains(currentPlayer))
+            if(!inv.getManager().getOpenedPlayers(inv).contains(currentPlayer.getUniqueId()))
                 return;
 
             Inventory topInventory = currentPlayer.getOpenInventory().getTopInventory();
