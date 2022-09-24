@@ -46,9 +46,7 @@ jar {
 }
 
 build {
-    if (System.getenv("PUBLISH") == "true") {
-        dependsOn publish
-    }
+    dependsOn publish
 }
 
 publishing {
