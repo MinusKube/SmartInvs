@@ -2,8 +2,7 @@ group 'fr.minuskube.inv'
 version '1.3.0'
 
 apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'signing'
+apply plugin: 'maven-publish'
 
 sourceCompatibility = 1.8
 
@@ -46,52 +45,55 @@ jar {
     archiveFileName = 'SmartInvs-' + project.version + '.jar'
 }
 
-signing {
-    sign configurations.archives
+build {
+    if (System.getenv("PUBLISH") == "true") {
+        dependsOn publish
+    }
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
 
-            if(project.hasProperty("ossrhUsername") && project.hasProperty("ossrhPassword")) {
-                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
-                }
-
-                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
-                }
-            }
-
-            pom.project {
-                name 'SmartInvs'
-                packaging 'jar'
-                description 'Advanced Inventory API for your Minecraft Bukkit plugins.'
-                url 'https://github.com/MinusKube/SmartInvs'
+            pom {
+                name = 'SmartInvs'
+                packaging = 'jar'
+                description = 'Advanced Inventory API for your Minecraft Bukkit plugins.'
+                url = 'https://github.com/MinusKube/SmartInvs'
 
                 scm {
-                    connection 'scm:git:git://github.com/MinusKube/SmartInvs.git'
-                    developerConnection 'scm:git:ssh://github.com:MinusKube/SmartInvs.git'
-                    url 'http://github.com/MinusKube/SmartInvs/tree/master'
+                    connection = 'scm:git:git://github.com/MinusKube/SmartInvs.git'
+                    developerConnection = 'scm:git:ssh://github.com:MinusKube/SmartInvs.git'
+                    url = 'http://github.com/MinusKube/SmartInvs/tree/master'
                 }
 
                 licenses {
                     license {
-                        name 'GNU General Public License v3.0'
-                        url 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+                        name = 'GNU General Public License v3.0'
+                        url = 'https://www.gnu.org/licenses/gpl-3.0.en.html'
                     }
                 }
 
                 developers {
                     developer {
-                        id 'minuskube'
-                        name 'MinusKube'
-                        email 'minuskube@gmail.com'
+                        id = 'minuskube'
+                        name = 'MinusKube'
+                        email = 'minuskube@gmail.com'
                     }
                 }
             }
         }
     }
+
+    repositories {
+            maven {
+                credentials {
+                    username = System.getenv("CYT_REPO_USERNAME")
+                    password = System.getenv("CYT_REPO_PASSWORD")
+                }
+
+                url = 'https://repo.craftyourtown.com/repository/internal/'
+            }
+        }
 }
