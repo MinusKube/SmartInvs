@@ -87,11 +87,11 @@ publishing {
     repositories {
             maven {
                 credentials {
-                    username = System.getenv("CYT_REPO_USERNAME")
-                    password = System.getenv("CYT_REPO_PASSWORD")
+                    username = System.getenv("MANGO_STUDIOS_REPO_USERNAME")
+                    password = System.getenv("MANGO_STUDIOS_REPO_PASSWORD")
                 }
 
-                url = 'https://repo.craftyourtown.com/repository/internal/'
+                url = 'https://repo.mangostudios.uk/repository/internal/'
             }
         }
 }
