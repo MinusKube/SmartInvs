@@ -120,13 +120,13 @@ public class InventoryManager {
         else
             this.contents.put(p, contents);
     }
-    
+
     protected void scheduleUpdateTask(Player p, SmartInventory inv) {
     	PlayerInvTask task = new PlayerInvTask(p, inv.getProvider(), contents.get(p));
     	task.runTaskTimer(plugin, 1, inv.getUpdateFrequency());
     	this.updateTasks.put(p, task);
     }
-    
+
     protected void cancelUpdateTask(Player p) {
     	if(updateTasks.containsKey(p)) {
           int bukkitTaskId = this.updateTasks.get(p).getTaskId();
@@ -142,14 +142,11 @@ public class InventoryManager {
         public void onInventoryClick(InventoryClickEvent e) {
             Player p = (Player) e.getWhoClicked();
             SmartInventory inv = inventories.get(p);
-            
+
             if(inv == null)
                 return;
 
-            if( e.getAction() == InventoryAction.COLLECT_TO_CURSOR ||
-                e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY ||
-                e.getAction() == InventoryAction.NOTHING) {
-
+            if( e.getAction() == InventoryAction.COLLECT_TO_CURSOR || e.getAction() == InventoryAction.NOTHING) {
                 e.setCancelled(true);
                 return;
             }
@@ -157,13 +154,13 @@ public class InventoryManager {
             if(e.getClickedInventory() == p.getOpenInventory().getTopInventory()) {
                 int row = e.getSlot() / 9;
                 int column = e.getSlot() % 9;
-                
+
                 if(!inv.checkBounds(row, column))
                     return;
 
                 InventoryContents invContents = contents.get(p);
                 SlotPos slot = SlotPos.of(row, column);
-                
+
                 if(!invContents.isEditable(slot))
                     e.setCancelled(true);
 
@@ -289,7 +286,7 @@ public class InventoryManager {
         }
 
     }
-    
+
     class PlayerInvTask extends BukkitRunnable {
 
         private Player player;
@@ -306,7 +303,7 @@ public class InventoryManager {
         public void run() {
             provider.update(this.player, this.contents);
         }
-    	
+
     }
 
 }
