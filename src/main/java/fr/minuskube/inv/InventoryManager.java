@@ -172,7 +172,6 @@ public class InventoryManager {
                 InventoryContents invContents = contents.get(p);
                 if (e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY && invContents.property("allowShift", false)) {
                     e.setCancelled(true);
-                    return;
                 }
 
                 SlotPos slot = SlotPos.of(row, column);
