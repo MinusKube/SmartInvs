@@ -34,12 +34,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.PluginManager;
@@ -169,6 +164,7 @@ public class InventoryManager {
                 if(!inv.checkBounds(row, column))
                     return;
 
+                if (e.getClick() == ClickType.NUMBER_KEY) e.setCancelled(true);
                 InventoryContents invContents = contents.get(p);
                 if (e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY && invContents.property("allowShift", false)) {
                     e.setCancelled(true);
